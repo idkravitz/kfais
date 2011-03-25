@@ -7,8 +7,13 @@ class Table: public QMainWindow
 {
     Q_OBJECT
 
+private:
+    Setting::TblType type;
+
 public:
-    Table(QWidget *aParent = 0);
+    Table(QWidget *aParent, Setting::TblType aType);
+
+    Setting::TblType Type() const;
 };
 
 /******************************* Sportsmen *******************************/
