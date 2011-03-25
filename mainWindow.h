@@ -4,7 +4,7 @@
 #include "setting.h"
 #include "table.h"
 
-typedef QMap<Setting::TblType, Table *> MapTable;
+typedef QMap<Setting::TblType, Table *> MapTbl;
 
 class MainWindow: public QMainWindow
 {
@@ -13,15 +13,18 @@ class MainWindow: public QMainWindow
 private:
     QMdiArea *mdiArea;
 
-    MapTable mapTbl;
+    MapTbl mapTbl;
 
     void CreateMenu();
 
 private slots:
-    void CreateTblSportsmen();
-    void CreateTblTrainer();
-    void CreateTblClub();
-    bool IsOpen(TblType aTT);
+    void OpenTblSportsmen();
+    void OpenTblTrainer();
+    void OpenTblClub();
+
+    bool IsOpen(Setting::TblType aTT);
+    QMdiSubWindow *OpenTbl(Setting::TblType aTT, Table *aTbl);
+    void CloseTable(QObject *aTbl);
 
 public:
     MainWindow(QWidget *aParent = 0);

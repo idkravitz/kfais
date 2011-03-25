@@ -1,15 +1,23 @@
 #include "table.h"
 
-Table::Table(QWidget *aParent):
-        QMainWindow(aParent)
+using namespace Setting;
+
+Table::Table(QWidget *aParent, TblType aType):
+        QMainWindow(aParent),
+        type(aType)
 {
     setAttribute(Qt::WA_DeleteOnClose);
+}
+
+TblType Table::Type() const
+{
+    return type;
 }
 
 /******************************* Sportsmen *******************************/
 
 TblSportmen::TblSportmen(QWidget *aParent):
-        Table(aParent)
+        Table(aParent, ttSportsmen)
 {
 
 }
@@ -17,7 +25,7 @@ TblSportmen::TblSportmen(QWidget *aParent):
 /******************************* Trainer *******************************/
 
 TblTrainer::TblTrainer(QWidget *aParent):
-        Table(aParent)
+        Table(aParent, ttTrainer)
 {
 
 }
@@ -25,7 +33,7 @@ TblTrainer::TblTrainer(QWidget *aParent):
 /******************************* Club *******************************/
 
 TblClub::TblClub(QWidget *aParent):
-        Table(aParent)
+        Table(aParent, ttClub)
 {
 
 }

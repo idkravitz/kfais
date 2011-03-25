@@ -39,14 +39,38 @@ void MainWindow::CreateMenu()
 
 bool MainWindow::IsOpen(TblType aTT)
 {
+    MapTbl::const_iterator it = mapTbl.find(aTT);
+    if (it == mapTbl.end())
+    {
+        return false;
+    }
+    //Set focus
+    return true;
+}
 
+QMdiSubWindow *MainWindow::OpenTbl(TblType aTT, Table *aTbl)
+{
+    QMdiSubWindow *sw = mdiArea->addSubWindow(aTbl);
+    sw->show();
+    mapTbl.insert(aTT, aTbl);
+    connect(aTbl, SIGNAL(destroyed(QObject *)), this, SLOT(CloseTable(QObject *)));
+    return sw;
+}
+
+void MainWindow::CloseTable(QObject *aTbl)
+{
+    MapTbl::iterator it = mapTbl.find(static_cast<Table *>(aTbl)->Type());
+    if (it != mapTbl.end())
+    {
+        mapTbl.erase(it);
+    }
 }
 
 void MainWindow::OpenTblSportsmen()
 {
-    if (!IsOpen)
+    if (!IsOpen(ttSportsmen))
     {
-
+        QMdiSubWindow *sw = OpenTbl(ttSportsmen, new TblSportmen(mdiArea));
     }
 }
 
