@@ -1,6 +1,6 @@
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE sportsmens(
+CREATE TABLE sportsmen(
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     photo BLOB,
