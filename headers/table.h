@@ -1,7 +1,8 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-#include "../headers/setting.h"
+#include "setting.h"
+#include "card.h"
 
 class Table: public QMainWindow
 {
@@ -9,6 +10,22 @@ class Table: public QMainWindow
 
 private:
     Setting::TblType type;
+    QTableView *view;
+    QSqlRelationalTableModel *model;
+
+    void CreateWidgets();
+
+private slots:
+    void SetFirst();
+    void SetNext();
+    void SetPrev();
+    void SetLast();
+    void Add();
+    void Delete();
+    void Edit();
+
+protected:
+    void Init(const QString &aTitle, const QString &aTblName);
 
 public:
     Table(QWidget *aParent, Setting::TblType aType);
@@ -16,28 +33,86 @@ public:
     Setting::TblType Type() const;
 };
 
-/******************************* Sportsmen *******************************/
+/******************************* Sportsmens *******************************/
 
-class TblSportsmen: public Table
+class TblSport: public Table
 {
+    Q_OBJECT
+
 public:
-    TblSportsmen(QWidget *aParent = 0);
+    TblSport(QWidget *aParent = 0);
 };
 
-/******************************* Trainer *******************************/
+/******************************* Trainers *******************************/
 
-class TblTrainer: public Table
+class TblCoach: public Table
 {
+    Q_OBJECT
+
 public:
-    TblTrainer(QWidget *aParent = 0);
+    TblCoach(QWidget *aParent = 0);
 };
 
-/******************************* Club *******************************/
+/******************************* Clubs *******************************/
 
 class TblClub: public Table
 {
+    Q_OBJECT
+
 public:
     TblClub(QWidget *aParent = 0);
 };
 
+/******************************* Certifications *******************************/
+
+class TblSert: public Table
+{
+    Q_OBJECT
+
+public:
+    TblSert(QWidget *aParent = 0);
+};
+
+/******************************* Fees *******************************/
+
+class TblFee: public Table
+{
+    Q_OBJECT
+
+public:
+    TblFee(QWidget *aParent = 0);
+};
+
+
+/******************************* Sportsmen-Competiotions *******************************/
+
+class TblSportComp: public Table
+{
+    Q_OBJECT
+
+public:
+    TblSportComp(QWidget *aParent = 0);
+};
+
+/******************************* Competiotions *******************************/
+
+class TblComp: public Table
+{
+    Q_OBJECT
+
+public:
+    TblComp(QWidget *aParent = 0);
+};
+
+/******************************* Categories *******************************/
+
+class TblCateg: public Table
+{
+    Q_OBJECT
+
+public:
+    TblCateg(QWidget *aParent = 0);
+};
+
 #endif // TABLE_H
+

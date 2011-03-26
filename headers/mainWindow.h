@@ -1,9 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "../headers/setting.h"
-#include "../headers/table.h"
-#include "../headers/xmlreports.h"
+#include "xmlreports.h"
+#include "setting.h"
+#include "table.h"
 
 typedef QMap<Setting::TblType, Table *> MapTbl;
 
@@ -20,9 +20,14 @@ private:
     void CreateMenu();
 
 private slots:
-    void OpenTblSportsmen();
-    void OpenTblTrainer();
+    void OpenTblSport();
+    void OpenTblCoach();
     void OpenTblClub();
+    void OpenTblSert();
+    void OpenTblFee();
+    void OpenTblSportComp();
+    void OpenTblComp();
+    void OpenTblCateg();
     void GenerateReport();
 
     bool IsOpen(Setting::TblType aTT) const;

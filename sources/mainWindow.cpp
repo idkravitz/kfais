@@ -28,15 +28,20 @@ void MainWindow::CreateMenu()
     reportsMaker = new ReportsMaker;
 
     QMenu *mnFile = new QMenu(tr("Файл"));
-    QAction *actExit = mnFile->addAction(tr("Выход"), this, SLOT(close()));
+    mnFile->addAction(tr("Выход"), this, SLOT(close()));
 
     QMenu *mnAbout = new QMenu(tr("Помощь"));
-    QAction *actAbout = mnAbout->addAction(tr("О программе"));
+    mnAbout->addAction(tr("О программе"));
 
     QMenu *mnTables = new QMenu(tr("Таблицы"));
-    QAction *actSportmen = mnTables->addAction(tr("Спортсмены"), this, SLOT(OpenTblSportsmen()));
-    QAction *actTrainer = mnTables->addAction(tr("Тренеры"), this, SLOT(OpenTblTrainer()));
-    QAction *actClub = mnTables->addAction(tr("Клубы"), this, SLOT(OpenTblClub()));
+    mnTables->addAction(tr(Sport::title), this, SLOT(OpenTblSport()));
+    mnTables->addAction(tr(Coach::title), this, SLOT(OpenTblCoach()));
+    mnTables->addAction(tr(Club::title), this, SLOT(OpenTblClub()));
+    mnTables->addAction(tr(Sert::title), this, SLOT(OpenTblSert()));
+    mnTables->addAction(tr(Fee::title), this, SLOT(OpenTblFee()));
+    mnTables->addAction(tr(SportComp::title), this, SLOT(OpenTblSportComp()));
+    mnTables->addAction(tr(Comp::title), this, SLOT(OpenTblComp()));
+    mnTables->addAction(tr(Categ::title), this, SLOT(OpenTblCateg()));
 
     QAction *actSportsmenReport = mnBar->addAction(tr("Отчёт"), this, SLOT(GenerateReport()));
 
@@ -75,19 +80,19 @@ void MainWindow::CloseTable(QObject *aTbl)
     }
 }
 
-void MainWindow::OpenTblSportsmen()
+void MainWindow::OpenTblSport()
 {
-    if (!IsOpen(ttSportsmen))
+    if (!IsOpen(ttSport))
     {
-        QMdiSubWindow *sw = OpenTbl(ttSportsmen, new TblSportsmen(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttSport, new TblSport(mdiArea));
     }
 }
 
-void MainWindow::OpenTblTrainer()
+void MainWindow::OpenTblCoach()
 {
-    if (!IsOpen(ttTrainer))
+    if (!IsOpen(ttCoach))
     {
-        QMdiSubWindow *sw = OpenTbl(ttTrainer, new TblTrainer(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttCoach, new TblCoach(mdiArea));
     }
 }
 
@@ -96,5 +101,46 @@ void MainWindow::OpenTblClub()
     if (!IsOpen(ttClub))
     {
         QMdiSubWindow *sw = OpenTbl(ttClub, new TblClub(mdiArea));
+    }
+}
+
+void MainWindow::OpenTblSert()
+{
+    if (!IsOpen(ttSert))
+    {
+        QMdiSubWindow *sw = OpenTbl(ttSert, new TblSert(mdiArea));
+    }
+}
+
+void MainWindow::OpenTblFee()
+{
+    if (!IsOpen(ttFee))
+    {
+        QMdiSubWindow *sw = OpenTbl(ttFee, new TblFee(mdiArea));
+    }
+}
+
+void MainWindow::OpenTblSportComp()
+{
+    if (!IsOpen(ttSportComp))
+    {
+        QMdiSubWindow *sw = OpenTbl(ttSportComp, new TblSportComp(mdiArea));
+    }
+}
+
+void MainWindow::OpenTblComp()
+{
+    if (!IsOpen(ttComp))
+    {
+        QMdiSubWindow *sw = OpenTbl(ttComp, new TblComp(mdiArea));
+    }
+}
+
+
+void MainWindow::OpenTblCateg()
+{
+    if (!IsOpen(ttCateg))
+    {
+        QMdiSubWindow *sw = OpenTbl(ttCateg, new TblCateg(mdiArea));
     }
 }

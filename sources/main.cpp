@@ -22,13 +22,14 @@ int main(int argc, char *argv[])
 
     try
     {
-        Connect(QObject::tr("db"));
+        Connect("base.db");
     }
     catch(Error err)
     {
         QMessageBox::critical(0, QObject::tr("Error"), err.msg());
         return 1;
     }
+
     MainWindow *mw = new MainWindow;
     mw->show();
 
