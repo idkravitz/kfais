@@ -1,12 +1,13 @@
 QT += sql
 
 SOURCES += \
-    main.cpp \
-    mainWindow.cpp \
-    table.cpp
+    sources/table.cpp \
+    sources/mainWindow.cpp \
+    sources/main.cpp \
+    sources/exceptions.h
 
 HEADERS += \
-    mainWindow.h \
-    table.h \
-    setting.h \
-    exceptions.h
+    headers/table.h \
+    headers/setting.h \
+    headers/mainWindow.h \
+    headers/exceptions.h

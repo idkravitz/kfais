@@ -1,4 +1,4 @@
-#include "mainWindow.h"
+#include "../headers/mainWindow.h"
 
 using namespace Setting;
 
@@ -10,7 +10,6 @@ MainWindow::MainWindow(QWidget *aParent):
     mdiArea = new QMdiArea;
 
     setWindowTitle("Kudo federation AIS");
-
     setCentralWidget(mdiArea);
 
     CreateMenu();
@@ -37,14 +36,14 @@ void MainWindow::CreateMenu()
     mnBar->addMenu(mnAbout);
 }
 
-bool MainWindow::IsOpen(TblType aTT)
+bool MainWindow::IsOpen(TblType aTT) const
 {
     MapTbl::const_iterator it = mapTbl.find(aTT);
     if (it == mapTbl.end())
     {
         return false;
     }
-    //Set focus
+    it.value()->setFocus();
     return true;
 }
 
@@ -70,16 +69,22 @@ void MainWindow::OpenTblSportsmen()
 {
     if (!IsOpen(ttSportsmen))
     {
-        QMdiSubWindow *sw = OpenTbl(ttSportsmen, new TblSportmen(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttSportsmen, new TblSportsmen(mdiArea));
     }
 }
 
 void MainWindow::OpenTblTrainer()
 {
-
+    if (!IsOpen(ttTrainer))
+    {
+        QMdiSubWindow *sw = OpenTbl(ttTrainer, new TblTrainer(mdiArea));
+    }
 }
 
 void MainWindow::OpenTblClub()
 {
-
+    if (!IsOpen(ttClub))
+    {
+        QMdiSubWindow *sw = OpenTbl(ttClub, new TblClub(mdiArea));
+    }
 }

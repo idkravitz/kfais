@@ -1,7 +1,7 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-#include "setting.h"
+#include "../headers/setting.h"
 
 class Table: public QMainWindow
 {
@@ -18,10 +18,10 @@ public:
 
 /******************************* Sportsmen *******************************/
 
-class TblSportmen: public Table
+class TblSportsmen: public Table
 {
 public:
-    TblSportmen(QWidget *aParent = 0);
+    TblSportsmen(QWidget *aParent = 0);
 };
 
 /******************************* Trainer *******************************/

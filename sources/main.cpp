@@ -1,7 +1,7 @@
 #include <QApplication>
 
-#include "mainWindow.h"
-#include "exceptions.h"
+#include "../headers/mainWindow.h"
+#include "../headers/exceptions.h"
 
 void Connect(const QString &dbname)
 {
@@ -12,7 +12,6 @@ void Connect(const QString &dbname)
         throw Error(QObject::tr("Невозможно открыть базу данных ") + dbname);
     }
 }
-
 
 int main(int argc, char *argv[])
 {

@@ -1,4 +1,4 @@
-#include "table.h"
+#include "../headers/table.h"
 
 using namespace Setting;
 
@@ -16,7 +16,7 @@ TblType Table::Type() const
 
 /******************************* Sportsmen *******************************/
 
-TblSportmen::TblSportmen(QWidget *aParent):
+TblSportsmen::TblSportsmen(QWidget *aParent):
         Table(aParent, ttSportsmen)
 {
 
