@@ -15,10 +15,17 @@ MainWindow::MainWindow(QWidget *aParent):
     CreateMenu();
 }
 
+void MainWindow::GenerateReport()
+{
+    reportsMaker->MakeReport(tr("select * from sportsmen"));
+}
+
 void MainWindow::CreateMenu()
 {
     QMenuBar *mnBar = new QMenuBar;
     setMenuBar(mnBar);
+
+    reportsMaker = new ReportsMaker;
 
     QMenu *mnFile = new QMenu(tr("Ôàéë"));
     QAction *actExit = mnFile->addAction(tr("Âûõîä"), this, SLOT(close()));
@@ -30,6 +37,9 @@ void MainWindow::CreateMenu()
     QAction *actSportmen = mnTables->addAction(tr("Ñïîğòñìåíû"), this, SLOT(OpenTblSportsmen()));
     QAction *actTrainer = mnTables->addAction(tr("Òğåíåğû"), this, SLOT(OpenTblTrainer()));
     QAction *actClub = mnTables->addAction(tr("Êëóáû"), this, SLOT(OpenTblClub()));
+
+    QAction *actSportsmenReport = mnBar->addAction(tr("Îò÷¸ò"), this, SLOT(GenerateReport()));
+
 
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);

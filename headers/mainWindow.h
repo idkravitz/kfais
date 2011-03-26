@@ -3,6 +3,7 @@
 
 #include "../headers/setting.h"
 #include "../headers/table.h"
+#include "../headers/xmlreports.h"
 
 typedef QMap<Setting::TblType, Table *> MapTbl;
 
@@ -12,6 +13,7 @@ class MainWindow: public QMainWindow
 
 private:
     QMdiArea *mdiArea;
+    ReportsMaker* reportsMaker;
 
     MapTbl mapTbl;
 
@@ -21,6 +23,7 @@ private slots:
     void OpenTblSportsmen();
     void OpenTblTrainer();
     void OpenTblClub();
+    void GenerateReport();
 
     bool IsOpen(Setting::TblType aTT) const;
     QMdiSubWindow *OpenTbl(Setting::TblType aTT, Table *aTbl);
