@@ -1,3 +1,5 @@
+BEGIN TRANSACTION;
+
 insert into coaches(name, phone) values ('Ковалёв Владимир Сергеевич', '8-924-675-85-92');
 
 insert into sportsmens(name, coach_id, birthday, address) values 
@@ -38,3 +40,5 @@ insert into sportsmens(name, coach_id, birthday, address) values
     ('Ефимов Вячеслав Алексеевич', (select id from coaches where name='Ковалёв Владимир Сергеевич'), '1990-02-11','г. Благовещенск'); 
 insert into sportsmens(name, coach_id, birthday, address) values 
     ('Яковлев Алексей Андреевич', (select id from coaches where name='Ковалёв Владимир Сергеевич'), '1991-08-05','г. Благовещенск'); 
+
+COMMIT;
