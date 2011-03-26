@@ -21,15 +21,15 @@ void MainWindow::CreateMenu()
     setMenuBar(mnBar);
 
     QMenu *mnFile = new QMenu(tr("Файл"));
-    QAction *actExit = mnFile->addAction(tr("Выход"), this, SLOT(close()));
+    mnFile->addAction(tr("Выход"), this, SLOT(close()));
 
     QMenu *mnAbout = new QMenu(tr("Помощь"));
-    QAction *actAbout = mnAbout->addAction(tr("О программе"));
+    mnAbout->addAction(tr("О программе"));
 
     QMenu *mnTables = new QMenu(tr("Таблицы"));
-    QAction *actSportmen = mnTables->addAction(tr("Спортсмены"), this, SLOT(OpenTblSportsmen()));
-    QAction *actTrainer = mnTables->addAction(tr("Тренеры"), this, SLOT(OpenTblTrainer()));
-    QAction *actClub = mnTables->addAction(tr("Клубы"), this, SLOT(OpenTblClub()));
+    mnTables->addAction(tr("Спортсмены"), this, SLOT(OpenTblSportsmen()));
+    mnTables->addAction(tr("Тренеры"), this, SLOT(OpenTblTrainer()));
+    mnTables->addAction(tr("Клубы"), this, SLOT(OpenTblClub()));
 
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);
