@@ -9,6 +9,16 @@ class Table: public QMainWindow
 
 private:
     Setting::TblType type;
+    QTableView *view;
+    QSqlRelationalTableModel *model;
+
+    void CreateWidgets();
+
+private slots:
+    void SetFirst();
+    void SetNext();
+    void SetPrev();
+    void SetLast();
 
 public:
     Table(QWidget *aParent, Setting::TblType aType);
