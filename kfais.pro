@@ -1,3 +1,4 @@
+QT += sql
 
 SOURCES += \
     main.cpp \
@@ -7,4 +8,5 @@ SOURCES += \
 HEADERS += \
     mainWindow.h \
     table.h \
-    setting.h
+    setting.h \
+    exceptions.h
