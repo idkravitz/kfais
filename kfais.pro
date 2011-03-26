@@ -1,10 +1,10 @@
 
 SOURCES += \
-    main.cpp \
-    mainWindow.cpp \
-    table.cpp
+    sources/table.cpp \
+    sources/mainWindow.cpp \
+    sources/main.cpp
 
 HEADERS += \
-    mainWindow.h \
-    table.h \
-    setting.h
+    headers/table.h \
+    headers/setting.h \
+    headers/mainWindow.h
