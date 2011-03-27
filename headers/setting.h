@@ -10,65 +10,30 @@ namespace Setting
 {
     enum TblType
     {
-        ttSport,        //sportmen
-        ttCoach,        //coachs
-        ttClub,         //clubs
-        ttSert,         //sertification
-        ttFee,          //fee
-        ttSportComp,    //sportsmen-competitions
-        ttComp,         //competitions
-        ttCateg         //categories
+        ttAbstract = 0,
+        ttSport = 1,        //sportmen
+        ttCoach = 2,        //coachs
+        ttClub = 3,         //clubs
+        ttSert = 4,         //sertification
+        ttFee = 5,          //fee
+        ttSportComp = 6,    //sportsmen-competitions
+        ttComp = 7,         //competitions
+        ttCateg = 8         //categories
     };
 
     extern QMdiArea *mdiArea;
 
-    namespace Sport
-    {
-        const char *const title = "Спортсмены";
-        const QString tblName = "sportsmen";
-    }
+    struct TableSettings{
+        const char *title;
+        QString tblName;
+        QVector<int> colWidth;
+        QVector<char*> colName;
+    };
 
-    namespace Coach
-    {
-        const char *const title = "Тренеры";
-        const QString tblName = "coaches";
-    }
+    extern TableSettings table_settings[ttCateg + 1];
 
-    namespace Club
-    {
-        const char *const title = "Клубы";
-        const QString tblName = "clubs";
-    }
-
-    namespace Sert
-    {
-        const char *const title = "Сертификаты";
-        const QString tblName = "sertifications";
-    }
-
-    namespace Fee
-    {
-        const char *const title = "Взносы";
-        const QString tblName = "fee";
-    }
-
-    namespace SportComp
-    {
-        const char *const title = "Распределения \"Спортсмен - соревнование\"";
-        const QString tblName = "sportsmen_competitions";
-    }
-
-    namespace Comp
-    {
-        const char *const title = "Соревнования";
-        const QString tblName = "competitions";
-    }
-
-    namespace Categ
-    {
-        const char *const title = "Категории";
-        const QString tblName = "categories";
-    }
+    bool LoadSettings();
+    bool SaveSettings();
 }
 
 #endif // SETTING_H

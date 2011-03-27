@@ -68,7 +68,7 @@ CardSport::CardSport(QWidget *aParent, int aId):
 {
     CreateWidgets();
 
-    model->setTable(Sport::tblName);
+    model->setTable(table_settings[ttSport].tblName);
     model->setFilter("id = " + QString::number(aId));
     model->select();
 

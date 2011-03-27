@@ -19,6 +19,9 @@ private:
 
     void CreateWidgets();
 
+    void ApplyTableSettings();
+    void SaveTableSettings();
+
 private slots:
     void SetFirst();
     void SetNext();
@@ -37,9 +40,11 @@ protected:
     void Init(const QString &aTitle, const QString &aTblName);
     virtual Card *CreateCard(int aId) const = 0;
 
-public:
-    Table(QWidget *aParent, Setting::TblType aType);
+    virtual void TableSpecificConfig();
 
+public:
+    Table(QWidget *aParent, Setting::TblType aType);    
+    ~Table();
     Setting::TblType Type() const;
 };
 

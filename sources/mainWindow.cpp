@@ -25,14 +25,15 @@ void MainWindow::CreateMenu()
     mnAbout->addAction(tr("О программе"));
 
     QMenu *mnTables = new QMenu(tr("Таблицы"));
-    mnTables->addAction(tr(Sport::title), this, SLOT(OpenTblSport()));
-    mnTables->addAction(tr(Coach::title), this, SLOT(OpenTblCoach()));
-    mnTables->addAction(tr(Club::title), this, SLOT(OpenTblClub()));
-    mnTables->addAction(tr(Sert::title), this, SLOT(OpenTblSert()));
-    mnTables->addAction(tr(Fee::title), this, SLOT(OpenTblFee()));
-    mnTables->addAction(tr(SportComp::title), this, SLOT(OpenTblSportComp()));
-    mnTables->addAction(tr(Comp::title), this, SLOT(OpenTblComp()));
-    mnTables->addAction(tr(Categ::title), this, SLOT(OpenTblCateg()));
+    using namespace Setting;
+    mnTables->addAction(tr(table_settings[ttSport].title), this, SLOT(OpenTblSport()));
+    mnTables->addAction(tr(table_settings[ttCoach].title), this, SLOT(OpenTblCoach()));
+    mnTables->addAction(tr(table_settings[ttClub].title), this, SLOT(OpenTblClub()));
+    mnTables->addAction(tr(table_settings[ttSert].title), this, SLOT(OpenTblSert()));
+    mnTables->addAction(tr(table_settings[ttFee].title), this, SLOT(OpenTblFee()));
+    mnTables->addAction(tr(table_settings[ttSportComp].title), this, SLOT(OpenTblSportComp()));
+    mnTables->addAction(tr(table_settings[ttComp].title), this, SLOT(OpenTblComp()));
+    mnTables->addAction(tr(table_settings[ttCateg].title), this, SLOT(OpenTblCateg()));
 
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);

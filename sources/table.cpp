@@ -9,8 +9,12 @@ Table::Table(QWidget *aParent, TblType aType):
         type(aType)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-
     CreateWidgets();
+}
+
+Table::~Table()
+{
+    SaveTableSettings();
 }
 
 void Table::CreateWidgets()
@@ -29,7 +33,8 @@ void Table::CreateWidgets()
     addToolBar(tb);
 
     model = new QSqlRelationalTableModel(this);
-    model->setEditStrategy(QSqlTableModel::OnRowChange);
+    model->setEditStrategy(QSqlTableModel::OnRowChange);  
+    model->setTable(table_settings[type].tblName);
 
     view = new QTableView;
     view->setModel(model);
@@ -38,14 +43,34 @@ void Table::CreateWidgets()
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);   //Disable editing
     connect(view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(OpenCard(QModelIndex)));
 
+    ApplyTableSettings();
+
+    setWindowTitle(tr(table_settings[type].title));
     setCentralWidget(view);
 }
 
-void Table::Init(const QString &aTitle, const QString &aTblName)
+void Table::ApplyTableSettings()
 {
-    setWindowTitle(aTitle);
-    model->setTable(aTblName);
+    QVector<int> *w = &table_settings[type].colWidth;
+    QVector<char*> *n = &table_settings[type].colName;
+    for (int i = 0; i < w->size(); ++i)
+        view->setColumnWidth(i, w->at(i));
+    for (int i = 0; i < n->size(); ++i)
+        model->setHeaderData(i, Qt::Horizontal, tr(n->at(i)));
+}
+
+void Table::SaveTableSettings()
+{
+    QVector<int> *w = &table_settings[type].colWidth;
+    w->resize(model->columnCount());
+    for (int i = 0; i < model->columnCount(); ++i)
+        (*w)[i] = view->columnWidth(i);
+}
+
+void Table::TableSpecificConfig()
+{
     model->select();
+    ApplyTableSettings();
 }
 
 TblType Table::Type() const
@@ -117,10 +142,8 @@ void Table::CloseCard(QObject *aObj)
 
 TblSport::TblSport(QWidget *aParent):
         Table(aParent, ttSport)
-{
-    using namespace Sport;
-
-    Init(tr(title), Sport::tblName);
+{ 
+    TableSpecificConfig();
 }
 
 Card *TblSport::CreateCard(int aId) const
@@ -133,9 +156,7 @@ Card *TblSport::CreateCard(int aId) const
 TblCoach::TblCoach(QWidget *aParent):
         Table(aParent, ttCoach)
 {
-    using namespace Coach;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 Card *TblCoach::CreateCard(int aId) const
@@ -148,9 +169,7 @@ return 0;
 TblClub::TblClub(QWidget *aParent):
         Table(aParent, ttClub)
 {
-    using namespace Club;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 Card *TblClub::CreateCard(int aId) const
@@ -163,9 +182,7 @@ return 0;
 TblSert::TblSert(QWidget *aParent):
         Table(aParent, ttSert)
 {
-    using namespace Sert;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 Card *TblSert::CreateCard(int aId) const
@@ -178,9 +195,7 @@ return 0;
 TblFee::TblFee(QWidget *aParent):
         Table(aParent, ttFee)
 {
-    using namespace Fee;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 Card *TblFee::CreateCard(int aId) const
@@ -193,9 +208,7 @@ return 0;
 TblSportComp::TblSportComp(QWidget *aParent):
         Table(aParent, ttSportComp)
 {
-    using namespace SportComp;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 Card *TblSportComp::CreateCard(int aId) const
@@ -208,9 +221,7 @@ return 0;
 TblComp::TblComp(QWidget *aParent):
         Table(aParent, ttComp)
 {
-    using namespace Comp;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 Card *TblComp::CreateCard(int aId) const
@@ -223,9 +234,7 @@ Card *TblComp::CreateCard(int aId) const
 TblCateg::TblCateg(QWidget *aParent):
         Table(aParent, ttCateg)
 {
-    using namespace Categ;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 Card *TblCateg::CreateCard(int aId) const
