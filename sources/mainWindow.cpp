@@ -34,6 +34,7 @@ void MainWindow::CreateMenu()
     mnTables->addAction(tr(table_settings[ttSportComp].title), this, SLOT(OpenTblSportComp()));
     mnTables->addAction(tr(table_settings[ttComp].title), this, SLOT(OpenTblComp()));
     mnTables->addAction(tr(table_settings[ttCateg].title), this, SLOT(OpenTblCateg()));
+    mnTables->addAction(tr(table_settings[ttRank].title), this, SLOT(OpenTblRank()));
 
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);
@@ -131,5 +132,13 @@ void MainWindow::OpenTblCateg()
     if (!IsOpen(ttCateg))
     {
         QMdiSubWindow *sw = OpenTbl(ttCateg, new TblCateg(mdiArea));
+    }
+}
+
+void MainWindow::OpenTblRank()
+{
+    if (!IsOpen(ttRank))
+    {
+        QMdiSubWindow *sw = OpenTbl(ttRank, new TblRank(mdiArea));
     }
 }

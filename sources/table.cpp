@@ -241,3 +241,16 @@ Card *TblCateg::CreateCard(int aId) const
 {
     return 0;
 }
+
+/******************************* Ranks *******************************/
+
+TblRank::TblRank(QWidget *aParent):
+        Table(aParent, ttRank)
+{
+    TableSpecificConfig();
+}
+
+Card *TblRank::CreateCard(int aId) const
+{
+    return 0;
+}

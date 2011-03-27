@@ -5,7 +5,7 @@ QMdiArea *Setting::mdiArea;
 namespace Setting
 {
 
-TableSettings table_settings[ttCateg + 1];
+TableSettings table_settings[ttRank + 1];
 
 bool LoadSettings()
 {
@@ -38,6 +38,9 @@ bool LoadSettings()
     table_settings[ttCateg].colWidth << 40 << 200 << 200;
     table_settings[ttCateg].colName << "id" << "Категория"
             << "Примечание";
+
+    table_settings[ttRank].title = "Ранги";
+    table_settings[ttRank].tblName = "ranks";
 
     return true;
 }

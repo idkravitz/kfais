@@ -14,11 +14,13 @@ namespace Setting
         ttSport = 1,        //sportmen
         ttCoach = 2,        //coachs
         ttClub = 3,         //clubs
-        ttSert = 4,         //sertification
+        ttSert = 4,         //sertifications
         ttFee = 5,          //fee
         ttSportComp = 6,    //sportsmen-competitions
         ttComp = 7,         //competitions
-        ttCateg = 8         //categories
+        ttCateg = 8,        //categories
+        ttRank = 9          //ranks
+
     };
 
     extern QMdiArea *mdiArea;
@@ -30,7 +32,7 @@ namespace Setting
         QVector<char*> colName;
     };
 
-    extern TableSettings table_settings[ttCateg + 1];
+    extern TableSettings table_settings[ttRank + 1];
 
     bool LoadSettings();
     bool SaveSettings();

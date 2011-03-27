@@ -24,6 +24,7 @@ private slots:
     void OpenTblSportComp();
     void OpenTblComp();
     void OpenTblCateg();
+    void OpenTblRank();
 
     bool IsOpen(Setting::TblType aTT) const;
     QMdiSubWindow *OpenTbl(Setting::TblType aTT, Table *aTbl);

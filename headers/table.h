@@ -153,5 +153,18 @@ public:
     TblCateg(QWidget *aParent = 0);
 };
 
+/******************************* Ranks *******************************/
+
+class TblRank: public Table
+{
+    Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) const;
+
+public:
+    TblRank(QWidget *aParent = 0);
+};
+
 #endif // TABLE_H
 
