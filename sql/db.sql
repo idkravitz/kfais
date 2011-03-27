@@ -2,21 +2,22 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE sportsmen(
     id INTEGER NOT NULL PRIMARY KEY,
-    name TEXT NOT NULL,
     photo BLOB,
-    reg_number INTEGER,
-    coach_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
     birthday DATE NOT NULL,
+	rank_id INTEGER,
+    reg_number INTEGER,
+    coach_id INTEGER,
     address TEXT,
     phone TEXT,
     workplace TEXT,
-    rank INTEGER,
     job TEXT,
 	note TEXT,
-	FOREIGN KEY (coach_id) REFERENCES coaches(id) ON DELETE CASCADE ON UPDATE CASCADE);
+	FOREIGN KEY (coach_id) REFERENCES coaches(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (rank_id) REFERENCES ranks(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
 CREATE TABLE coaches(
-    id INTEGER NOT NULL PRIMARY KEY,
+	id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     phone TEXT,
 	club_id INTEGER,
@@ -29,24 +30,33 @@ CREATE TABLE clubs(
     address TEXT,
 	note TEXT);
 
+CREATE TABLE ranks(
+	id INTEGER NOT NULL PRIMARY KEY,
+	name TEXT NOT NULL,
+	note TEXT);
+
 CREATE TABLE certifications( 
-    NumRecCert INTEGER NOT NULL PRIMARY KEY,
+    num_rec_sert INTEGER NOT NULL PRIMARY KEY,
+	sportsman_id INTEGER NOT NULL,
     date DATE NOT NULL,
-    rankFrom INTEGER NOT NULL,
-    rankTo INTEGER NOT NULL,
+    rank_from_id INTEGER,	--If sportsman haven't any rank
+    rank_to_id INTEGER NOT NULL,
     result TEXT,
-    note TEXT);
+    note TEXT,
+	FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (rank_from_id) REFERENCES ranks(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (rank_to_id) REFERENCES ranks(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
 CREATE TABLE fee(
     id INTEGER NOT NULL PRIMARY KEY,
-	sportsmen_id INTEGER NOT NULL,
+	sportsman_id INTEGER NOT NULL,
     date DATE NOT NULL,
 	note TEXT,
-	FOREIGN KEY (sportsmen_id) REFERENCES sportsmens(id) ON DELETE CASCADE ON UPDATE CASCADE);
+	FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
 CREATE TABLE sportsmen_competitions(
     id INTEGER NOT NULL PRIMARY KEY,
-    sportsmen_id INTEGER,
+    sportsman_id INTEGER,
 	name TEXT,
 	DSO TEXT NOT NULL,
     category_id INTEGER NOT NULL,
@@ -56,11 +66,12 @@ CREATE TABLE sportsmen_competitions(
     fights_count INTEGER,
     fights_won INTEGER,
 	note TEXT,
-	FOREIGN KEY (sportsmen_id) REFERENCES sportsmens(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
 CREATE TABLE competitions(
-    id INTEGER NOT NULL PRIMARY KEY,
+	id INTEGER NOT NULL PRIMARY KEY,
+	name TEXT,
     date DATE,
     location TEXT,
 	note TEXT);
