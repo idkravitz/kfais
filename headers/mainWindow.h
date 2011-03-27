@@ -11,8 +11,6 @@ class MainWindow: public QMainWindow
     Q_OBJECT
 
 private:
-    QMdiArea *mdiArea;
-
     MapTbl mapTbl;
 
     void CreateMenu();

@@ -4,6 +4,10 @@
 #include "setting.h"
 #include "card.h"
 
+/******************************* Card (basic) *******************************/
+
+typedef QMap<int, Card *> MapCard;
+
 class Table: public QMainWindow
 {
     Q_OBJECT
@@ -11,7 +15,7 @@ class Table: public QMainWindow
 private:
     Setting::TblType type;
     QTableView *view;
-    QSqlRelationalTableModel *model;
+    MapCard mapCard;
 
     void CreateWidgets();
 
@@ -24,8 +28,14 @@ private slots:
     void Delete();
     void Edit();
 
+    void OpenCard(QModelIndex aMIndex);
+    void CloseCard(QObject *aObj);
+
 protected:
+    QSqlRelationalTableModel *model;
+
     void Init(const QString &aTitle, const QString &aTblName);
+    virtual Card *CreateCard(int aId) const = 0;
 
 public:
     Table(QWidget *aParent, Setting::TblType aType);
@@ -33,21 +43,27 @@ public:
     Setting::TblType Type() const;
 };
 
-/******************************* Sportsmens *******************************/
+/******************************* Sportsmen *******************************/
 
 class TblSport: public Table
 {
     Q_OBJECT
 
+private:
+    Card *CreateCard(int aId) const;
+
 public:
     TblSport(QWidget *aParent = 0);
 };
 
-/******************************* Trainers *******************************/
+/******************************* Coaches *******************************/
 
 class TblCoach: public Table
 {
     Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) const;
 
 public:
     TblCoach(QWidget *aParent = 0);
@@ -59,6 +75,9 @@ class TblClub: public Table
 {
     Q_OBJECT
 
+private:
+    Card *CreateCard(int aId) const;
+
 public:
     TblClub(QWidget *aParent = 0);
 };
@@ -69,15 +88,21 @@ class TblSert: public Table
 {
     Q_OBJECT
 
+private:
+    Card *CreateCard(int aId) const;
+
 public:
     TblSert(QWidget *aParent = 0);
 };
 
-/******************************* Fees *******************************/
+/******************************* Fee *******************************/
 
 class TblFee: public Table
 {
     Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) const;
 
 public:
     TblFee(QWidget *aParent = 0);
@@ -90,6 +115,9 @@ class TblSportComp: public Table
 {
     Q_OBJECT
 
+private:
+    Card *CreateCard(int aId) const;
+
 public:
     TblSportComp(QWidget *aParent = 0);
 };
@@ -100,6 +128,9 @@ class TblComp: public Table
 {
     Q_OBJECT
 
+private:
+    Card *CreateCard(int aId) const;
+
 public:
     TblComp(QWidget *aParent = 0);
 };
@@ -109,6 +140,9 @@ public:
 class TblCateg: public Table
 {
     Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) const;
 
 public:
     TblCateg(QWidget *aParent = 0);

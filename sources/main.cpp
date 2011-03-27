@@ -1,7 +1,15 @@
 #include <QApplication>
 
+#include "../headers/setting.h"
 #include "../headers/mainWindow.h"
 #include "../headers/exceptions.h"
+
+using namespace Setting;
+
+void InitSetting()
+{
+    Setting::mdiArea = new QMdiArea;
+}
 
 void Connect(const QString &dbname)
 {
@@ -20,8 +28,12 @@ int main(int argc, char *argv[])
     QTextCodec* codec =  QTextCodec::codecForName("cp1251");
     QTextCodec::setCodecForTr(codec);
 
+    QApplication::setApplicationName("Kudo federation AIS");
+    QApplication::setApplicationVersion("1.0");
+
     try
     {
+        InitSetting();
         Connect("base.db");
     }
     catch(Error err)

@@ -7,8 +7,6 @@ MainWindow::MainWindow(QWidget *aParent):
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
-    mdiArea = new QMdiArea;
-
     setWindowTitle("Kudo federation AIS");
     setCentralWidget(mdiArea);
 

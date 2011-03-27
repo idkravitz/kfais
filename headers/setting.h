@@ -20,6 +20,8 @@ namespace Setting
         ttCateg         //categories
     };
 
+    extern QMdiArea *mdiArea;
+
     namespace Sport
     {
         const char *const title = "Спортсмены";
@@ -29,7 +31,7 @@ namespace Setting
     namespace Coach
     {
         const char *const title = "Тренеры";
-        const QString tblName = "coach";
+        const QString tblName = "coaches";
     }
 
     namespace Club

@@ -1,3 +1,3 @@
 #include "../headers/setting.h"
 
-using namespace Setting;
+QMdiArea *Setting::mdiArea;

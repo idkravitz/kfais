@@ -2,6 +2,8 @@
 
 using namespace Setting;
 
+/******************************* Card (basic) *******************************/
+
 Table::Table(QWidget *aParent, TblType aType):
         QMainWindow(aParent),
         type(aType)
@@ -34,6 +36,7 @@ void Table::CreateWidgets()
     view->setSelectionMode(QAbstractItemView::SingleSelection); //Selection mode - single
     view->setSelectionBehavior(QAbstractItemView::SelectRows);  //Selection mode - full row
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);   //Disable editing
+    connect(view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(OpenCard(QModelIndex)));
 
     setCentralWidget(view);
 }
@@ -85,6 +88,31 @@ void Table::Edit()
 
 }
 
+void Table::OpenCard(QModelIndex aMIndex)
+{
+    int id = model->record(aMIndex.row()).value(0).toInt();
+    MapCard::const_iterator it = mapCard.find(id);
+    if (it != mapCard.end())    //if card already opened
+    {
+        it.value()->setFocus();
+        return;
+    }
+    Card *c = CreateCard(id);
+    QMdiSubWindow *sw = mdiArea->addSubWindow(c);
+    sw->show();
+    mapCard.insert(id, c);
+    connect(c, SIGNAL(destroyed(QObject *)), this, SLOT(CloseCard(QObject *)));
+}
+
+void Table::CloseCard(QObject *aObj)
+{
+    MapCard::iterator it = mapCard.find(static_cast<Card *>(aObj)->GetId());
+    if (it != mapCard.end())
+    {
+        mapCard.erase(it);
+    }
+}
+
 /******************************* Sportsmen *******************************/
 
 TblSport::TblSport(QWidget *aParent):
@@ -95,7 +123,12 @@ TblSport::TblSport(QWidget *aParent):
     Init(tr(title), Sport::tblName);
 }
 
-/******************************* Trainers *******************************/
+Card *TblSport::CreateCard(int aId) const
+{
+    return new CardSport(mdiArea, aId);
+}
+
+/******************************* Coaches *******************************/
 
 TblCoach::TblCoach(QWidget *aParent):
         Table(aParent, ttCoach)
@@ -103,6 +136,11 @@ TblCoach::TblCoach(QWidget *aParent):
     using namespace Coach;
 
     Init(tr(title), tblName);
+}
+
+Card *TblCoach::CreateCard(int aId) const
+{
+return 0;
 }
 
 /******************************* Clubs *******************************/
@@ -115,6 +153,11 @@ TblClub::TblClub(QWidget *aParent):
     Init(tr(title), tblName);
 }
 
+Card *TblClub::CreateCard(int aId) const
+{
+return 0;
+}
+
 /******************************* Sertifications *******************************/
 
 TblSert::TblSert(QWidget *aParent):
@@ -123,6 +166,11 @@ TblSert::TblSert(QWidget *aParent):
     using namespace Sert;
 
     Init(tr(title), tblName);
+}
+
+Card *TblSert::CreateCard(int aId) const
+{
+return 0;
 }
 
 /******************************* Fee *******************************/
@@ -135,6 +183,11 @@ TblFee::TblFee(QWidget *aParent):
     Init(tr(title), tblName);
 }
 
+Card *TblFee::CreateCard(int aId) const
+{
+return 0;
+}
+
 /******************************* Sportsmen-Competiotions *******************************/
 
 TblSportComp::TblSportComp(QWidget *aParent):
@@ -143,6 +196,11 @@ TblSportComp::TblSportComp(QWidget *aParent):
     using namespace SportComp;
 
     Init(tr(title), tblName);
+}
+
+Card *TblSportComp::CreateCard(int aId) const
+{
+return 0;
 }
 
 /******************************* Competiotions *******************************/
@@ -155,6 +213,11 @@ TblComp::TblComp(QWidget *aParent):
     Init(tr(title), tblName);
 }
 
+Card *TblComp::CreateCard(int aId) const
+{
+    return 0;
+}
+
 /******************************* Categories *******************************/
 
 TblCateg::TblCateg(QWidget *aParent):
@@ -163,4 +226,9 @@ TblCateg::TblCateg(QWidget *aParent):
     using namespace Categ;
 
     Init(tr(title), tblName);
+}
+
+Card *TblCateg::CreateCard(int aId) const
+{
+    return 0;
 }
