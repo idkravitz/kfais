@@ -1,7 +1,5 @@
 #include "../headers/table.h"
 
-using namespace Setting;
-
 /******************************* Card (basic) *******************************/
 
 Table::Table(QWidget *aParent, TblType aType):
@@ -34,7 +32,7 @@ void Table::CreateWidgets()
 
     model = new QSqlRelationalTableModel(this);
     model->setEditStrategy(QSqlTableModel::OnRowChange);  
-    model->setTable(table_settings[type].tblName);
+    model->setTable(Sett::GetTblName(type));
 
     view = new QTableView;
     view->setModel(model);
@@ -45,14 +43,14 @@ void Table::CreateWidgets()
 
     ApplyTableSettings();
 
-    setWindowTitle(tr(table_settings[type].title));
+    setWindowTitle(tr(Sett::GetTblTitle(type)));
     setCentralWidget(view);
 }
 
 void Table::ApplyTableSettings()
 {
-    QVector<int> *w = &table_settings[type].colWidth;
-    QVector<char*> *n = &table_settings[type].colName;
+    QVector<int> *w = &Sett::GetColWidth(type);
+    QVector<char*> *n = &Sett::GetColName(type);
     for (int i = 0; i < w->size(); ++i)
         view->setColumnWidth(i, w->at(i));
     for (int i = 0; i < n->size(); ++i)
@@ -61,7 +59,7 @@ void Table::ApplyTableSettings()
 
 void Table::SaveTableSettings()
 {
-    QVector<int> *w = &table_settings[type].colWidth;
+    QVector<int> *w = &Sett::GetColWidth(type);
     w->resize(model->columnCount());
     for (int i = 0; i < model->columnCount(); ++i)
         (*w)[i] = view->columnWidth(i);
@@ -123,7 +121,7 @@ void Table::OpenCard(QModelIndex aMIndex)
         return;
     }
     Card *c = CreateCard(id);
-    QMdiSubWindow *sw = mdiArea->addSubWindow(c);
+    QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(c);
     sw->show();
     mapCard.insert(id, c);
     connect(c, SIGNAL(destroyed(QObject *)), this, SLOT(CloseCard(QObject *)));
@@ -148,7 +146,7 @@ TblSport::TblSport(QWidget *aParent):
 
 Card *TblSport::CreateCard(int aId) const
 {
-    return new CardSport(mdiArea, aId);
+    return new CardSport(Sett::GetMA(), aId);
 }
 
 /******************************* Coaches *******************************/

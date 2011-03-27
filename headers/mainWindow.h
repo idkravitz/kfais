@@ -4,7 +4,7 @@
 #include "setting.h"
 #include "table.h"
 
-typedef QMap<Setting::TblType, Table *> MapTbl;
+typedef QMap<TblType, Table *> MapTbl;
 
 class MainWindow: public QMainWindow
 {
@@ -26,8 +26,8 @@ private slots:
     void OpenTblCateg();
     void OpenTblRank();
 
-    bool IsOpen(Setting::TblType aTT) const;
-    QMdiSubWindow *OpenTbl(Setting::TblType aTT, Table *aTbl);
+    bool IsOpen(TblType aTT) const;
+    QMdiSubWindow *OpenTbl(TblType aTT, Table *aTbl);
     void CloseTable(QObject *aTbl);
 
 public:

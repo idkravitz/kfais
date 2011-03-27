@@ -10,7 +10,7 @@ class Card: public QDialog
     Q_OBJECT
 
 private:
-    Setting::TblType type;
+    TblType type;
     int id;
     QPushButton *btnOk;
     QPushButton *btnCancel;
@@ -22,8 +22,9 @@ protected:
     QSqlRelationalTableModel *model;
     QLineEdit *edtNote;
 
-    Card(QWidget *aParent, Setting::TblType aType, int aId);
+    Card(QWidget *aParent, TblType aType, int aId);
     void CreateBasicWidgets(QLayout *aLt);
+    void InitModel(TblType aType, const QString &aFilter);
 
 public:
     int GetId() const;
@@ -67,6 +68,12 @@ public:
 class CardClub: public Card
 {
     Q_OBJECT
+
+private:
+    QLineEdit *edtName;
+    QLineEdit *edtAddr;
+
+    void CreateWidgets();
 
 public:
     CardClub(QWidget *aParent, int aId);

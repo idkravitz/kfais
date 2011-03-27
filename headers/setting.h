@@ -6,36 +6,43 @@
 #include <QtGui>
 #include <QtSql>
 
-namespace Setting
+struct TblSett{
+    const char *title;
+    QString tblName;
+    QVector<int> colWidth;
+    QVector<char*> colName;
+};
+
+enum TblType
 {
-    enum TblType
-    {
-        ttAbstract = 0,
-        ttSport = 1,        //sportmen
-        ttCoach = 2,        //coachs
-        ttClub = 3,         //clubs
-        ttSert = 4,         //sertifications
-        ttFee = 5,          //fee
-        ttSportComp = 6,    //sportsmen-competitions
-        ttComp = 7,         //competitions
-        ttCateg = 8,        //categories
-        ttRank = 9          //ranks
+    ttAbstract = 0,
+    ttSport = 1,        //sportmen
+    ttCoach = 2,        //coachs
+    ttClub = 3,         //clubs
+    ttSert = 4,         //sertifications
+    ttFee = 5,          //fee
+    ttSportComp = 6,    //sportsmen-competitions
+    ttComp = 7,         //competitions
+    ttCateg = 8,        //categories
+    ttRank = 9          //ranks
+};
 
-    };
+class Sett
+{
+private:
+    static QMdiArea *mdiArea;
+    static TblSett table_settings[ttRank + 1];
 
-    extern QMdiArea *mdiArea;
+public:
+    static QMdiArea *GetMA();
 
-    struct TableSettings{
-        const char *title;
-        QString tblName;
-        QVector<int> colWidth;
-        QVector<char*> colName;
-    };
+    static const char *GetTblTitle(TblType aType);
+    static QString &GetTblName(TblType aType);
+    static QVector<int> &GetColWidth(TblType aType);
+    static QVector<char*> &GetColName(TblType aType);
 
-    extern TableSettings table_settings[ttRank + 1];
-
-    bool LoadSettings();
-    bool SaveSettings();
-}
+    static bool LoadSettings();
+    static bool SaveSettings();
+};
 
 #endif // SETTING_H

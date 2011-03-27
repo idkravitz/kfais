@@ -1,14 +1,17 @@
 #include "../headers/setting.h"
 
-QMdiArea *Setting::mdiArea;
+QMdiArea *Sett::mdiArea;
+TblSett Sett::table_settings[ttRank + 1];
 
-namespace Setting
+QMdiArea *Sett::GetMA()
 {
+    return mdiArea;
+}
 
-TableSettings table_settings[ttRank + 1];
-
-bool LoadSettings()
+bool Sett::LoadSettings()
 {
+    mdiArea = new QMdiArea;
+
     table_settings[ttAbstract].title = "AbstractName";
     table_settings[ttAbstract].tblName = "AbstractTblName";
 
@@ -45,10 +48,28 @@ bool LoadSettings()
     return true;
 }
 
-bool SaveSettings()
+bool Sett::SaveSettings()
 {
     //TODO
     return false;
 }
 
-} // namespace Setting
+const char *Sett::GetTblTitle(TblType aType)
+{
+    return table_settings[aType].title;
+}
+
+QString &Sett::GetTblName(TblType aType)
+{
+    return table_settings[aType].tblName;
+}
+
+QVector<int> &Sett::GetColWidth(TblType aType)
+{
+    return table_settings[aType].colWidth;
+}
+
+QVector<char*> &Sett::GetColName(TblType aType)
+{
+    return table_settings[aType].colName;
+}

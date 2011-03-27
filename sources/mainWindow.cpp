@@ -1,14 +1,12 @@
 #include "../headers/mainWindow.h"
 
-using namespace Setting;
-
 MainWindow::MainWindow(QWidget *aParent):
         QMainWindow(aParent)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
     setWindowTitle("Kudo federation AIS");
-    setCentralWidget(mdiArea);
+    setCentralWidget(Sett::GetMA());
 
     CreateMenu();
 }
@@ -25,16 +23,15 @@ void MainWindow::CreateMenu()
     mnAbout->addAction(tr("О программе"));
 
     QMenu *mnTables = new QMenu(tr("Таблицы"));
-    using namespace Setting;
-    mnTables->addAction(tr(table_settings[ttSport].title), this, SLOT(OpenTblSport()));
-    mnTables->addAction(tr(table_settings[ttCoach].title), this, SLOT(OpenTblCoach()));
-    mnTables->addAction(tr(table_settings[ttClub].title), this, SLOT(OpenTblClub()));
-    mnTables->addAction(tr(table_settings[ttSert].title), this, SLOT(OpenTblSert()));
-    mnTables->addAction(tr(table_settings[ttFee].title), this, SLOT(OpenTblFee()));
-    mnTables->addAction(tr(table_settings[ttSportComp].title), this, SLOT(OpenTblSportComp()));
-    mnTables->addAction(tr(table_settings[ttComp].title), this, SLOT(OpenTblComp()));
-    mnTables->addAction(tr(table_settings[ttCateg].title), this, SLOT(OpenTblCateg()));
-    mnTables->addAction(tr(table_settings[ttRank].title), this, SLOT(OpenTblRank()));
+    mnTables->addAction(tr(Sett::GetTblTitle(ttSport)), this, SLOT(OpenTblSport()));
+    mnTables->addAction(tr(Sett::GetTblTitle(ttCoach)), this, SLOT(OpenTblCoach()));
+    mnTables->addAction(tr(Sett::GetTblTitle(ttClub)), this, SLOT(OpenTblClub()));
+    mnTables->addAction(tr(Sett::GetTblTitle(ttSert)), this, SLOT(OpenTblSert()));
+    mnTables->addAction(tr(Sett::GetTblTitle(ttFee)), this, SLOT(OpenTblFee()));
+    mnTables->addAction(tr(Sett::GetTblTitle(ttSportComp)), this, SLOT(OpenTblSportComp()));
+    mnTables->addAction(tr(Sett::GetTblTitle(ttComp)), this, SLOT(OpenTblComp()));
+    mnTables->addAction(tr(Sett::GetTblTitle(ttCateg)), this, SLOT(OpenTblCateg()));
+    mnTables->addAction(tr(Sett::GetTblTitle(ttRank)), this, SLOT(OpenTblRank()));
 
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);
@@ -54,7 +51,7 @@ bool MainWindow::IsOpen(TblType aTT) const
 
 QMdiSubWindow *MainWindow::OpenTbl(TblType aTT, Table *aTbl)
 {
-    QMdiSubWindow *sw = mdiArea->addSubWindow(aTbl);
+    QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(aTbl);
     sw->show();
     mapTbl.insert(aTT, aTbl);
     connect(aTbl, SIGNAL(destroyed(QObject *)), this, SLOT(CloseTable(QObject *)));
@@ -74,7 +71,7 @@ void MainWindow::OpenTblSport()
 {
     if (!IsOpen(ttSport))
     {
-        QMdiSubWindow *sw = OpenTbl(ttSport, new TblSport(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttSport, new TblSport(Sett::GetMA()));
     }
 }
 
@@ -82,7 +79,7 @@ void MainWindow::OpenTblCoach()
 {
     if (!IsOpen(ttCoach))
     {
-        QMdiSubWindow *sw = OpenTbl(ttCoach, new TblCoach(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttCoach, new TblCoach(Sett::GetMA()));
     }
 }
 
@@ -90,7 +87,7 @@ void MainWindow::OpenTblClub()
 {
     if (!IsOpen(ttClub))
     {
-        QMdiSubWindow *sw = OpenTbl(ttClub, new TblClub(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttClub, new TblClub(Sett::GetMA()));
     }
 }
 
@@ -98,7 +95,7 @@ void MainWindow::OpenTblSert()
 {
     if (!IsOpen(ttSert))
     {
-        QMdiSubWindow *sw = OpenTbl(ttSert, new TblSert(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttSert, new TblSert(Sett::GetMA()));
     }
 }
 
@@ -106,7 +103,7 @@ void MainWindow::OpenTblFee()
 {
     if (!IsOpen(ttFee))
     {
-        QMdiSubWindow *sw = OpenTbl(ttFee, new TblFee(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttFee, new TblFee(Sett::GetMA()));
     }
 }
 
@@ -114,7 +111,7 @@ void MainWindow::OpenTblSportComp()
 {
     if (!IsOpen(ttSportComp))
     {
-        QMdiSubWindow *sw = OpenTbl(ttSportComp, new TblSportComp(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttSportComp, new TblSportComp(Sett::GetMA()));
     }
 }
 
@@ -122,7 +119,7 @@ void MainWindow::OpenTblComp()
 {
     if (!IsOpen(ttComp))
     {
-        QMdiSubWindow *sw = OpenTbl(ttComp, new TblComp(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttComp, new TblComp(Sett::GetMA()));
     }
 }
 
@@ -131,7 +128,7 @@ void MainWindow::OpenTblCateg()
 {
     if (!IsOpen(ttCateg))
     {
-        QMdiSubWindow *sw = OpenTbl(ttCateg, new TblCateg(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttCateg, new TblCateg(Sett::GetMA()));
     }
 }
 
@@ -139,6 +136,6 @@ void MainWindow::OpenTblRank()
 {
     if (!IsOpen(ttRank))
     {
-        QMdiSubWindow *sw = OpenTbl(ttRank, new TblRank(mdiArea));
+        QMdiSubWindow *sw = OpenTbl(ttRank, new TblRank(Sett::GetMA()));
     }
 }

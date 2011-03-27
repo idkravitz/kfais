@@ -1,7 +1,5 @@
 #include "../headers/card.h"
 
-using namespace Setting;
-
 inline void AddWidToLt(QGridLayout *aLt, QLabel *aLbl, QWidget *aW, int aRow, int aCol)
 {
     aLt->addWidget(aLbl, aRow, aCol);
@@ -11,7 +9,7 @@ inline void AddWidToLt(QGridLayout *aLt, QLabel *aLbl, QWidget *aW, int aRow, in
 
 /******************************* Card (basic) *******************************/
 
-Card::Card(QWidget *aParent, Setting::TblType aType, int aId):
+Card::Card(QWidget *aParent, TblType aType, int aId):
         QDialog(aParent),
         type(aType),
         id(aId)
@@ -49,6 +47,13 @@ void Card::CreateBasicWidgets(QLayout *aLt)
     setLayout(lt);
 }
 
+void Card::InitModel(TblType aType, const QString &aFilter)
+{
+    model->setTable(Sett::GetTblName(aType));
+    model->setFilter(aFilter);
+    model->select();
+}
+
 void Card::Ok()
 {
 
@@ -57,7 +62,7 @@ void Card::Ok()
 void Card::closeEvent(QCloseEvent *aE)
 {
     model->revert();
-    mdiArea->closeActiveSubWindow();
+    Sett::GetMA()->closeActiveSubWindow();
     aE->accept();
 }
 
@@ -67,10 +72,7 @@ CardSport::CardSport(QWidget *aParent, int aId):
         Card(aParent, ttSport, aId)
 {
     CreateWidgets();
-
-    model->setTable(table_settings[ttSport].tblName);
-    model->setFilter("id = " + QString::number(aId));
-    model->select();
+    InitModel(ttSport, "id = " + QString::number(aId));
 
 //    QTableView *tbl = new QTableView(this);
 //    tbl->setModel(model);
@@ -118,7 +120,15 @@ CardCoach::CardCoach(QWidget *aParent, int aId):
 CardClub::CardClub(QWidget *aParent, int aId):
         Card(aParent, ttClub, aId)
 {
+    CreateWidgets();
+    InitModel(ttClub, "id = " + QString::number(aId));
+}
 
+void CardClub::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+    edtName = new QLineEdit;
+    //AddWidToLt(lt, new QLabel(tr()));
 }
 
 /******************************* Sertifications *******************************/

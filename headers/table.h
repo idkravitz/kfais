@@ -13,7 +13,7 @@ class Table: public QMainWindow
     Q_OBJECT
 
 private:
-    Setting::TblType type;
+    TblType type;
     QTableView *view;
     MapCard mapCard;
 
@@ -43,9 +43,9 @@ protected:
     virtual void TableSpecificConfig();
 
 public:
-    Table(QWidget *aParent, Setting::TblType aType);    
+    Table(QWidget *aParent, TblType aType);
     ~Table();
-    Setting::TblType Type() const;
+    TblType Type() const;
 };
 
 /******************************* Sportsmen *******************************/
