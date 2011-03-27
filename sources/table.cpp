@@ -15,7 +15,7 @@ void Table::ApplyTableSettings()
 void Table::SaveTableSettings()
 {
     QVector<int> *w = &table_settings[type].colWidth;
-    w->reserve(model->columnCount());
+    w->resize(model->columnCount());
     for (int i = 0; i < model->columnCount(); ++i)
         (*w)[i] = view->columnWidth(i);
 }
