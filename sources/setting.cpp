@@ -7,8 +7,8 @@ TableSettings table_settings[ttCateg + 1];
 
 bool LoadSettings()
 {
-    table_settings[ttSport].title = "AbstractName";
-    table_settings[ttSport].tblName = "AbstractTblName";
+    table_settings[ttAbstract].title = "AbstractName";
+    table_settings[ttAbstract].tblName = "AbstractTblName";
 
     table_settings[ttSport].title = "Спрортмены";
     table_settings[ttSport].tblName = "sportsmen";
@@ -33,6 +33,9 @@ bool LoadSettings()
 
     table_settings[ttCateg].title = "Категории";
     table_settings[ttCateg].tblName = "categories";
+    table_settings[ttCateg].colWidth << 40 << 200 << 200;
+    table_settings[ttCateg].colName << "id" << "Категория"
+            << "Примечание";
 
     return true;
 }

@@ -24,12 +24,16 @@ private slots:
     void Delete();
     void Edit();
 
+private:
+    void ApplyTableSettings();
+    void SaveTableSettings();
+
 protected:
     virtual void TableSpecificConfig();
 
 public:
-    Table(QWidget *aParent, Setting::TblType aType);
-
+    Table(QWidget *aParent, Setting::TblType aType);    
+    ~Table();
     Setting::TblType Type() const;
 };
 

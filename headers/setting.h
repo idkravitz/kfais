@@ -24,6 +24,8 @@ namespace Setting
     struct TableSettings{
         const char *title;
         QString tblName;
+        QVector<int> colWidth;
+        QVector<char*> colName;
     };
 
     extern TableSettings table_settings[ttCateg + 1];

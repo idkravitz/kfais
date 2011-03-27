@@ -2,12 +2,35 @@
 
 using namespace Setting;
 
+void Table::ApplyTableSettings()
+{
+    QVector<int> *w = &table_settings[type].colWidth;
+    QVector<char*> *n = &table_settings[type].colName;
+    for (int i = 0; i < w->size(); ++i)
+        view->setColumnWidth(i, w->at(i));
+    for (int i = 0; i < n->size(); ++i)
+        model->setHeaderData(i, Qt::Horizontal, tr(n->at(i)));
+}
+
+void Table::SaveTableSettings()
+{
+    QVector<int> *w = &table_settings[type].colWidth;
+    w->reserve(model->columnCount());
+    for (int i = 0; i < model->columnCount(); ++i)
+        (*w)[i] = view->columnWidth(i);
+}
+
 Table::Table(QWidget *aParent, TblType aType):
         QMainWindow(aParent),
         type(aType)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     CreateWidgets();
+}
+
+Table::~Table()
+{
+    SaveTableSettings();
 }
 
 void Table::CreateWidgets()
@@ -35,6 +58,8 @@ void Table::CreateWidgets()
     view->setSelectionBehavior(QAbstractItemView::SelectRows);  //Selection mode - full row
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);   //Disable editing
 
+    ApplyTableSettings();
+
     setWindowTitle(tr(table_settings[type].title));
     setCentralWidget(view);
 }
@@ -42,6 +67,7 @@ void Table::CreateWidgets()
 void Table::TableSpecificConfig()
 {
     model->select();
+    ApplyTableSettings();
 }
 
 TblType Table::Type() const
