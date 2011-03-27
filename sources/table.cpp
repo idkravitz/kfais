@@ -7,7 +7,6 @@ Table::Table(QWidget *aParent, TblType aType):
         type(aType)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-
     CreateWidgets();
 }
 
@@ -27,7 +26,8 @@ void Table::CreateWidgets()
     addToolBar(tb);
 
     model = new QSqlRelationalTableModel(this);
-    model->setEditStrategy(QSqlTableModel::OnRowChange);
+    model->setEditStrategy(QSqlTableModel::OnRowChange);  
+    model->setTable(table_settings[type].tblName);
 
     view = new QTableView;
     view->setModel(model);
@@ -35,13 +35,12 @@ void Table::CreateWidgets()
     view->setSelectionBehavior(QAbstractItemView::SelectRows);  //Selection mode - full row
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);   //Disable editing
 
+    setWindowTitle(tr(table_settings[type].title));
     setCentralWidget(view);
 }
 
-void Table::Init(const QString &aTitle, const QString &aTblName)
+void Table::TableSpecificConfig()
 {
-    setWindowTitle(aTitle);
-    model->setTable(aTblName);
     model->select();
 }
 
@@ -89,10 +88,8 @@ void Table::Edit()
 
 TblSport::TblSport(QWidget *aParent):
         Table(aParent, ttSport)
-{
-    using namespace Sport;
-
-    Init(tr(title), Sport::tblName);
+{ 
+    TableSpecificConfig();
 }
 
 /******************************* Trainers *******************************/
@@ -100,9 +97,7 @@ TblSport::TblSport(QWidget *aParent):
 TblCoach::TblCoach(QWidget *aParent):
         Table(aParent, ttCoach)
 {
-    using namespace Coach;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 /******************************* Clubs *******************************/
@@ -110,9 +105,7 @@ TblCoach::TblCoach(QWidget *aParent):
 TblClub::TblClub(QWidget *aParent):
         Table(aParent, ttClub)
 {
-    using namespace Club;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 /******************************* Sertifications *******************************/
@@ -120,9 +113,7 @@ TblClub::TblClub(QWidget *aParent):
 TblSert::TblSert(QWidget *aParent):
         Table(aParent, ttSert)
 {
-    using namespace Sert;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 /******************************* Fee *******************************/
@@ -130,9 +121,7 @@ TblSert::TblSert(QWidget *aParent):
 TblFee::TblFee(QWidget *aParent):
         Table(aParent, ttFee)
 {
-    using namespace Fee;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 /******************************* Sportsmen-Competiotions *******************************/
@@ -140,9 +129,7 @@ TblFee::TblFee(QWidget *aParent):
 TblSportComp::TblSportComp(QWidget *aParent):
         Table(aParent, ttSportComp)
 {
-    using namespace SportComp;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 /******************************* Competiotions *******************************/
@@ -150,9 +137,7 @@ TblSportComp::TblSportComp(QWidget *aParent):
 TblComp::TblComp(QWidget *aParent):
         Table(aParent, ttComp)
 {
-    using namespace Comp;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }
 
 /******************************* Categories *******************************/
@@ -160,7 +145,5 @@ TblComp::TblComp(QWidget *aParent):
 TblCateg::TblCateg(QWidget *aParent):
         Table(aParent, ttCateg)
 {
-    using namespace Categ;
-
-    Init(tr(title), tblName);
+    TableSpecificConfig();
 }

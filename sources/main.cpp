@@ -15,6 +15,7 @@ void Connect(const QString &dbname)
 
 int main(int argc, char *argv[])
 {
+    Setting::LoadSettings();
     QApplication app(argc, argv);
 
     QTextCodec* codec =  QTextCodec::codecForName("cp1251");

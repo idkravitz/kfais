@@ -25,7 +25,7 @@ private slots:
     void Edit();
 
 protected:
-    void Init(const QString &aTitle, const QString &aTblName);
+    virtual void TableSpecificConfig();
 
 public:
     Table(QWidget *aParent, Setting::TblType aType);
