@@ -63,7 +63,7 @@ insert into fee(sportsman_id, date) values ((select id from sportsmen where name
 
 /************************************ certifications ************************************/
 
-insert into certifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_to_id, result) values(
+insert into sertifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_to_id, result) values(
 	111111,
 	(select id from sportsmen where name = 'Дрёмин Николай Иванович'),
 	'2000-10-01',
@@ -71,7 +71,7 @@ insert into certifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_
 	(select id from ranks where name = '9 кю'), 
 	'Сдал');
 	
-insert into certifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_to_id, result) values(
+insert into sertifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_to_id, result) values(
 	222222,
 	(select id from sportsmen where name = 'Дрёмин Николай Иванович'),
 	'2001-23-02', 
@@ -79,7 +79,7 @@ insert into certifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_
 	(select id from ranks where name = '8 кю'), 
 	'Не сдал');
 	
-insert into certifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_to_id, result) values(
+insert into sertifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_to_id, result) values(
 	3333333,
 	(select id from sportsmen where name = 'Сидоров Федор Иванович'),
 	'2010-01-04', 

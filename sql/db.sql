@@ -35,7 +35,7 @@ CREATE TABLE ranks(
 	name TEXT NOT NULL,
 	note TEXT);
 
-CREATE TABLE certifications( 
+CREATE TABLE sertifications( 
     num_rec_sert INTEGER NOT NULL PRIMARY KEY,
 	sportsman_id INTEGER NOT NULL,
     date DATE NOT NULL,
