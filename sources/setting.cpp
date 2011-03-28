@@ -19,7 +19,9 @@ bool Sett::LoadSettings()
     table_settings[ttSport].tblName = "sportsmen";
 
     table_settings[ttCoach].title = "Тренеры";
-    table_settings[ttCoach].tblName = "coach";
+    table_settings[ttCoach].tblName = "coaches";
+    table_settings[ttCoach].colName << "id" << "Тренер" << "Телефон"
+            << "Клуб" << "Примечание";
 
     table_settings[ttClub].title = "Клубы";
     table_settings[ttClub].tblName = "clubs";
