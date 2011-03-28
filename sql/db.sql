@@ -6,7 +6,7 @@ CREATE TABLE sportsmen(
     name TEXT NOT NULL,
     birthday DATE NOT NULL,
 	rank_id INTEGER,
-    reg_number INTEGER,
+    reg_number TEXT,
     coach_id INTEGER,
     address TEXT,
     phone TEXT,
