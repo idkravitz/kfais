@@ -23,15 +23,15 @@ void MainWindow::CreateMenu()
     mnAbout->addAction(tr("О программе"));
 
     QMenu *mnTables = new QMenu(tr("Таблицы"));
-    mnTables->addAction(tr(Sett::GetTblTitle(ttSport)), this, SLOT(OpenTblSport()));
-    mnTables->addAction(tr(Sett::GetTblTitle(ttCoach)), this, SLOT(OpenTblCoach()));
-    mnTables->addAction(tr(Sett::GetTblTitle(ttClub)), this, SLOT(OpenTblClub()));
-    mnTables->addAction(tr(Sett::GetTblTitle(ttSert)), this, SLOT(OpenTblSert()));
-    mnTables->addAction(tr(Sett::GetTblTitle(ttFee)), this, SLOT(OpenTblFee()));
-    mnTables->addAction(tr(Sett::GetTblTitle(ttSportComp)), this, SLOT(OpenTblSportComp()));
-    mnTables->addAction(tr(Sett::GetTblTitle(ttComp)), this, SLOT(OpenTblComp()));
-    mnTables->addAction(tr(Sett::GetTblTitle(ttCateg)), this, SLOT(OpenTblCateg()));
-    mnTables->addAction(tr(Sett::GetTblTitle(ttRank)), this, SLOT(OpenTblRank()));
+    mnTables->addAction(Sett::GetTblTitle(ttSport), this, SLOT(OpenTblSport()));
+    mnTables->addAction(Sett::GetTblTitle(ttCoach), this, SLOT(OpenTblCoach()));
+    mnTables->addAction(Sett::GetTblTitle(ttClub), this, SLOT(OpenTblClub()));
+    mnTables->addAction(Sett::GetTblTitle(ttSert), this, SLOT(OpenTblSert()));
+    mnTables->addAction(Sett::GetTblTitle(ttFee), this, SLOT(OpenTblFee()));
+    mnTables->addAction(Sett::GetTblTitle(ttSportComp), this, SLOT(OpenTblSportComp()));
+    mnTables->addAction(Sett::GetTblTitle(ttComp), this, SLOT(OpenTblComp()));
+    mnTables->addAction(Sett::GetTblTitle(ttCateg), this, SLOT(OpenTblCateg()));
+    mnTables->addAction(Sett::GetTblTitle(ttRank), this, SLOT(OpenTblRank()));
 
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);

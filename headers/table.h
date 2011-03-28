@@ -14,7 +14,6 @@ class Table: public QMainWindow
 
 private:
     TblType type;
-    QTableView *view;
     MapCard mapCard;
 
     void CreateWidgets();
@@ -35,6 +34,7 @@ private slots:
     void CloseCard(QObject *aObj);
 
 protected:
+    QTableView *view;
     QSqlRelationalTableModel *model;
 
     void Init(const QString &aTitle, const QString &aTblName);

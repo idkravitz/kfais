@@ -36,14 +36,16 @@ private:
 public:
     static QMdiArea *GetMA();
 
-    static const char *GetTblTitle(TblType aType);
+    static QString GetTblTitle(TblType aType);
     static QString &GetTblName(TblType aType);
-    static const char *GetColName(TblType aType, int aColNum);
+    static QString GetColName(TblType aType, int aColNum);
 
     static QVector<int> &GetVecColWidth(TblType aType);
     static QVector<char*> &GetVecColName(TblType aType);
 
-    static const char *GetNoteName();
+    static QString GetNoteName();
+
+    static void SetParam(QTableView *aView);
 
     static bool LoadSettings();
     static bool SaveSettings();

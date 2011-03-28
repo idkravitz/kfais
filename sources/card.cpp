@@ -26,7 +26,7 @@ int Card::GetId() const
 void Card::CreateBasicWidgets(QLayout *aLt)
 {
     QHBoxLayout *lt1 = new QHBoxLayout;
-    QLabel *lblNote = new QLabel(tr(Sett::GetNoteName()));
+    QLabel *lblNote = new QLabel(Sett::GetNoteName());
     edtNote = new QLineEdit;
     lblNote->setBuddy(edtNote);
     lt1->addWidget(lblNote);
@@ -87,7 +87,7 @@ void Card::closeEvent(QCloseEvent *aE)
 
 void Card::AddWidToLt(QGridLayout *aLt, int aTAIndex, QWidget *aW, int aRow, int aCol)
 {
-    QLabel *lbl = new QLabel(tr(Sett::GetColName(type, aTAIndex)) + ":");
+    QLabel *lbl = new QLabel(Sett::GetColName(type, aTAIndex) + ":");
     aLt->addWidget(lbl, aRow, aCol);
     aLt->addWidget(aW, aRow, aCol + 1);
     lbl->setBuddy(aW);
@@ -108,43 +108,94 @@ inline void Card::_SetCBModel(QComboBox *aCB, int aIn, int aOut)
 
 /******************************* Sportsmen *******************************/
 
+
+inline QTableView *CardSport::_InitViewModel(QTableView *aView, QSqlRelationalTableModel *aModel, TblType aType)
+{
+    aModel->setTable(Sett::GetTblName(aType));
+    aModel->setFilter("sportsman_id = " + QString::number(GetId()));
+    aModel->setEditStrategy(QSqlTableModel::OnRowChange);
+
+    aView->setModel(aModel);
+    Sett::SetParam(aView);
+
+    return aView;
+}
+
+inline QGroupBox *CardSport::_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel, const QString &aTitle)
+{
+    QGroupBox *gb = new QGroupBox(aTitle);
+    QHBoxLayout *lt = new QHBoxLayout;
+    lt->addWidget(_InitViewModel(aView, aModel, aType));
+    gb->setLayout(lt);
+    return gb;
+}
+
+inline QGroupBox *CardSport::_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel)
+{
+    return _AddTable(aType, aView, aModel, Sett::GetTblTitle(aType));
+}
+
 CardSport::CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttSport, aId)
 {
-    CreateWidgets();
     InitModel("id = " + QString::number(aId));
-
-//    QTableView *tbl = new QTableView(this);
-//    tbl->setModel(model);
-//    QHBoxLayout *lt = new QHBoxLayout;
-//    lt->addWidget(tbl);
-//    setLayout(lt);
+    CreateWidgets();
+    _SetCBModel(cbRank, Sport::taRank, Rank::taName);
+    _SetCBModel(cbCoach, Sport::taCoach, Coach::taName);
+    mapper->toFirst();
 }
 
 void CardSport::CreateWidgets()
 {
     QGridLayout *lt1 = new QGridLayout;
-//    edtName = new QLineEdit;
-//    AddWidToLt(lt1, tr("ФИО"), edtName, 0, 0);
-//    edtDateBirth = new QDateEdit;
-//    edtDateBirth->setCalendarPopup(true);
-//    AddWidToLt(lt1, tr("Дата рождения"), edtDateBirth, 0, 2);
-//    edtAddr = new QLineEdit;
-//    AddWidToLt(lt1, tr("Адрес"), edtAddr, 1, 0);
-//    edtPhone = new QLineEdit;
-//    AddWidToLt(lt1, tr("Телефон"), edtPhone, 1, 2);
-//    edtWorkplace = new QLineEdit;
-//    AddWidToLt(lt1, tr("Место работы"), edtWorkplace, 2, 0);
-//    edtJob = new QLineEdit;
-//    AddWidToLt(lt1, tr("Должность"), edtJob, 2, 2);
-//    cbCoach = new QComboBox;
-//    AddWidToLt(lt1, new QLabel(tr("Тренер")), cbb, 2, 2);
-//    = new Q;
-//    AddWidToLt(lt1, new QLabel(tr("Должность")), edtJob, 2, 2);
-//    edtJob = new QLineEdit;
-//    A*ddWidToLt(lt1, new QLabel(tr("Должность")), edtJob, 2, 2);
+    AddWidToLt(lt1, Sport::taName, edtName = new QLineEdit, 0, 0);
+    AddWidToLt(lt1, Sport::taBirth, edtDateBirth = new QDateEdit, 0, 2);
+    edtDateBirth->setCalendarPopup(true);
+    AddWidToLt(lt1, Sport::taRank, cbRank = new QComboBox, 0, 4);
 
-    CreateBasicWidgets(lt1);
+    AddWidToLt(lt1, Sport::taCoach, cbCoach = new QComboBox, 1, 2);
+    AddWidToLt(lt1, Sport::taRegNum, edtRegNum = new QLineEdit, 1, 4);
+    QRegExp rx( "^[1-9]{1}[0-9]*$" );
+    edtRegNum->setValidator(new QRegExpValidator(rx, this));
+
+    AddWidToLt(lt1, Sport::taAddr, edtAddr = new QLineEdit, 2, 2);
+    AddWidToLt(lt1, Sport::taPhone, edtPhone = new QLineEdit, 2, 4);
+
+    AddWidToLt(lt1, Sport::taWork, edtWorkplace = new QLineEdit, 3, 2);
+    AddWidToLt(lt1, Sport::taJob, edtJob = new QLineEdit, 3, 4);
+
+    QVBoxLayout *lt = new QVBoxLayout;
+    lt->addLayout(lt1);
+    lt->addLayout(CreateInnerTbls());
+    CreateBasicWidgets(lt);
+}
+
+QVBoxLayout *CardSport::CreateInnerTbls()
+{
+    QVBoxLayout *lt2 = new QVBoxLayout;
+
+    lt2->addWidget(_AddTable(ttSert, viewSert = new QTableView, modelSert = new QSqlRelationalTableModel(this)));
+    lt2->addWidget(_AddTable(ttSportComp, viewSC = new QTableView, modelSC = new QSqlRelationalTableModel(this),
+                             tr("Спортивные достижения")));
+    lt2->addWidget(_AddTable(ttFee, viewFee = new QTableView, modelFee = new QSqlRelationalTableModel(this)));
+
+    viewSert->setColumnHidden(Sert::taSport, true);
+    viewSC->setColumnHidden(SportComp::taId, true);
+    viewSC->setColumnHidden(SportComp::taSport, true);
+    viewSC->setColumnHidden(SportComp::taName, true);
+    viewFee->setColumnHidden(Fee::taId, true);
+    viewFee->setColumnHidden(Fee::taSport, true);
+
+    modelSert->setRelation(3, QSqlRelation("ranks", "id", "name"));
+    modelSert->setRelation(4, QSqlRelation("ranks", "id", "name"));
+    modelSert->select();
+
+    modelSC->setRelation(4, QSqlRelation("categories", "id", "name"));
+    modelSC->select();
+
+    modelFee->select();
+
+    return lt2;
 }
 
 /******************************* Coaches *******************************/

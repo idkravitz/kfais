@@ -16,10 +16,10 @@ bool Sett::LoadSettings()
     table_settings[ttAbstract].tblName = "AbstractTblName";
     table_settings[ttAbstract].colName << "AbstractColName";
 
-    table_settings[ttSport].title = "Спрортмены";
+    table_settings[ttSport].title = "Спортсмены";
     table_settings[ttSport].tblName = "sportsmen";
     table_settings[ttSport].colName << "id" << "Фото" << "Ф.И.О"
-            << "Дата рождения" << "Ранг" << "Регестрационный №"
+            << "Дата рождения" << "Ранг" << "Регистрационный №"
             << "Тренер" << "Адресс" << "Телефон" << "Место работы"
             << "Должность" << "Примечание";
 
@@ -33,9 +33,9 @@ bool Sett::LoadSettings()
     table_settings[ttClub].colName << "id" << "Название" << "Адрес"
             << "Примечание";
 
-    table_settings[ttSert].title = "Сертефикации";
+    table_settings[ttSert].title = "Аттестации";
     table_settings[ttSert].tblName = "sertifications";
-    table_settings[ttSert].colName << "Рег. номер сертификата" << "Спорстмен" << "Дата"
+    table_settings[ttSert].colName << "Рег. № сертификата" << "Спорстмен" << "Дата"
             << "Разряд с" << "Разряд на" << "Исход" << "Примечание";
 
     table_settings[ttFee].title = "Взносы";
@@ -73,9 +73,9 @@ bool Sett::SaveSettings()
     return false;
 }
 
-const char *Sett::GetTblTitle(TblType aType)
+QString Sett::GetTblTitle(TblType aType)
 {
-    return table_settings[aType].title;
+    return QObject::tr(table_settings[aType].title);
 }
 
 QString &Sett::GetTblName(TblType aType)
@@ -93,12 +93,19 @@ QVector<char*> &Sett::GetVecColName(TblType aType)
     return table_settings[aType].colName;
 }
 
-const char *Sett::GetColName(TblType aType, int aColNum)
+QString Sett::GetColName(TblType aType, int aColNum)
 {
-    return table_settings[aType].colName[aColNum];
+    return QObject::tr(table_settings[aType].colName[aColNum]);
 }
 
-const char *Sett::GetNoteName()
+QString Sett::GetNoteName()
 {
-    return "Примечание";
+    return QObject::tr("Примечание");
+}
+
+void Sett::SetParam(QTableView *aView)
+{
+    aView->setSelectionMode(QAbstractItemView::SingleSelection); //Selection mode - single
+    aView->setSelectionBehavior(QAbstractItemView::SelectRows);  //Selection mode - full row
+    aView->setEditTriggers(QAbstractItemView::NoEditTriggers);   //Disable editing
 }

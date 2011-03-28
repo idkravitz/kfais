@@ -53,11 +53,18 @@ private:
     QLineEdit *edtPhone;
     QLineEdit *edtWorkplace;
     QLineEdit *edtJob;
-    QSpinBox *sbRegNum;
-    QSpinBox *sbRank;
+    QLineEdit *edtRegNum;
+    QComboBox *cbRank;
     QComboBox *cbCoach;
 
+    QSqlRelationalTableModel *modelFee, *modelSert, *modelSC;
+    QTableView *viewFee, *viewSert, *viewSC;
+
     void CreateWidgets();
+    QVBoxLayout *CreateInnerTbls();
+    inline QTableView *_InitViewModel(QTableView *aView, QSqlRelationalTableModel *aModel, TblType aType);
+    inline QGroupBox *_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel);
+    inline QGroupBox *_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel, const QString &aTitle);
 
 public:
     CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);

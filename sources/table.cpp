@@ -31,19 +31,17 @@ void Table::CreateWidgets()
     addToolBar(tb);
 
     model = new QSqlRelationalTableModel(this);
-    model->setEditStrategy(QSqlTableModel::OnRowChange);  
     model->setTable(Sett::GetTblName(type));
+    model->setEditStrategy(QSqlTableModel::OnRowChange);
 
     view = new QTableView;
     view->setModel(model);
-    view->setSelectionMode(QAbstractItemView::SingleSelection); //Selection mode - single
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);  //Selection mode - full row
-    view->setEditTriggers(QAbstractItemView::NoEditTriggers);   //Disable editing
+    Sett::SetParam(view);
     connect(view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(OpenCard(QModelIndex)));
 
     ApplyTableSettings();
 
-    setWindowTitle(tr(Sett::GetTblTitle(type)));
+    setWindowTitle(Sett::GetTblTitle(type));
     setCentralWidget(view);
 }
 
@@ -68,6 +66,7 @@ void Table::SaveTableSettings()
 void Table::TableSpecificConfig()
 {
     model->select();
+    view->setColumnHidden(0, true);
 }
 
 TblType Table::Type() const
@@ -141,6 +140,7 @@ void Table::CloseCard(QObject *aObj)
     {
         mapCard.erase(it);
     }
+    setFocus();
 }
 
 /******************************* Sportsmen *******************************/
@@ -150,6 +150,8 @@ void TblSport::TableSpecificConfig()
     model->setRelation(4, QSqlRelation("ranks", "id", "name"));
     model->setRelation(6, QSqlRelation("coaches", "id", "name"));
     model->select();
+    view->setColumnHidden(0, true);
+    view->setColumnHidden(Sport::taPhoto, true);
 }
 
 TblSport::TblSport(QWidget *aParent):
@@ -169,6 +171,7 @@ void TblCoach::TableSpecificConfig()
 {
     model->setRelation(3, QSqlRelation(Sett::GetTblName(ttClub), "id", "name"));
     model->select();
+    view->setColumnHidden(0, true);
 }
 
 TblCoach::TblCoach(QWidget *aParent):
@@ -222,6 +225,7 @@ void TblFee::TableSpecificConfig()
 {
     model->setRelation(1, QSqlRelation("sportsmen", "id", "name"));    
     model->select();
+    view->setColumnHidden(0, true);
 }
 
 TblFee::TblFee(QWidget *aParent):
@@ -242,6 +246,7 @@ void TblSportComp::TableSpecificConfig()
     model->setRelation(1, QSqlRelation("sportsmen", "id", "name"));    
     model->setRelation(4, QSqlRelation("categories", "id", "name"));    
     model->select();
+    view->setColumnHidden(0, true);
 }
 
 TblSportComp::TblSportComp(QWidget *aParent):
