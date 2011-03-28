@@ -10,21 +10,28 @@ class Card: public QDialog
     Q_OBJECT
 
 private:
+    QSqlRelationalTableModel *tblModel;    //For update table after submit
     TblType type;
     int id;
     QPushButton *btnOk;
     QPushButton *btnCancel;
 
-    void Ok();
     void closeEvent(QCloseEvent *aE);
+
+private slots:
+    void Ok();
 
 protected:
     QSqlRelationalTableModel *model;
+    QDataWidgetMapper *mapper;
     QLineEdit *edtNote;
 
-    Card(QWidget *aParent, TblType aType, int aId);
+    Card(QWidget *aParent, QSqlRelationalTableModel *aTblModel, TblType aType, int aId);
     void CreateBasicWidgets(QLayout *aLt);
     void InitModel(TblType aType, const QString &aFilter);
+    void AddWidToLt(QGridLayout *aLt, int aTblAtrI, QWidget *aW, int aRow, int aCol = 0);
+
+    virtual bool IsValid() const;
 
 public:
     int GetId() const;
@@ -50,7 +57,7 @@ private:
     void CreateWidgets();
 
 public:
-    CardSport(QWidget *aParent, int aId);
+    CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
 /******************************* Trainers *******************************/
@@ -60,7 +67,7 @@ class CardCoach: public Card
     Q_OBJECT
 
 public:
-    CardCoach(QWidget *aParent, int aId);
+    CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
 /******************************* Clubs *******************************/
@@ -76,7 +83,7 @@ private:
     void CreateWidgets();
 
 public:
-    CardClub(QWidget *aParent, int aId);
+    CardClub(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
 /******************************* Certifications *******************************/
@@ -86,7 +93,7 @@ class CardSert: public Card
     Q_OBJECT
 
 public:
-    CardSert(QWidget *aParent, int aId);
+    CardSert(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
 /******************************* Fees *******************************/
@@ -96,7 +103,7 @@ class CardFee: public Card
     Q_OBJECT
 
 public:
-    CardFee(QWidget *aParent, int aId);
+    CardFee(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
 
@@ -107,7 +114,7 @@ class CardSportComp: public Card
     Q_OBJECT
 
 public:
-    CardSportComp(QWidget *aParent, int aId);
+    CardSportComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
 /******************************* Competiotions *******************************/
@@ -117,7 +124,7 @@ class CardComp: public Card
     Q_OBJECT
 
 public:
-    CardComp(QWidget *aParent, int aId);
+    CardComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
 /******************************* Categories *******************************/
@@ -127,7 +134,17 @@ class CardCateg: public Card
     Q_OBJECT
 
 public:
-    CardCateg(QWidget *aParent, int aId);
+    CardCateg(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+};
+
+/******************************* Ranks *******************************/
+
+class CardRank: public Card
+{
+    Q_OBJECT
+
+public:
+    CardRank(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
 #endif // CARD_H

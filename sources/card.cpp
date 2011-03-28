@@ -1,22 +1,21 @@
 #include "../headers/card.h"
 
-inline void AddWidToLt(QGridLayout *aLt, QLabel *aLbl, QWidget *aW, int aRow, int aCol)
-{
-    aLt->addWidget(aLbl, aRow, aCol);
-    aLt->addWidget(aW, aRow, aCol + 1);
-    aLbl->setBuddy(aW);
-}
-
 /******************************* Card (basic) *******************************/
 
-Card::Card(QWidget *aParent, TblType aType, int aId):
+Card::Card(QWidget *aParent, QSqlRelationalTableModel *aTblModel, TblType aType, int aId):
         QDialog(aParent),
+        tblModel(aTblModel),
         type(aType),
         id(aId)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
     model = new QSqlRelationalTableModel(this);
+
+    mapper = new QDataWidgetMapper(this);
+    mapper->setModel(model);
+    mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);   //The model is not updated until submit() is called.
+    mapper->setItemDelegate(new QSqlRelationalDelegate(this));
 }
 
 int Card::GetId() const
@@ -27,8 +26,9 @@ int Card::GetId() const
 void Card::CreateBasicWidgets(QLayout *aLt)
 {
     QHBoxLayout *lt1 = new QHBoxLayout;
-    QLabel *lblNote = new QLabel(tr("Заметка"));
+    QLabel *lblNote = new QLabel(tr(Sett::GetNoteName()));
     edtNote = new QLineEdit;
+    lblNote->setBuddy(edtNote);
     lt1->addWidget(lblNote);
     lt1->addWidget(edtNote);
 
@@ -56,7 +56,13 @@ void Card::InitModel(TblType aType, const QString &aFilter)
 
 void Card::Ok()
 {
-
+    if (!IsValid())
+    {
+        return;
+    }
+    mapper->submit();
+    tblModel->select();
+    close();
 }
 
 void Card::closeEvent(QCloseEvent *aE)
@@ -66,10 +72,24 @@ void Card::closeEvent(QCloseEvent *aE)
     aE->accept();
 }
 
+void Card::AddWidToLt(QGridLayout *aLt, int aTAIndex, QWidget *aW, int aRow, int aCol)
+{
+    QLabel *lbl = new QLabel(tr(Sett::GetColName(type, aTAIndex)));
+    aLt->addWidget(lbl, aRow, aCol);
+    aLt->addWidget(aW, aRow, aCol + 1);
+    lbl->setBuddy(aW);
+}
+
+bool Card::IsValid() const
+{
+    //Hack
+    return true;
+}
+
 /******************************* Sportsmen *******************************/
 
-CardSport::CardSport(QWidget *aParent, int aId):
-        Card(aParent, ttSport, aId)
+CardSport::CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
+        Card(aParent, aTblModel, ttSport, aId)
 {
     CreateWidgets();
     InitModel(ttSport, "id = " + QString::number(aId));
@@ -84,19 +104,19 @@ CardSport::CardSport(QWidget *aParent, int aId):
 void CardSport::CreateWidgets()
 {
     QGridLayout *lt1 = new QGridLayout;
-    edtName = new QLineEdit;
-    AddWidToLt(lt1, new QLabel(tr("ФИО")), edtName, 0, 0);
-    edtDateBirth = new QDateEdit;
-    edtDateBirth->setCalendarPopup(true);
-    AddWidToLt(lt1, new QLabel(tr("Дата рождения")), edtDateBirth, 0, 2);
-    edtAddr = new QLineEdit;
-    AddWidToLt(lt1, new QLabel(tr("Адрес")), edtAddr, 1, 0);
-    edtPhone = new QLineEdit;
-    AddWidToLt(lt1, new QLabel(tr("Телефон")), edtPhone, 1, 2);
-    edtWorkplace = new QLineEdit;
-    AddWidToLt(lt1, new QLabel(tr("Место работы")), edtWorkplace, 2, 0);
-    edtJob = new QLineEdit;
-    AddWidToLt(lt1, new QLabel(tr("Должность")), edtJob, 2, 2);
+//    edtName = new QLineEdit;
+//    AddWidToLt(lt1, tr("ФИО"), edtName, 0, 0);
+//    edtDateBirth = new QDateEdit;
+//    edtDateBirth->setCalendarPopup(true);
+//    AddWidToLt(lt1, tr("Дата рождения"), edtDateBirth, 0, 2);
+//    edtAddr = new QLineEdit;
+//    AddWidToLt(lt1, tr("Адрес"), edtAddr, 1, 0);
+//    edtPhone = new QLineEdit;
+//    AddWidToLt(lt1, tr("Телефон"), edtPhone, 1, 2);
+//    edtWorkplace = new QLineEdit;
+//    AddWidToLt(lt1, tr("Место работы"), edtWorkplace, 2, 0);
+//    edtJob = new QLineEdit;
+//    AddWidToLt(lt1, tr("Должность"), edtJob, 2, 2);
 //    cbCoach = new QComboBox;
 //    AddWidToLt(lt1, new QLabel(tr("Тренер")), cbb, 2, 2);
 //    = new Q;
@@ -109,64 +129,76 @@ void CardSport::CreateWidgets()
 
 /******************************* Coaches *******************************/
 
-CardCoach::CardCoach(QWidget *aParent, int aId):
-        Card(aParent, ttCoach, aId)
+CardCoach::CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
+        Card(aParent, aTblModel, ttCoach, aId)
 {
 
 }
 
 /******************************* Clubs *******************************/
 
-CardClub::CardClub(QWidget *aParent, int aId):
-        Card(aParent, ttClub, aId)
+CardClub::CardClub(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
+        Card(aParent, aTblModel, ttClub, aId)
 {
     CreateWidgets();
     InitModel(ttClub, "id = " + QString::number(aId));
+    mapper->addMapping(edtName, Club::taName);
+    mapper->addMapping(edtAddr, Club::taAddr);
+    mapper->toFirst();
 }
 
 void CardClub::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
-    edtName = new QLineEdit;
-    //AddWidToLt(lt, new QLabel(tr()));
+    AddWidToLt(lt, Club::taName, edtName = new QLineEdit, 0);
+    AddWidToLt(lt, Club::taAddr, edtAddr = new QLineEdit, 1);
+    CreateBasicWidgets(lt);
 }
 
 /******************************* Sertifications *******************************/
 
-CardSert::CardSert(QWidget *aParent, int aId):
-        Card(aParent, ttSert, aId)
+CardSert::CardSert(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
+        Card(aParent, aTblModel, ttSert, aId)
 {
 
 }
 
 /******************************* Fee *******************************/
 
-CardFee::CardFee(QWidget *aParent, int aId):
-        Card(aParent, ttFee, aId)
+CardFee::CardFee(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
+        Card(aParent, aTblModel, ttFee, aId)
 {
 
 }
 
 /******************************* Sportsmen-Competiotions *******************************/
 
-CardSportComp::CardSportComp(QWidget *aParent, int aId):
-        Card(aParent, ttSportComp, aId)
+CardSportComp::CardSportComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
+        Card(aParent, aTblModel, ttSportComp, aId)
 {
 
 }
 
 /******************************* Competiotions *******************************/
 
-CardComp::CardComp(QWidget *aParent, int aId):
-        Card(aParent, ttComp, aId)
+CardComp::CardComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
+        Card(aParent, aTblModel, ttComp, aId)
 {
 
 }
 
 /******************************* Categories *******************************/
 
-CardCateg::CardCateg(QWidget *aParent, int aId):
-        Card(aParent, ttCateg, aId)
+CardCateg::CardCateg(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
+        Card(aParent, aTblModel, ttCateg, aId)
+{
+
+}
+
+/******************************* Ranks *******************************/
+
+CardRank::CardRank(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
+        Card(aParent, aTblModel, ttRank, aId)
 {
 
 }

@@ -49,8 +49,8 @@ void Table::CreateWidgets()
 
 void Table::ApplyTableSettings()
 {
-    QVector<int> *w = &Sett::GetColWidth(type);
-    QVector<char*> *n = &Sett::GetColName(type);
+    QVector<int> *w = &Sett::GetVecColWidth(type);
+    QVector<char*> *n = &Sett::GetVecColName(type);
     for (int i = 0; i < w->size(); ++i)
         view->setColumnWidth(i, w->at(i));
     for (int i = 0; i < n->size(); ++i)
@@ -59,7 +59,7 @@ void Table::ApplyTableSettings()
 
 void Table::SaveTableSettings()
 {
-    QVector<int> *w = &Sett::GetColWidth(type);
+    QVector<int> *w = &Sett::GetVecColWidth(type);
     w->resize(model->columnCount());
     for (int i = 0; i < model->columnCount(); ++i)
         (*w)[i] = view->columnWidth(i);
@@ -146,7 +146,7 @@ TblSport::TblSport(QWidget *aParent):
 
 Card *TblSport::CreateCard(int aId) const
 {
-    return new CardSport(Sett::GetMA(), aId);
+    return new CardSport(Sett::GetMA(), model, aId);
 }
 
 /******************************* Coaches *******************************/
@@ -172,7 +172,7 @@ TblClub::TblClub(QWidget *aParent):
 
 Card *TblClub::CreateCard(int aId) const
 {
-return 0;
+    return new CardClub(Sett::GetMA(), model, aId);
 }
 
 /******************************* Sertifications *******************************/

@@ -23,6 +23,7 @@ bool Sett::LoadSettings()
 
     table_settings[ttClub].title = "Клубы";
     table_settings[ttClub].tblName = "clubs";
+    table_settings[ttClub].colName << "id" << "Название" << "Адрес";
 
     table_settings[ttSert].title = "Сертефикации";
     table_settings[ttSert].tblName = "sertifications";
@@ -39,8 +40,7 @@ bool Sett::LoadSettings()
     table_settings[ttCateg].title = "Категории";
     table_settings[ttCateg].tblName = "categories";
     table_settings[ttCateg].colWidth << 40 << 200 << 200;
-    table_settings[ttCateg].colName << "id" << "Категория"
-            << "Примечание";
+    table_settings[ttCateg].colName << "id" << "Категория";
 
     table_settings[ttRank].title = "Ранги";
     table_settings[ttRank].tblName = "ranks";
@@ -64,12 +64,22 @@ QString &Sett::GetTblName(TblType aType)
     return table_settings[aType].tblName;
 }
 
-QVector<int> &Sett::GetColWidth(TblType aType)
+QVector<int> &Sett::GetVecColWidth(TblType aType)
 {
     return table_settings[aType].colWidth;
 }
 
-QVector<char*> &Sett::GetColName(TblType aType)
+QVector<char*> &Sett::GetVecColName(TblType aType)
 {
     return table_settings[aType].colName;
+}
+
+const char *Sett::GetColName(TblType aType, int aColNum)
+{
+    return table_settings[aType].colName[aColNum];
+}
+
+const char *Sett::GetNoteName()
+{
+    return "Примечание";
 }
