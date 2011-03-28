@@ -77,22 +77,22 @@ TblType Table::Type() const
 
 void Table::SetFirst()
 {
-
+    view->selectRow(0);
 }
 
 void Table::SetNext()
 {
-
+    view->selectRow(view->currentIndex().row() + 1);
 }
 
 void Table::SetPrev()
 {
-
+    view->selectRow(view->currentIndex().row() - 1);
 }
 
 void Table::SetLast()
 {
-
+    view->selectRow(model->rowCount() - 1);
 }
 
 void Table::Add()
@@ -102,7 +102,15 @@ void Table::Add()
 
 void Table::Delete()
 {
+    int button = QMessageBox::question(this,
+        tr("Подтверждение удаления"),
+        tr("Вы действительно хотите удалить текущую запись?"),
+            QMessageBox::Yes | QMessageBox::No);
 
+    if (button == QMessageBox::Yes)
+    {
+        model->removeRow(view->currentIndex().row());
+    }
 }
 
 void Table::Edit()
