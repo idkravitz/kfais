@@ -14,6 +14,8 @@ enum ReportType {
 
 class ReportsMaker {
     QString PickName(ReportType rt);
+    void CreateRawReport(QSqlQuery &query, QFile& file);
+    QString GetPathToStylesheet(const ReportType);
 public:
     void MakeReport(const QString &query, const ReportType type=UniversalReport);
 };
