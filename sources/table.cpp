@@ -154,12 +154,16 @@ Card *TblSport::CreateCard(int aId) const
 TblCoach::TblCoach(QWidget *aParent):
         Table(aParent, ttCoach)
 {
+//    model->setRelation(Coach::taClub, QSqlRelation(Sett::GetTblName(ttClub),
+//        Sett::GetAtrName(ttCoach, Coach::taClub), Sett::GetAtrName(ttClub, Club::taName)));
+    model->setRelation(Coach::taClub, QSqlRelation("clubs", "club_id", "clubs.name"));
+
     TableSpecificConfig();
 }
 
 Card *TblCoach::CreateCard(int aId) const
 {
-return 0;
+    return new CardCoach(Sett::GetMA(), model, aId);
 }
 
 /******************************* Clubs *******************************/

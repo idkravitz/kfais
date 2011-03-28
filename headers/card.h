@@ -20,6 +20,7 @@ private:
 
 private slots:
     void Ok();
+    void Cancel();
 
 protected:
     QSqlRelationalTableModel *model;
@@ -60,11 +61,18 @@ public:
     CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
-/******************************* Trainers *******************************/
+/******************************* Coaches *******************************/
 
 class CardCoach: public Card
 {
     Q_OBJECT
+
+private:
+    QLineEdit *edtName;
+    QLineEdit *edtPhone;
+    QComboBox *cbClub;
+
+    void CreateWidgets();
 
 public:
     CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);

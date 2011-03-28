@@ -19,10 +19,13 @@ bool Sett::LoadSettings()
     table_settings[ttSport].tblName = "sportsmen";
 
     table_settings[ttCoach].title = "Тренеры";
-    table_settings[ttCoach].tblName = "coach";
+    table_settings[ttCoach].tblName = "coaches";
+    table_settings[ttCoach].atrName << "id" << "name" << "phone" << "club_id";
+    table_settings[ttCoach].colName << "id" << "ФИО" << "Телефон" << "Клуб";
 
     table_settings[ttClub].title = "Клубы";
     table_settings[ttClub].tblName = "clubs";
+    table_settings[ttClub].atrName << "id" << "name" << "address";
     table_settings[ttClub].colName << "id" << "Название" << "Адрес";
 
     table_settings[ttSert].title = "Сертефикации";
@@ -82,4 +85,9 @@ const char *Sett::GetColName(TblType aType, int aColNum)
 const char *Sett::GetNoteName()
 {
     return "Примечание";
+}
+
+const char *Sett::GetAtrName(TblType aType, int aNum)
+{
+    return table_settings[aType].atrName[aNum];
 }

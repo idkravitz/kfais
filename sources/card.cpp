@@ -36,7 +36,7 @@ void Card::CreateBasicWidgets(QLayout *aLt)
     btnOk = new QPushButton(tr("Ok"));
     btnCancel = new QPushButton(tr("Закрыть"));
     connect(btnOk, SIGNAL(clicked()), this, SLOT(Ok()));
-    connect(btnCancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(btnCancel, SIGNAL(clicked()), this, SLOT(Cancel()));
     lt2->addWidget(btnOk);
     lt2->addWidget(btnCancel);
 
@@ -61,13 +61,18 @@ void Card::Ok()
         return;
     }
     mapper->submit();
-    tblModel->select();
+    tblModel->select(); //Update table model
+    close();
+}
+
+void Card::Cancel()
+{
+    model->revert();
     close();
 }
 
 void Card::closeEvent(QCloseEvent *aE)
 {
-    model->revert();
     Sett::GetMA()->closeActiveSubWindow();
     aE->accept();
 }
@@ -132,7 +137,25 @@ void CardSport::CreateWidgets()
 CardCoach::CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttCoach, aId)
 {
+    InitModel(ttCoach, "id = " + QString::number(aId));
+    CreateWidgets();
 
+    cbClub->setModel(model->relationModel(Coach::taClub));
+    cbClub->setModelColumn(Club::taName);
+
+    mapper->addMapping(edtName, Coach::taName);
+    mapper->addMapping(edtPhone, Coach::taPhone);
+    mapper->addMapping(cbClub, Coach::taClub);
+    mapper->toFirst();
+}
+
+void CardCoach::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+    AddWidToLt(lt, Coach::taName, edtName = new QLineEdit, 0);
+    AddWidToLt(lt, Coach::taPhone, edtPhone = new QLineEdit, 1);
+    AddWidToLt(lt, Coach::taClub, cbClub = new QComboBox, 2);
+    CreateBasicWidgets(lt);
 }
 
 /******************************* Clubs *******************************/
@@ -140,8 +163,8 @@ CardCoach::CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int 
 CardClub::CardClub(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttClub, aId)
 {
-    CreateWidgets();
     InitModel(ttClub, "id = " + QString::number(aId));
+    CreateWidgets();
     mapper->addMapping(edtName, Club::taName);
     mapper->addMapping(edtAddr, Club::taAddr);
     mapper->toFirst();
