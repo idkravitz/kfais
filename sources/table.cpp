@@ -1,6 +1,6 @@
 #include "../headers/table.h"
 
-/******************************* Card (basic) *******************************/
+/******************************* Table (basic) *******************************/
 
 Table::Table(QWidget *aParent, TblType aType):
         QMainWindow(aParent),
@@ -68,7 +68,6 @@ void Table::SaveTableSettings()
 void Table::TableSpecificConfig()
 {
     model->select();
-    ApplyTableSettings();
 }
 
 TblType Table::Type() const
@@ -78,22 +77,22 @@ TblType Table::Type() const
 
 void Table::SetFirst()
 {
-
+    view->selectRow(0);
 }
 
 void Table::SetNext()
 {
-
+    view->selectRow(view->currentIndex().row() + 1);
 }
 
 void Table::SetPrev()
 {
-
+    view->selectRow(view->currentIndex().row() - 1);
 }
 
 void Table::SetLast()
 {
-
+    view->selectRow(model->rowCount() - 1);
 }
 
 void Table::Add()
@@ -103,7 +102,15 @@ void Table::Add()
 
 void Table::Delete()
 {
+    int button = QMessageBox::question(this,
+        tr("Подтверждение удаления"),
+        tr("Вы действительно хотите удалить текущую запись?"),
+            QMessageBox::Yes | QMessageBox::No);
 
+    if (button == QMessageBox::Yes)
+    {
+        model->removeRow(view->currentIndex().row());
+    }
 }
 
 void Table::Edit()
@@ -115,7 +122,7 @@ void Table::OpenCard(QModelIndex aMIndex)
 {
     int id = model->record(aMIndex.row()).value(0).toInt();
     MapCard::const_iterator it = mapCard.find(id);
-    if (it != mapCard.end())    //if card already opened
+    if (it != mapCard.end())       //if card already opened
     {
         it.value()->setFocus();
         return;
@@ -138,6 +145,13 @@ void Table::CloseCard(QObject *aObj)
 
 /******************************* Sportsmen *******************************/
 
+void TblSport::TableSpecificConfig()
+{
+    model->setRelation(4, QSqlRelation("ranks", "id", "name"));
+    model->setRelation(6, QSqlRelation("coaches", "id", "name"));
+    model->select();
+}
+
 TblSport::TblSport(QWidget *aParent):
         Table(aParent, ttSport)
 { 
@@ -151,13 +165,15 @@ Card *TblSport::CreateCard(int aId) const
 
 /******************************* Coaches *******************************/
 
+void TblCoach::TableSpecificConfig()
+{
+    model->setRelation(3, QSqlRelation(Sett::GetTblName(ttClub), "id", "name"));
+    model->select();
+}
+
 TblCoach::TblCoach(QWidget *aParent):
         Table(aParent, ttCoach)
 {
-//    model->setRelation(Coach::taClub, QSqlRelation(Sett::GetTblName(ttClub),
-//        Sett::GetAtrName(ttCoach, Coach::taClub), Sett::GetAtrName(ttClub, Club::taName)));
-    model->setRelation(Coach::taClub, QSqlRelation("clubs", "club_id", "clubs.name"));
-
     TableSpecificConfig();
 }
 
@@ -181,6 +197,14 @@ Card *TblClub::CreateCard(int aId) const
 
 /******************************* Sertifications *******************************/
 
+void TblSert::TableSpecificConfig()
+{ 
+    model->setRelation(1, QSqlRelation("sportsmen", "id", "name"));    
+    model->setRelation(3, QSqlRelation("ranks", "id", "name"));
+    model->setRelation(4, QSqlRelation("ranks", "id", "name"));
+    model->select();
+}
+
 TblSert::TblSert(QWidget *aParent):
         Table(aParent, ttSert)
 {
@@ -189,10 +213,16 @@ TblSert::TblSert(QWidget *aParent):
 
 Card *TblSert::CreateCard(int aId) const
 {
-return 0;
+    return 0;
 }
 
 /******************************* Fee *******************************/
+
+void TblFee::TableSpecificConfig()
+{
+    model->setRelation(1, QSqlRelation("sportsmen", "id", "name"));    
+    model->select();
+}
 
 TblFee::TblFee(QWidget *aParent):
         Table(aParent, ttFee)
@@ -202,10 +232,17 @@ TblFee::TblFee(QWidget *aParent):
 
 Card *TblFee::CreateCard(int aId) const
 {
-return 0;
+    return 0;
 }
 
 /******************************* Sportsmen-Competiotions *******************************/
+
+void TblSportComp::TableSpecificConfig()
+{
+    model->setRelation(1, QSqlRelation("sportsmen", "id", "name"));    
+    model->setRelation(4, QSqlRelation("categories", "id", "name"));    
+    model->select();
+}
 
 TblSportComp::TblSportComp(QWidget *aParent):
         Table(aParent, ttSportComp)
@@ -215,7 +252,7 @@ TblSportComp::TblSportComp(QWidget *aParent):
 
 Card *TblSportComp::CreateCard(int aId) const
 {
-return 0;
+    return 0;
 }
 
 /******************************* Competiotions *******************************/
@@ -228,7 +265,7 @@ TblComp::TblComp(QWidget *aParent):
 
 Card *TblComp::CreateCard(int aId) const
 {
-    return 0;
+    return new CardComp(Sett::GetMA(), model, aId);
 }
 
 /******************************* Categories *******************************/
@@ -241,7 +278,7 @@ TblCateg::TblCateg(QWidget *aParent):
 
 Card *TblCateg::CreateCard(int aId) const
 {
-    return 0;
+    return new CardCateg(Sett::GetMA(), model, aId);
 }
 
 /******************************* Ranks *******************************/
@@ -254,5 +291,5 @@ TblRank::TblRank(QWidget *aParent):
 
 Card *TblRank::CreateCard(int aId) const
 {
-    return 0;
+    return new CardRank(Sett::GetMA(), model, aId);
 }

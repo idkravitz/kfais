@@ -29,7 +29,7 @@ protected:
 
     Card(QWidget *aParent, QSqlRelationalTableModel *aTblModel, TblType aType, int aId);
     void CreateBasicWidgets(QLayout *aLt);
-    void InitModel(TblType aType, const QString &aFilter);
+    void InitModel(const QString &aFilter);
     void AddWidToLt(QGridLayout *aLt, int aTblAtrI, QWidget *aW, int aRow, int aCol = 0);
 
     virtual bool IsValid() const;
@@ -131,6 +131,13 @@ class CardComp: public Card
 {
     Q_OBJECT
 
+private:
+    QLineEdit *edtName;
+    QDateEdit *edtDate;
+    QLineEdit *edtLoc;
+
+    void CreateWidgets();
+
 public:
     CardComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
@@ -141,6 +148,11 @@ class CardCateg: public Card
 {
     Q_OBJECT
 
+private:
+    QLineEdit *edtName;
+
+    void CreateWidgets();
+
 public:
     CardCateg(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
@@ -150,6 +162,11 @@ public:
 class CardRank: public Card
 {
     Q_OBJECT
+
+private:
+    QLineEdit *edtName;
+
+    void CreateWidgets();
 
 public:
     CardRank(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);

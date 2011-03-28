@@ -47,10 +47,18 @@ void Card::CreateBasicWidgets(QLayout *aLt)
     setLayout(lt);
 }
 
-void Card::InitModel(TblType aType, const QString &aFilter)
+void Card::InitModel(const QString &aFilter)
 {
-    model->setTable(Sett::GetTblName(aType));
-    model->setFilter(aFilter);
+    model->setTable(Sett::GetTblName(type));
+    model->setFilter(Sett::GetTblName(type) + "." + aFilter);
+    for (int i = 0; i < tblModel->columnCount(); ++i)
+    {
+        QSqlRelation tmpRelation = tblModel->relation(i);
+        if (tmpRelation.isValid())
+        {
+            model->setRelation(i, tmpRelation);
+        }
+    }
     model->select();
 }
 
@@ -79,10 +87,11 @@ void Card::closeEvent(QCloseEvent *aE)
 
 void Card::AddWidToLt(QGridLayout *aLt, int aTAIndex, QWidget *aW, int aRow, int aCol)
 {
-    QLabel *lbl = new QLabel(tr(Sett::GetColName(type, aTAIndex)));
+    QLabel *lbl = new QLabel(tr(Sett::GetColName(type, aTAIndex)) + ":");
     aLt->addWidget(lbl, aRow, aCol);
     aLt->addWidget(aW, aRow, aCol + 1);
     lbl->setBuddy(aW);
+    mapper->addMapping(aW, aTAIndex);
 }
 
 bool Card::IsValid() const
@@ -97,7 +106,7 @@ CardSport::CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int 
         Card(aParent, aTblModel, ttSport, aId)
 {
     CreateWidgets();
-    InitModel(ttSport, "id = " + QString::number(aId));
+    InitModel("id = " + QString::number(aId));
 
 //    QTableView *tbl = new QTableView(this);
 //    tbl->setModel(model);
@@ -137,15 +146,12 @@ void CardSport::CreateWidgets()
 CardCoach::CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttCoach, aId)
 {
-    InitModel(ttCoach, "id = " + QString::number(aId));
+    InitModel("id = " + QString::number(aId));
     CreateWidgets();
 
     cbClub->setModel(model->relationModel(Coach::taClub));
     cbClub->setModelColumn(Club::taName);
 
-    mapper->addMapping(edtName, Coach::taName);
-    mapper->addMapping(edtPhone, Coach::taPhone);
-    mapper->addMapping(cbClub, Coach::taClub);
     mapper->toFirst();
 }
 
@@ -163,10 +169,8 @@ void CardCoach::CreateWidgets()
 CardClub::CardClub(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttClub, aId)
 {
-    InitModel(ttClub, "id = " + QString::number(aId));
+    InitModel("id = " + QString::number(aId));
     CreateWidgets();
-    mapper->addMapping(edtName, Club::taName);
-    mapper->addMapping(edtAddr, Club::taAddr);
     mapper->toFirst();
 }
 
@@ -207,7 +211,19 @@ CardSportComp::CardSportComp(QWidget *aParent, QSqlRelationalTableModel *aTblMod
 CardComp::CardComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttComp, aId)
 {
+    InitModel("id = " + QString::number(aId));
+    CreateWidgets();
+    mapper->toFirst();
+}
 
+void CardComp::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+    AddWidToLt(lt, Comp::taName, edtName = new QLineEdit, 0);
+    AddWidToLt(lt, Comp::taDate, edtDate = new QDateEdit, 1);
+    edtDate->setCalendarPopup(true);
+    AddWidToLt(lt, Comp::taLoc, edtLoc = new QLineEdit, 2);
+    CreateBasicWidgets(lt);
 }
 
 /******************************* Categories *******************************/
@@ -215,7 +231,16 @@ CardComp::CardComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aI
 CardCateg::CardCateg(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttCateg, aId)
 {
+    InitModel("id = " + QString::number(aId));
+    CreateWidgets();
+    mapper->toFirst();
+}
 
+void CardCateg::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+    AddWidToLt(lt, Categ::taName, edtName = new QLineEdit, 0);
+    CreateBasicWidgets(lt);
 }
 
 /******************************* Ranks *******************************/
@@ -223,5 +248,14 @@ CardCateg::CardCateg(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int 
 CardRank::CardRank(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttRank, aId)
 {
+    InitModel("id = " + QString::number(aId));
+    CreateWidgets();
+    mapper->toFirst();
+}
 
+void CardRank::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+    AddWidToLt(lt, Rank::taName, edtName = new QLineEdit, 0);
+    CreateBasicWidgets(lt);
 }

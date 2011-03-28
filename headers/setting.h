@@ -25,7 +25,6 @@ struct TblSett{
     QString tblName;
     QVector<int> colWidth;
     QVector<char*> colName;
-    QVector<char*> atrName;
 };
 
 class Sett
@@ -40,7 +39,6 @@ public:
     static const char *GetTblTitle(TblType aType);
     static QString &GetTblName(TblType aType);
     static const char *GetColName(TblType aType, int aColNum);
-    static const char *GetAtrName(TblType aType, int aNum);
 
     static QVector<int> &GetVecColWidth(TblType aType);
     static QVector<char*> &GetVecColName(TblType aType);
@@ -122,7 +120,6 @@ namespace Fee
     };
 }
 
-
 namespace SportComp
 {
     enum Atr
@@ -140,4 +137,23 @@ namespace SportComp
     };
 }
 
+namespace Comp
+{
+    enum Atr
+    {
+        taId = 0,
+        taName = 1,
+        taDate = 2,
+        taLoc = 3
+    };
+}
+
+namespace Categ
+{
+    enum Atr
+    {
+        taId = 0,
+        taName = 1
+    };
+}
 #endif // SETTING_H

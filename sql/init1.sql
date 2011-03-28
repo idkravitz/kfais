@@ -2,15 +2,15 @@ BEGIN TRANSACTION;
 
 /************************************ clubs ************************************/
 
-insert into clubs(club_name, address) values ('Бастион', 'г. Владивосток, ул. Никифорова, д. 43');
-insert into clubs(club_name, address) values ('Восход', 'г. Владивосток, ул. Русская, д. 74а');
-insert into clubs(club_name, address) values ('Олимпиец', 'г. Владивосток, ул. Батарейная, д. 2');
+insert into clubs(name, address) values ('Бастион', 'г. Владивосток, ул. Никифорова, д. 43');
+insert into clubs(name, address) values ('Восход', 'г. Владивосток, ул. Русская, д. 74а');
+insert into clubs(name, address) values ('Олимпиец', 'г. Владивосток, ул. Батарейная, д. 2');
 
 /************************************ coaches ************************************/
 
-insert into coaches(coach_name, phone, club_id) values ('Ковалёв Владимир Сергеевич', '8-924-675-85-92', (select club_id from clubs where club_name = 'Восход'));
-insert into coaches(coach_name, phone, club_id) values ('Леоновец М.С.', '8-924-675-85-91', (select club_id from clubs where club_name = 'Олимпиец'));
-insert into coaches(coach_name, phone, club_id) values ('Петров В.В.', '8-924-675-85-93', (select club_id from clubs where club_name = 'Бастион'));
+insert into coaches(name, phone, club_id) values ('Ковалёв Владимир Сергеевич', '8-924-675-85-92', (select id from clubs where name = 'Восход'));
+insert into coaches(name, phone, club_id) values ('Леоновец М.С.', '8-924-675-85-91', (select id from clubs where name = 'Олимпиец'));
+insert into coaches(name, phone, club_id) values ('Петров В.В.', '8-924-675-85-93', (select id from clubs where name = 'Бастион'));
 
 /************************************ ranks ************************************/
 
@@ -27,29 +27,29 @@ insert into sportsmen(name, birthday, rank_id, reg_number, coach_id, address, ph
 	'1965-10-10',
 	(select id from ranks where name = '9 кю'),
 	12345,
-	(select coach_id from coaches where coach_name = 'Ковалёв Владимир Сергеевич'), 
+	(select id from coaches where name = 'Ковалёв Владимир Сергеевич'), 
 	'г. Владивосток, ул. Батарейная, д. 2',
 	'8-924-675-85-93',
 	'ООО "Nokia"',
 	'Инженер'); 
-	
+
 insert into sportsmen(name, birthday, rank_id, reg_number, coach_id, address, phone, workplace, job) values (
 	'Сидоров Федор Иванович',
 	'1990-10-10',
 	(select id from ranks where name = '9 дан'),
 	123456,
-	(select coach_id from coaches where coach_name = 'Ковалёв Владимир Сергеевич'), 
+	(select id from coaches where name = 'Ковалёв Владимир Сергеевич'), 
 	'г. Владивосток, ул. Батарейная, д. 2',
 	'8-924-675-85-93',
 	'ООО "Nokia"',
 	'Директор');
-	
+
 insert into sportsmen(name, birthday, rank_id, reg_number, coach_id, address, phone, workplace, job) values (
 	'Крылов Август Измаилович',
 	'1990-01-01',
 	(select id from ranks where name = '9 дан'),
 	1234567,
-	(select coach_id from coaches where coach_name = 'Ковалёв Владимир Сергеевич'), 
+	(select id from coaches where name = 'Ковалёв Владимир Сергеевич'), 
 	'г. Владивосток, ул. Батарейная, д. 2',
 	'8-924-675-85-93',
 	'ООО "Nokia"',
@@ -61,7 +61,7 @@ insert into fee(sportsman_id, date) values ((select id from sportsmen where name
 insert into fee(sportsman_id, date) values ((select id from sportsmen where name = 'Дрёмин Николай Иванович'), '2011-02-28');
 insert into fee(sportsman_id, date) values ((select id from sportsmen where name = 'Сидоров Федор Иванович'), '2010-03-8');
 
-/************************************ certifications ************************************/
+/************************************ sertifications ************************************/
 
 insert into sertifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_to_id, result) values(
 	111111,
@@ -70,7 +70,7 @@ insert into sertifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_
 	(select id from ranks where name = '10 кю'), 
 	(select id from ranks where name = '9 кю'), 
 	'Сдал');
-	
+
 insert into sertifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_to_id, result) values(
 	222222,
 	(select id from sportsmen where name = 'Дрёмин Николай Иванович'),
@@ -78,7 +78,7 @@ insert into sertifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_
 	(select id from ranks where name = '9 кю'), 
 	(select id from ranks where name = '8 кю'), 
 	'Не сдал');
-	
+
 insert into sertifications(num_rec_sert, sportsman_id, date, rank_from_id, rank_to_id, result) values(
 	3333333,
 	(select id from sportsmen where name = 'Сидоров Федор Иванович'),
@@ -108,7 +108,7 @@ insert into sportsmen_competitions(sportsman_id, DSO, category_id, draw_number, 
 	1,
 	2,
 	2);
-	
+
 insert into sportsmen_competitions(sportsman_id, DSO, category_id, draw_number, units, prize_place, fights_count, fights_won) values(
 	(select id from sportsmen where name = 'Сидоров Федор Иванович'),
 	'КУДО',
@@ -118,7 +118,7 @@ insert into sportsmen_competitions(sportsman_id, DSO, category_id, draw_number, 
 	3,
 	2,
 	1);
-	
+
 insert into sportsmen_competitions(sportsman_id, DSO, category_id, draw_number, units, fights_count, fights_won) values(
 	(select id from sportsmen where name = 'Крылов Август Измаилович'),
 	'КУДО',
@@ -127,7 +127,7 @@ insert into sportsmen_competitions(sportsman_id, DSO, category_id, draw_number, 
 	240,
 	2,
 	0);
-	
+
 insert into sportsmen_competitions(name, DSO, category_id, draw_number, units, fights_count, fights_won) values(
 	'Афанасьев Артур Васильевич',
 	'Кик-боксинг',
@@ -173,6 +173,7 @@ insert into sportsmen(name, coach_id, birthday, address) values
 insert into sportsmen(name, coach_id, birthday, address) values 
     ('Ефимов Вячеслав Алексеевич', (select id from coaches where name='Ковалёв Владимир Сергеевич'), '1990-02-11','г. Благовещенск'); 
 insert into sportsmen(name, coach_id, birthday, address) values 
-    ('Яковлев Алексей Андреевич', (select id from coaches where name='Ковалёв Владимир Сергеевич'), '1991-08-05','г. Благовещенск'); */
+    ('Яковлев Алексей Андреевич', (select id from coaches where name='Ковалёв Владимир Сергеевич'), '1991-08-05','г. Благовещенск'); 
+*/
 
 COMMIT;
