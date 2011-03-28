@@ -213,7 +213,7 @@ TblSert::TblSert(QWidget *aParent):
 
 Card *TblSert::CreateCard(int aId) const
 {
-    return 0;
+    return new CardSert(Sett::GetMA(), model, aId);
 }
 
 /******************************* Fee *******************************/
@@ -232,7 +232,7 @@ TblFee::TblFee(QWidget *aParent):
 
 Card *TblFee::CreateCard(int aId) const
 {
-    return 0;
+    return new CardFee(Sett::GetMA(), model, aId);
 }
 
 /******************************* Sportsmen-Competiotions *******************************/
@@ -252,7 +252,7 @@ TblSportComp::TblSportComp(QWidget *aParent):
 
 Card *TblSportComp::CreateCard(int aId) const
 {
-    return 0;
+    return new CardComp(Sett::GetMA(), model, aId);
 }
 
 /******************************* Competiotions *******************************/

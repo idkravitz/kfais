@@ -100,6 +100,12 @@ bool Card::IsValid() const
     return true;
 }
 
+inline void Card::_SetCBModel(QComboBox *aCB, int aIn, int aOut)
+{
+    aCB->setModel(model->relationModel(aIn));
+    aCB->setModelColumn(aOut);
+}
+
 /******************************* Sportsmen *******************************/
 
 CardSport::CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
@@ -148,10 +154,7 @@ CardCoach::CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int 
 {
     InitModel("id = " + QString::number(aId));
     CreateWidgets();
-
-    cbClub->setModel(model->relationModel(Coach::taClub));
-    cbClub->setModelColumn(Club::taName);
-
+    _SetCBModel(cbClub, Coach::taClub, Club::taName);
     mapper->toFirst();
 }
 
@@ -187,7 +190,31 @@ void CardClub::CreateWidgets()
 CardSert::CardSert(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttSert, aId)
 {
+    InitModel("num_rec_sert = " + QString::number(aId));
+    CreateWidgets();
 
+    _SetCBModel(cbSport, Sert::taSport, Sport::taName);
+    _SetCBModel(cbRankFrom, Sert::taRankFrom, Rank::taName);
+    _SetCBModel(cbRankTo, Sert::taRankTo, Rank::taName);
+
+    mapper->toFirst();
+}
+
+void CardSert::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+
+    AddWidToLt(lt, Sert::taNumRecSert, edtNum = new QLineEdit, 0);
+    QRegExp rx( "^[1-9]{1}[0-9]*$" );
+    edtNum->setValidator(new QRegExpValidator(rx, this));
+
+    AddWidToLt(lt, Sert::taSport, cbSport = new QComboBox, 1);
+    AddWidToLt(lt, Sert::taDate, edtDate = new QDateEdit, 2);
+    edtDate->setCalendarPopup(true);
+    AddWidToLt(lt, Sert::taRankFrom, cbRankFrom = new QComboBox, 3);
+    AddWidToLt(lt, Sert::taRankTo, cbRankTo = new QComboBox, 4);
+    AddWidToLt(lt, Sert::taRes, edtRes = new QLineEdit, 5);
+    CreateBasicWidgets(lt);
 }
 
 /******************************* Fee *******************************/
@@ -195,7 +222,19 @@ CardSert::CardSert(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aI
 CardFee::CardFee(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttFee, aId)
 {
+    InitModel("id = " + QString::number(aId));
+    CreateWidgets();
+    _SetCBModel(cbSport, Fee::taSport, Sport::taName);
+    mapper->toFirst();
+}
 
+void CardFee::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+    AddWidToLt(lt, Fee::taSport, cbSport = new QComboBox, 0);
+    AddWidToLt(lt, Fee::taDate, edtDate = new QDateEdit, 1);
+    edtDate->setCalendarPopup(true);
+    CreateBasicWidgets(lt);
 }
 
 /******************************* Sportsmen-Competiotions *******************************/

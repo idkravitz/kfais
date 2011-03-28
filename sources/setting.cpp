@@ -35,8 +35,8 @@ bool Sett::LoadSettings()
 
     table_settings[ttSert].title = "Сертефикации";
     table_settings[ttSert].tblName = "sertifications";
-    table_settings[ttSert].colName << "id" << "Спорстмен" << "Дата"
-            << "Единицы от" << "Единицы до" << "Исход" << "Примечание";
+    table_settings[ttSert].colName << "Рег. номер сертификата" << "Спорстмен" << "Дата"
+            << "Разряд с" << "Разряд на" << "Исход" << "Примечание";
 
     table_settings[ttFee].title = "Взносы";
     table_settings[ttFee].tblName = "fee";

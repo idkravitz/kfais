@@ -34,6 +34,8 @@ protected:
 
     virtual bool IsValid() const;
 
+    inline void _SetCBModel(QComboBox *aCB, int aIn, int aOut);
+
 public:
     int GetId() const;
 };
@@ -94,11 +96,21 @@ public:
     CardClub(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
-/******************************* Certifications *******************************/
+/******************************* Sertifications *******************************/
 
 class CardSert: public Card
 {
     Q_OBJECT
+
+private:
+    QLineEdit *edtNum;
+    QComboBox *cbSport;
+    QDateEdit *edtDate;
+    QComboBox *cbRankFrom;
+    QComboBox *cbRankTo;
+    QLineEdit *edtRes;
+
+    void CreateWidgets();
 
 public:
     CardSert(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
@@ -109,6 +121,12 @@ public:
 class CardFee: public Card
 {
     Q_OBJECT
+
+private:
+    QComboBox *cbSport;
+    QDateEdit *edtDate;
+
+    void CreateWidgets();
 
 public:
     CardFee(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
