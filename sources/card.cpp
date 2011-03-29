@@ -35,24 +35,29 @@ int Card::GetId() const
 
 void Card::CreateBasicWidgets(QLayout *aLt)
 {
+    QGroupBox *gbNote = new QGroupBox(Sett::GetNoteName());
     QHBoxLayout *lt1 = new QHBoxLayout;
-    QLabel *lblNote = new QLabel(Sett::GetNoteName());
     edtNote = new QLineEdit;
-    lblNote->setBuddy(edtNote);
-    lt1->addWidget(lblNote);
     lt1->addWidget(edtNote);
+    mapper->addMapping(edtNote, Sett::GetVecColName(type).size() - 1);
+    gbNote->setLayout(lt1);
+
+    QGroupBox *gb = new QGroupBox;
+    gb->setLayout(aLt);
 
     QHBoxLayout *lt2 = new QHBoxLayout;
     btnOk = new QPushButton(tr("Ok"));
     btnCancel = new QPushButton(tr("Закрыть"));
     connect(btnOk, SIGNAL(clicked()), this, SLOT(Ok()));
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(Cancel()));
+    lt2->addStretch(1);
     lt2->addWidget(btnOk);
     lt2->addWidget(btnCancel);
+    lt2->addStretch(0);
 
     QVBoxLayout *lt = new QVBoxLayout;
-    lt->addLayout(aLt);
-    lt->addLayout(lt1);
+    lt->addWidget(gb);
+    lt->addWidget(gbNote);
     lt->addLayout(lt2);
     setLayout(lt);
 }
@@ -85,6 +90,7 @@ void Card::Ok()
     if (!mapper->submit())
     {
         QMessageBox::critical(0, Sett::GetErrMsgTitle(), Sett::GetErrMsgDef());
+        return;
     }
     tblModel->select(); //Update table model
     close();

@@ -13,3 +13,6 @@ HEADERS += \
     headers/mainWindow.h \
     headers/exceptions.h \
     headers/card.h
+
+RESOURCES += \
+    icons.qrc

@@ -20,13 +20,13 @@ void Table::CreateWidgets()
     QToolBar *tb = new QToolBar;
     tb->setFloatable(false);    //Disable floatable
 
-    tb->addAction(tr("Начало"), this, SLOT(SetFirst()));
-    tb->addAction(tr("Следующий"), this, SLOT(SetNext()));
-    tb->addAction(tr("Предудыщий"), this, SLOT(SetPrev()));
-    tb->addAction(tr("Конец"), this, SLOT(SetLast()));
-    tb->addAction(tr("Добавить"), this, SLOT(Add()));
-    tb->addAction(tr("Удалить"), this, SLOT(Delete()));
-    tb->addAction(tr("Редактировать"), this, SLOT(Edit()));
+    tb->addAction(QIcon(":/resource/First.ico"), tr("Начало"), this, SLOT(SetFirst()));
+    tb->addAction(QIcon(":/resource/Next.ico"), tr("Следующий"), this, SLOT(SetNext()));
+    tb->addAction(QIcon(":/resource/Prev.ico"), tr("Предудыщий"), this, SLOT(SetPrev()));
+    tb->addAction(QIcon(":/resource/Last.ico"), tr("Конец"), this, SLOT(SetLast()));
+    tb->addAction(QIcon(":/resource/Add.ico"), tr("Добавить"), this, SLOT(Add()));
+    tb->addAction(QIcon(":/resource/Delete.ico"), tr("Удалить"), this, SLOT(Delete()));
+    tb->addAction(QIcon(":/resource/Edit.ico"), tr("Редактировать"), this, SLOT(Edit()));
 
     addToolBar(tb);
 

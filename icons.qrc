@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resource/Add.ico</file>
+        <file>resource/Delete.ico</file>
+        <file>resource/Edit.png</file>
+        <file>resource/First.ico</file>
+        <file>resource/Last.ico</file>
+        <file>resource/Next.ico</file>
+        <file>resource/Prev.ico</file>
+    </qresource>
+</RCC>
