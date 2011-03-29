@@ -66,6 +66,8 @@ private:
     inline QGroupBox *_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel);
     inline QGroupBox *_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel, const QString &aTitle);
 
+    bool IsValid() const;
+
 public:
     CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
@@ -82,6 +84,8 @@ private:
     QComboBox *cbClub;
 
     void CreateWidgets();
+
+    bool IsValid() const;
 
 public:
     CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);

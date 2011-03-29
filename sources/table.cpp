@@ -96,7 +96,7 @@ void Table::SetLast()
 
 void Table::Add()
 {
-
+    _CreateCard(-1);
 }
 
 void Table::Delete()
@@ -114,7 +114,7 @@ void Table::Delete()
 
 void Table::Edit()
 {
-
+    OpenCard(view->currentIndex());
 }
 
 void Table::OpenCard(QModelIndex aMIndex)
@@ -126,11 +126,7 @@ void Table::OpenCard(QModelIndex aMIndex)
         it.value()->setFocus();
         return;
     }
-    Card *c = CreateCard(id);
-    QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(c);
-    sw->show();
-    mapCard.insert(id, c);
-    connect(c, SIGNAL(destroyed(QObject *)), this, SLOT(CloseCard(QObject *)));
+    mapCard.insert(id, _CreateCard(id));
 }
 
 void Table::CloseCard(QObject *aObj)
@@ -141,6 +137,15 @@ void Table::CloseCard(QObject *aObj)
         mapCard.erase(it);
     }
     setFocus();
+}
+
+inline Card *Table::_CreateCard(int aId) const
+{
+    Card *c = CreateCard(aId);
+    QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(c);
+    sw->show();
+    connect(c, SIGNAL(destroyed(QObject *)), this, SLOT(CloseCard(QObject *)));
+    return c;
 }
 
 /******************************* Sportsmen *******************************/

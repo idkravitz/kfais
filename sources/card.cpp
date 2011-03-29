@@ -60,6 +60,10 @@ void Card::InitModel(const QString &aFilter)
         }
     }
     model->select();
+    if (id == -1)   //If is new
+    {
+        model->insertRow(0);
+    }
 }
 
 void Card::Ok()
@@ -68,7 +72,10 @@ void Card::Ok()
     {
         return;
     }
-    mapper->submit();
+    if (!mapper->submit())
+    {
+        QMessageBox::critical(0, Sett::GetErrMsgTitle(), Sett::GetErrMsgDef());
+    }
     tblModel->select(); //Update table model
     close();
 }
@@ -96,7 +103,6 @@ void Card::AddWidToLt(QGridLayout *aLt, int aTAIndex, QWidget *aW, int aRow, int
 
 bool Card::IsValid() const
 {
-    //Hack
     return true;
 }
 
@@ -104,10 +110,14 @@ inline void Card::_SetCBModel(QComboBox *aCB, int aIn, int aOut)
 {
     aCB->setModel(model->relationModel(aIn));
     aCB->setModelColumn(aOut);
+    aCB->setInsertPolicy(QComboBox::NoInsert);
+    aCB->setEditable(true);
+    QCompleter *comp = new QCompleter(model->relationModel(aIn));
+    comp->setCompletionColumn(aOut);
+    aCB->setCompleter(comp);
 }
 
 /******************************* Sportsmen *******************************/
-
 
 inline QTableView *CardSport::_InitViewModel(QTableView *aView, QSqlRelationalTableModel *aModel, TblType aType)
 {
@@ -198,6 +208,12 @@ QVBoxLayout *CardSport::CreateInnerTbls()
     return lt2;
 }
 
+
+bool CardSport::IsValid() const
+{
+    return !edtName->text().isEmpty();
+}
+
 /******************************* Coaches *******************************/
 
 CardCoach::CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
@@ -216,6 +232,11 @@ void CardCoach::CreateWidgets()
     AddWidToLt(lt, Coach::taPhone, edtPhone = new QLineEdit, 1);
     AddWidToLt(lt, Coach::taClub, cbClub = new QComboBox, 2);
     CreateBasicWidgets(lt);
+}
+
+bool CardCoach::IsValid() const
+{
+    return !edtName->text().isEmpty();
 }
 
 /******************************* Clubs *******************************/

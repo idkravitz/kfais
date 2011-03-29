@@ -49,6 +49,9 @@ public:
 
     static bool LoadSettings();
     static bool SaveSettings();
+
+    static QString GetErrMsgTitle();
+    static QString GetErrMsgDef();
 };
 
 namespace Sport

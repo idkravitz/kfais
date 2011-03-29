@@ -109,3 +109,13 @@ void Sett::SetParam(QTableView *aView)
     aView->setSelectionBehavior(QAbstractItemView::SelectRows);  //Selection mode - full row
     aView->setEditTriggers(QAbstractItemView::NoEditTriggers);   //Disable editing
 }
+
+QString Sett::GetErrMsgTitle()
+{
+    return QObject::tr("Ошибка");
+}
+
+QString Sett::GetErrMsgDef()
+{
+    return QObject::tr("Вееденные данные не корректны");
+}

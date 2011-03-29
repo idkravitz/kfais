@@ -38,6 +38,7 @@ protected:
     QSqlRelationalTableModel *model;
 
     void Init(const QString &aTitle, const QString &aTblName);
+    inline Card *_CreateCard(int aId) const;
     virtual Card *CreateCard(int aId) const = 0;
 
     virtual void TableSpecificConfig();
