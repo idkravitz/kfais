@@ -262,7 +262,7 @@ TblSportComp::TblSportComp(QWidget *aParent):
 
 Card *TblSportComp::CreateCard(int aId) const
 {
-    return new CardComp(Sett::GetMA(), model, aId);
+    return new CardSportComp(Sett::GetMA(), model, aId);
 }
 
 /******************************* Competiotions *******************************/

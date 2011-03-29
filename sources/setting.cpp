@@ -19,7 +19,7 @@ bool Sett::LoadSettings()
     table_settings[ttSport].title = "Спортсмены";
     table_settings[ttSport].tblName = "sportsmen";
     table_settings[ttSport].colName << "id" << "Фото" << "Ф.И.О"
-            << "Дата рождения" << "Ранг" << "Регистрационный №"
+            << "Дата рождения" << "Разряды" << "Регистрационный №"
             << "Тренер" << "Адресс" << "Телефон" << "Место работы"
             << "Должность" << "Примечание";
 
@@ -60,7 +60,7 @@ bool Sett::LoadSettings()
     table_settings[ttCateg].colWidth << 40 << 200 << 200;
     table_settings[ttCateg].colName << "id" << "Название" << "Примечание";
 
-    table_settings[ttRank].title = "Ранги";
+    table_settings[ttRank].title = "Разряд";
     table_settings[ttRank].tblName = "ranks";
     table_settings[ttRank].colName << "id" << "Название" << "Примечание";
 

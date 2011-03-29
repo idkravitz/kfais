@@ -103,6 +103,8 @@ private:
 
     void CreateWidgets();
 
+    bool IsValid() const;
+
 public:
     CardClub(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
@@ -123,6 +125,8 @@ private:
 
     void CreateWidgets();
 
+    bool IsValid() const;
+
 public:
     CardSert(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
@@ -138,6 +142,8 @@ private:
     QDateEdit *edtDate;
 
     void CreateWidgets();
+
+    bool IsValid() const;
 
 public:
     CardFee(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
@@ -167,6 +173,8 @@ private:
 
     void CreateWidgets();
 
+    bool IsValid() const;
+
 public:
     CardComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
@@ -182,6 +190,8 @@ private:
 
     void CreateWidgets();
 
+    bool IsValid() const;
+
 public:
     CardCateg(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
@@ -196,6 +206,8 @@ private:
     QLineEdit *edtName;
 
     void CreateWidgets();
+
+    bool IsValid() const;
 
 public:
     CardRank(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);

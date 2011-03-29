@@ -1,5 +1,15 @@
 #include "../headers/card.h"
 
+inline bool CheckCond(bool aCond, const QString &aMsg)
+{
+    if (aCond)
+    {
+        QMessageBox::critical(0, Sett::GetErrMsgTitle(), aMsg);
+        return true;
+    }
+    return false;
+}
+
 /******************************* Card (basic) *******************************/
 
 Card::Card(QWidget *aParent, QSqlRelationalTableModel *aTblModel, TblType aType, int aId):
@@ -211,7 +221,7 @@ QVBoxLayout *CardSport::CreateInnerTbls()
 
 bool CardSport::IsValid() const
 {
-    return !edtName->text().isEmpty();
+    return !CheckCond(edtName->text().isEmpty(), tr("Введите Ф.И.О. спортсмена"));
 }
 
 /******************************* Coaches *******************************/
@@ -236,7 +246,7 @@ void CardCoach::CreateWidgets()
 
 bool CardCoach::IsValid() const
 {
-    return !edtName->text().isEmpty();
+    return !CheckCond(edtName->text().isEmpty(), tr("Введите Ф.И.О. тренера"));
 }
 
 /******************************* Clubs *******************************/
@@ -255,6 +265,11 @@ void CardClub::CreateWidgets()
     AddWidToLt(lt, Club::taName, edtName = new QLineEdit, 0);
     AddWidToLt(lt, Club::taAddr, edtAddr = new QLineEdit, 1);
     CreateBasicWidgets(lt);
+}
+
+bool CardClub::IsValid() const
+{
+    return !CheckCond(edtName->text().isEmpty(), tr("Введите название клуба"));
 }
 
 /******************************* Sertifications *******************************/
@@ -289,6 +304,12 @@ void CardSert::CreateWidgets()
     CreateBasicWidgets(lt);
 }
 
+bool CardSert::IsValid() const
+{
+    return !CheckCond(edtNum->text().isEmpty(), tr("Введите регистрационный номер сертификата")) &&
+           !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите спортсмена"));
+}
+
 /******************************* Fee *******************************/
 
 CardFee::CardFee(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
@@ -307,6 +328,11 @@ void CardFee::CreateWidgets()
     AddWidToLt(lt, Fee::taDate, edtDate = new QDateEdit, 1);
     edtDate->setCalendarPopup(true);
     CreateBasicWidgets(lt);
+}
+
+bool CardFee::IsValid() const
+{
+    return !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите спортсмена"));
 }
 
 /******************************* Sportsmen-Competiotions *******************************/
@@ -337,6 +363,11 @@ void CardComp::CreateWidgets()
     CreateBasicWidgets(lt);
 }
 
+bool CardComp::IsValid() const
+{
+    return !CheckCond(edtName->text().isEmpty(), tr("Выберите название соревнования"));
+}
+
 /******************************* Categories *******************************/
 
 CardCateg::CardCateg(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
@@ -354,6 +385,11 @@ void CardCateg::CreateWidgets()
     CreateBasicWidgets(lt);
 }
 
+bool CardCateg::IsValid() const
+{
+    return !CheckCond(edtName->text().isEmpty(), tr("Выберите название категории"));
+}
+
 /******************************* Ranks *******************************/
 
 CardRank::CardRank(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
@@ -369,4 +405,9 @@ void CardRank::CreateWidgets()
     QGridLayout *lt = new QGridLayout;
     AddWidToLt(lt, Rank::taName, edtName = new QLineEdit, 0);
     CreateBasicWidgets(lt);
+}
+
+bool CardRank::IsValid() const
+{
+    return !CheckCond(edtName->text().isEmpty(), tr("Выберите название разряда"));
 }

@@ -71,7 +71,7 @@ CREATE TABLE sportsmen_competitions(
 
 CREATE TABLE competitions(
 	id INTEGER NOT NULL PRIMARY KEY,
-	name TEXT TEXT NOT NULL,
+	name TEXT NOT NULL,
     date DATE,
     location TEXT,
 	note TEXT);
