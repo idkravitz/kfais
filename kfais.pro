@@ -1,4 +1,5 @@
 QT += sql
+CONFIG += qaxcontainer
 
 SOURCES += \
     sources/table.cpp \
