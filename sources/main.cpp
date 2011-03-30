@@ -1,8 +1,8 @@
 #include <QApplication>
 
-#include "../headers/setting.h"
-#include "../headers/mainWindow.h"
-#include "../headers/exceptions.h"
+#include "setting.h"
+#include "mainWindow.h"
+#include "exceptions.h"
 
 void Connect(const QString &dbname)
 {

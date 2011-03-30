@@ -1,4 +1,4 @@
-#include "../headers/setting.h"
+#include "setting.h"
 
 QMdiArea *Sett::mdiArea;
 TblSett Sett::table_settings[ttRank + 1];
