@@ -146,15 +146,9 @@ void MainWindow::OpenTblRank()
 
 QMdiSubWindow *MainWindow::OpenRep(RepType aTT, Report *aRep)
 {
-    connect(aRep, SIGNAL(destroyed(QObject *)), this, SLOT(CloseReport(QObject *)));
     QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(aRep);
     sw->show();
     return sw;
-}
-
-void MainWindow::CloseReport(QObject *aTbl)
-{
-
 }
 
 void MainWindow::OpenRepSport()

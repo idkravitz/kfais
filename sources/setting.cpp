@@ -4,6 +4,14 @@ QMdiArea *Sett::mdiArea;
 TblSett Sett::table_settings[ttRank + 1];
 RepSett Sett::report_settings[rtSport + 1];
 
+void AddWidToLt(QGridLayout *aLt, const QString &aLblStr, QWidget *aW, int aRow, int aCol)
+{
+    QLabel *lbl = new QLabel(aLblStr);
+    aLt->addWidget(lbl, aRow, aCol);
+    aLt->addWidget(aW, aRow, aCol + 1);
+    lbl->setBuddy(aW);
+}
+
 QMdiArea *Sett::GetMA()
 {
     return mdiArea;

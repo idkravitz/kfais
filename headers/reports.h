@@ -35,15 +35,22 @@ private:
     QSqlQuery *query;
     QPushButton *btnExport;
 
+    void closeEvent(QCloseEvent *aE);
+
 private slots:
     void Export();
 
 protected:
     void CreateBasicWidgets(QGridLayout *aLt);
 
+    virtual QString GetQuery();
+
 public:
     Report(QWidget *aParent, BaseReport *aLogRep);
+    ~Report();
 };
+
+/******************************* Sportsmen *******************************/
 
 class RepSport: public Report
 {
@@ -51,8 +58,11 @@ class RepSport: public Report
 
 private:
     QComboBox *cbCoach;
+    QVector<int> vecId;
 
     void CreateWidgets();
+
+    QString GetQuery();
 
 public:
     RepSport(QWidget *aParent);

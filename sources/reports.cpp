@@ -15,13 +15,26 @@ void SportsMen::makeReport()
 /******************************* View *******************************/
 /********************************************************************/
 
+inline void InitComboBox(QComboBox *aCB, const QStringList &aLst)
+{
+    aCB->addItems(aLst);
+    aCB->setInsertPolicy(QComboBox::NoInsert);
+    aCB->setEditable(true);
+    QCompleter *comp = new QCompleter(aLst);
+    aCB->setCompleter(comp);
+}
+
 Report::Report(QWidget *aParent, BaseReport *aLogRep):
         QDialog(aParent),
         logRep(aLogRep),
         query(new QSqlQuery)
 {
     setAttribute(Qt::WA_DeleteOnClose);
+}
 
+Report::~Report()
+{
+    delete query;
 }
 
 void Report::CreateBasicWidgets(QGridLayout *aLt)
@@ -31,7 +44,9 @@ void Report::CreateBasicWidgets(QGridLayout *aLt)
 
     QHBoxLayout *lt1 = new QHBoxLayout;
     btnExport = new QPushButton(tr("Выгрузить"));
+    lt1->addStretch(1);
     lt1->addWidget(btnExport);
+    lt1->addStretch(0);
     connect(btnExport, SIGNAL(clicked()), this, SLOT(Export()));
 
     lt->addLayout(aLt);
@@ -40,22 +55,53 @@ void Report::CreateBasicWidgets(QGridLayout *aLt)
     setLayout(lt);
 }
 
+void Report::closeEvent(QCloseEvent *aE)
+{
+    Sett::GetMA()->closeActiveSubWindow();
+    aE->accept();
+}
+
 void Report::Export()
 {
-    query->exec("select * from sportsmen");
+    query->exec(GetQuery());
     logRep->setQuery(query);
     logRep->makeReport();
 }
+
+QString Report::GetQuery()
+{
+    return "";
+}
+
+/******************************* Sportsmen *******************************/
 
 RepSport::RepSport(QWidget *aParent):
         Report(aParent, new SportsMen)
 {
     CreateWidgets();
+
+    QSqlQuery q;
+    q.exec("SELECT * FROM coaches");
+    QStringList lst;
+    while (q.next())
+    {
+        vecId.push_back(q.record().value(0).toInt());
+        lst.push_back(q.record().value(1).toString());
+    }
+    InitComboBox(cbCoach, lst);
 }
 
 void RepSport::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
+    AddWidToLt(lt, Sett::GetColName(ttSport, Sport::taCoach) + ":", cbCoach = new QComboBox, 0, 0);
     CreateBasicWidgets(lt);
 }
 
+QString RepSport::GetQuery()
+{
+    return "SELECT s.id, s.reg_number, s.name, s.birthday, s.address, s.phone, "
+           "s.workplace, s.job, c.name, r.name FROM sportsmen s LEFT OUTER JOIN coaches c, "
+           "ranks r ON s.coach_id = c.id AND s.rank_id = r.id WHERE c.id = " +
+           QString::number(vecId[cbCoach->currentIndex()]) + ";";
+}

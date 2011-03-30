@@ -30,7 +30,7 @@ protected:
     Card(QWidget *aParent, QSqlRelationalTableModel *aTblModel, TblType aType, int aId);
     void CreateBasicWidgets(QLayout *aLt);
     void InitModel(const QString &aFilter);
-    void AddWidToLt(QGridLayout *aLt, int aTblAtrI, QWidget *aW, int aRow, int aCol = 0);
+    void AddWid(QGridLayout *aLt, int aTblAtrI, QWidget *aW, int aRow, int aCol = 0);
 
     virtual bool IsValid() const;
 

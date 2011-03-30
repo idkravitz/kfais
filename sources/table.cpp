@@ -33,6 +33,7 @@ void Table::CreateWidgets()
     model = new QSqlRelationalTableModel(this);
     model->setTable(Sett::GetTblName(type));
     model->setEditStrategy(QSqlTableModel::OnRowChange);
+    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
 
     view = new QTableView;
     view->setModel(model);

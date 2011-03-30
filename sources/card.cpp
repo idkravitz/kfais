@@ -21,6 +21,7 @@ Card::Card(QWidget *aParent, QSqlRelationalTableModel *aTblModel, TblType aType,
     setAttribute(Qt::WA_DeleteOnClose);
 
     model = new QSqlRelationalTableModel(this);
+    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
 
     mapper = new QDataWidgetMapper(this);
     mapper->setModel(model);
@@ -92,7 +93,6 @@ void Card::Ok()
         QMessageBox::critical(0, Sett::GetErrMsgTitle(), Sett::GetErrMsgDef());
         return;
     }
-    QString strErr = model->lastError().text();
     tblModel->select(); //Update table model
     close();
 }
@@ -109,12 +109,9 @@ void Card::closeEvent(QCloseEvent *aE)
     aE->accept();
 }
 
-void Card::AddWidToLt(QGridLayout *aLt, int aTAIndex, QWidget *aW, int aRow, int aCol)
+void Card::AddWid(QGridLayout *aLt, int aTAIndex, QWidget *aW, int aRow, int aCol)
 {
-    QLabel *lbl = new QLabel(Sett::GetColName(type, aTAIndex) + ":");
-    aLt->addWidget(lbl, aRow, aCol);
-    aLt->addWidget(aW, aRow, aCol + 1);
-    lbl->setBuddy(aW);
+    AddWidToLt(aLt, Sett::GetColName(type, aTAIndex) + ":", aW, aRow, aCol);
     mapper->addMapping(aW, aTAIndex);
 }
 
@@ -175,21 +172,21 @@ CardSport::CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int 
 void CardSport::CreateWidgets()
 {
     QGridLayout *lt1 = new QGridLayout;
-    AddWidToLt(lt1, Sport::taName, edtName = new QLineEdit, 0, 0);
-    AddWidToLt(lt1, Sport::taBirth, edtDateBirth = new QDateEdit, 0, 2);
+    AddWid(lt1, Sport::taName, edtName = new QLineEdit, 0, 0);
+    AddWid(lt1, Sport::taBirth, edtDateBirth = new QDateEdit, 0, 2);
     edtDateBirth->setCalendarPopup(true);
-    AddWidToLt(lt1, Sport::taRank, cbRank = new QComboBox, 0, 4);
+    AddWid(lt1, Sport::taRank, cbRank = new QComboBox, 0, 4);
 
-    AddWidToLt(lt1, Sport::taCoach, cbCoach = new QComboBox, 1, 2);
-    AddWidToLt(lt1, Sport::taRegNum, edtRegNum = new QLineEdit, 1, 4);
+    AddWid(lt1, Sport::taCoach, cbCoach = new QComboBox, 1, 2);
+    AddWid(lt1, Sport::taRegNum, edtRegNum = new QLineEdit, 1, 4);
     QRegExp rx( "^[1-9]{1}[0-9]*$" );
     edtRegNum->setValidator(new QRegExpValidator(rx, this));
 
-    AddWidToLt(lt1, Sport::taAddr, edtAddr = new QLineEdit, 2, 2);
-    AddWidToLt(lt1, Sport::taPhone, edtPhone = new QLineEdit, 2, 4);
+    AddWid(lt1, Sport::taAddr, edtAddr = new QLineEdit, 2, 2);
+    AddWid(lt1, Sport::taPhone, edtPhone = new QLineEdit, 2, 4);
 
-    AddWidToLt(lt1, Sport::taWork, edtWorkplace = new QLineEdit, 3, 2);
-    AddWidToLt(lt1, Sport::taJob, edtJob = new QLineEdit, 3, 4);
+    AddWid(lt1, Sport::taWork, edtWorkplace = new QLineEdit, 3, 2);
+    AddWid(lt1, Sport::taJob, edtJob = new QLineEdit, 3, 4);
 
     QVBoxLayout *lt = new QVBoxLayout;
     lt->addLayout(lt1);
@@ -245,9 +242,9 @@ CardCoach::CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int 
 void CardCoach::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
-    AddWidToLt(lt, Coach::taName, edtName = new QLineEdit, 0);
-    AddWidToLt(lt, Coach::taPhone, edtPhone = new QLineEdit, 1);
-    AddWidToLt(lt, Coach::taClub, cbClub = new QComboBox, 2);
+    AddWid(lt, Coach::taName, edtName = new QLineEdit, 0);
+    AddWid(lt, Coach::taPhone, edtPhone = new QLineEdit, 1);
+    AddWid(lt, Coach::taClub, cbClub = new QComboBox, 2);
     CreateBasicWidgets(lt);
 }
 
@@ -269,8 +266,8 @@ CardClub::CardClub(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aI
 void CardClub::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
-    AddWidToLt(lt, Club::taName, edtName = new QLineEdit, 0);
-    AddWidToLt(lt, Club::taAddr, edtAddr = new QLineEdit, 1);
+    AddWid(lt, Club::taName, edtName = new QLineEdit, 0);
+    AddWid(lt, Club::taAddr, edtAddr = new QLineEdit, 1);
     CreateBasicWidgets(lt);
 }
 
@@ -298,15 +295,15 @@ void CardSert::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
 
-    AddWidToLt(lt, Sert::taNumRecSert, edtNum = new QLineEdit, 0);
+    AddWid(lt, Sert::taNumRecSert, edtNum = new QLineEdit, 0);
     QRegExp rx( "^[1-9]{1}[0-9]*$" );
     edtNum->setValidator(new QRegExpValidator(rx, this));
 
-    AddWidToLt(lt, Sert::taSport, cbSport = new QComboBox, 1);
-    AddWidToLt(lt, Sert::taDate, edtDate = new QDateEdit, 2);
+    AddWid(lt, Sert::taSport, cbSport = new QComboBox, 1);
+    AddWid(lt, Sert::taDate, edtDate = new QDateEdit, 2);
     edtDate->setCalendarPopup(true);
-    AddWidToLt(lt, Sert::taRankFrom, cbRankFrom = new QComboBox, 3);
-    AddWidToLt(lt, Sert::taRankTo, cbRankTo = new QComboBox, 4);
+    AddWid(lt, Sert::taRankFrom, cbRankFrom = new QComboBox, 3);
+    AddWid(lt, Sert::taRankTo, cbRankTo = new QComboBox, 4);
     CreateBasicWidgets(lt);
 }
 
@@ -330,8 +327,8 @@ CardFee::CardFee(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId)
 void CardFee::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
-    AddWidToLt(lt, Fee::taSport, cbSport = new QComboBox, 0);
-    AddWidToLt(lt, Fee::taDate, edtDate = new QDateEdit, 1);
+    AddWid(lt, Fee::taSport, cbSport = new QComboBox, 0);
+    AddWid(lt, Fee::taDate, edtDate = new QDateEdit, 1);
     edtDate->setCalendarPopup(true);
     CreateBasicWidgets(lt);
 }
@@ -362,10 +359,10 @@ CardComp::CardComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aI
 void CardComp::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
-    AddWidToLt(lt, Comp::taName, edtName = new QLineEdit, 0);
-    AddWidToLt(lt, Comp::taDate, edtDate = new QDateEdit, 1);
+    AddWid(lt, Comp::taName, edtName = new QLineEdit, 0);
+    AddWid(lt, Comp::taDate, edtDate = new QDateEdit, 1);
     edtDate->setCalendarPopup(true);
-    AddWidToLt(lt, Comp::taLoc, edtLoc = new QLineEdit, 2);
+    AddWid(lt, Comp::taLoc, edtLoc = new QLineEdit, 2);
     CreateBasicWidgets(lt);
 }
 
@@ -387,7 +384,7 @@ CardCateg::CardCateg(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int 
 void CardCateg::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
-    AddWidToLt(lt, Categ::taName, edtName = new QLineEdit, 0);
+    AddWid(lt, Categ::taName, edtName = new QLineEdit, 0);
     CreateBasicWidgets(lt);
 }
 
@@ -409,7 +406,7 @@ CardRank::CardRank(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aI
 void CardRank::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
-    AddWidToLt(lt, Rank::taName, edtName = new QLineEdit, 0);
+    AddWid(lt, Rank::taName, edtName = new QLineEdit, 0);
     CreateBasicWidgets(lt);
 }
 

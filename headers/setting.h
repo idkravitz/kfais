@@ -6,6 +6,8 @@
 #include <QtGui>
 #include <QtSql>
 
+extern void AddWidToLt(QGridLayout *aLt, const QString &aLblStr, QWidget *aW, int aRow, int aCol);
+
 enum TblType
 {
     ttAbstract = 0,

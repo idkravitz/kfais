@@ -49,7 +49,7 @@ insert into sportsmen(name, birthday, rank_id, reg_number, coach_id, address, ph
 	'1990-01-01',
 	(select id from ranks where name = '9 дан'),
 	'1234567',
-	(select id from coaches where name = 'Ковалёв Владимир Сергеевич'), 
+	(select id from coaches where name = 'Леоновец М.С.'), 
 	'г. Владивосток, ул. Батарейная, д. 2',
 	'8-924-675-85-93',
 	'ООО "Nokia"',
