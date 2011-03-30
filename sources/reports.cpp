@@ -8,7 +8,45 @@
 void SportsMen::makeReport()
 {
     QAxObject *excel = new QAxObject("Excel.Application", 0);
-    excel->dynamicCall("SetVisible(bool)", true); //делаем его видимым
+    excel->dynamicCall("SetVisible(bool)", true);
+    QAxObject *workbooks = excel->querySubObject("Workbooks");
+    QAxObject *workbook = workbooks->querySubObject("Add()");
+    QAxObject *sheet = workbook->querySubObject("ActiveSheet");
+    sheet->dynamicCall( "Select()" );
+// Adjust columns
+    QString headers[] = {
+                         QObject::tr("№"),
+                         QObject::tr("РегНомер"),
+                         QObject::tr("ФИО"),
+                         QObject::tr("Дата рождения"),
+                         QObject::tr("Адрес"),
+                         QObject::tr("Телефон"),
+                         QObject::tr("Место р/уч"),
+                         QObject::tr("Должность"),
+                         QObject::tr("Тренер"),
+                         QObject::tr("Разряд"),
+                        };
+    for(int i = 0; i < sizeof(headers) / sizeof(QString); ++i)
+    {
+        QAxObject *range = sheet->querySubObject("Range(const QString&)",
+                                                 QString('A'+i) + QString::number(1));
+        range->dynamicCall("SetValue(const QVariant&)", QVariant(headers[i]));
+        range->querySubObject("Font")->setProperty("Bold", true);
+    }
+    int rowid = 2;
+    qDebug() << "Vasay";
+    while(query->next())
+    {
+        qDebug() << "Vasay";
+        for(int i = 0; i < query->record().count(); ++i)
+        {
+            QAxObject *range = sheet->querySubObject("Range(const QString&)",
+                                                     QString('A'+i) + QString::number(rowid));
+            range->dynamicCall("SetValue(const QVariant&)", QVariant(query->value(i).value<QString>()));
+        }
+        rowid++;
+    }
+    sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
 }
 
 /********************************************************************/

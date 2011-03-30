@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
     query.exec("PRAGMA foreign_keys = ON;");
 
     MainWindow *mw = new MainWindow;
-    mw->show();
-
+    mw->show();    
     return app.exec();
 }
