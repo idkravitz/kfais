@@ -1,4 +1,4 @@
-#include "../headers/table.h"
+#include "table.h"
 
 /******************************* Table (basic) *******************************/
 

@@ -1,4 +1,4 @@
-#include "../headers/card.h"
+#include "card.h"
 
 inline bool CheckCond(bool aCond, const QString &aMsg)
 {
