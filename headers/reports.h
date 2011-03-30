@@ -3,7 +3,11 @@
 
 #include "setting.h"
 
-class BaseReport {
+/********************************************************************/
+/******************************* Model ******************************/
+/********************************************************************/
+
+class BaseReport{
 protected:
     QSqlQuery &query;
 public:
@@ -16,7 +20,36 @@ public:
     virtual void makeReport();
 };
 
+/********************************************************************/
+/******************************* View *******************************/
+/********************************************************************/
 
+class Report: public QMainWindow
+{
+   Q_OBJECT
+
+private:
+    BaseReport *logRep;
+    QPushButton *btnExport;
+
+    void CreateBasicWidgets();
+
+public:
+    Report(QWidget *aParent, BaseReport *aLogRep);
+};
+
+class RepSport: public Report
+{
+    Q_OBJECT
+
+private:
+    QComboBox *cbCoach;
+
+    void CreateWidgets();
+
+public:
+    RepSport(QWidget *aParent);
+};
 
 
 #endif // REPORTS_H
