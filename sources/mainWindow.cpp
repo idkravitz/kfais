@@ -144,13 +144,13 @@ void MainWindow::OpenTblRank()
     }
 }
 
-//QMdiSubWindow *MainWindow::OpenRep(RepType aTT, Report *aRep)
-//{
-//    QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(aRep);
-//    sw->show();
-//    connect(aRep, SIGNAL(destroyed(QObject *)), this, SLOT(CloseReport(QObject *)));
-//    return sw;
-//}
+QMdiSubWindow *MainWindow::OpenRep(RepType aTT, Report *aRep)
+{
+    connect(aRep, SIGNAL(destroyed(QObject *)), this, SLOT(CloseReport(QObject *)));
+    QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(aRep);
+    sw->show();
+    return sw;
+}
 
 void MainWindow::CloseReport(QObject *aTbl)
 {
@@ -159,5 +159,5 @@ void MainWindow::CloseReport(QObject *aTbl)
 
 void MainWindow::OpenRepSport()
 {
-//    QMdiSubWindow *sw = OpenRep(rtSport, new RepSport(Sett::GetMa()));
+    QMdiSubWindow *sw = OpenRep(rtSport, new RepSport(Sett::GetMA()));
 }

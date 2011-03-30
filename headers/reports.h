@@ -9,10 +9,12 @@
 
 class BaseReport{
 protected:
-    QSqlQuery &query;
+    QSqlQuery *query;
 public:
-    BaseReport(QSqlQuery &aQuery): query(aQuery) {}
+    BaseReport(QSqlQuery *aQuery = 0):
+        query(aQuery) {}
     virtual void makeReport() = 0;
+    void setQuery(QSqlQuery *aQuery) { query = aQuery; }
 };
 
 class SportsMen: public BaseReport {
@@ -24,15 +26,20 @@ public:
 /******************************* View *******************************/
 /********************************************************************/
 
-class Report: public QMainWindow
+class Report: public QDialog
 {
    Q_OBJECT
 
 private:
     BaseReport *logRep;
+    QSqlQuery *query;
     QPushButton *btnExport;
 
-    void CreateBasicWidgets();
+private slots:
+    void Export();
+
+protected:
+    void CreateBasicWidgets(QGridLayout *aLt);
 
 public:
     Report(QWidget *aParent, BaseReport *aLogRep);
@@ -50,6 +57,5 @@ private:
 public:
     RepSport(QWidget *aParent);
 };
-
 
 #endif // REPORTS_H

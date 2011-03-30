@@ -3,6 +3,7 @@
 
 #include "setting.h"
 #include "table.h"
+#include "reports.h"
 
 typedef QMap<TblType, Table *> MapTbl;
 
@@ -31,7 +32,7 @@ private slots:
     void OpenRepSport();
 
     QMdiSubWindow *OpenTbl(TblType aTT, Table *aTbl);
-//    QMdiSubWindow *OpenRep(RepType aTT, Report *aRep);
+    QMdiSubWindow *OpenRep(RepType aTT, Report *aRep);
     void CloseTable(QObject *aTbl);
     void CloseReport(QObject *aTbl);
 
