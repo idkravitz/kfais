@@ -33,8 +33,12 @@ void MainWindow::CreateMenu()
     mnTables->addAction(Sett::GetTblTitle(ttCateg), this, SLOT(OpenTblCateg()));
     mnTables->addAction(Sett::GetTblTitle(ttRank), this, SLOT(OpenTblRank()));
 
+    QMenu *mnReports = new QMenu(tr("־עקועû"));
+    //mnReports->addAction(Sett::GetRprtTitle())
+
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);
+    mnBar->addMenu(mnReports);
     mnBar->addMenu(mnAbout);
 }
 

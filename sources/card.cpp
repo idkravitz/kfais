@@ -92,6 +92,7 @@ void Card::Ok()
         QMessageBox::critical(0, Sett::GetErrMsgTitle(), Sett::GetErrMsgDef());
         return;
     }
+    QString strErr = model->lastError().text();
     tblModel->select(); //Update table model
     close();
 }
@@ -306,7 +307,6 @@ void CardSert::CreateWidgets()
     edtDate->setCalendarPopup(true);
     AddWidToLt(lt, Sert::taRankFrom, cbRankFrom = new QComboBox, 3);
     AddWidToLt(lt, Sert::taRankTo, cbRankTo = new QComboBox, 4);
-    AddWidToLt(lt, Sert::taRes, edtRes = new QLineEdit, 5);
     CreateBasicWidgets(lt);
 }
 

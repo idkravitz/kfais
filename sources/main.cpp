@@ -36,6 +36,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    QSqlQuery query;
+    query.exec("PRAGMA foreign_keys = ON;");
+
     MainWindow *mw = new MainWindow;
     mw->show();
 

@@ -59,16 +59,15 @@ namespace Sport
     enum Atr
     {
         taId = 0,
-        taPhoto = 1,
-        taName = 2,
-        taBirth = 3,
-        taRank = 4,
-        taRegNum = 5,
-        taCoach = 6,
-        taAddr = 7,
-        taPhone = 8,
-        taWork = 9,
-        taJob = 10
+        taName = 1,
+        taBirth = 2,
+        taRank = 3,
+        taRegNum = 4,
+        taCoach = 5,
+        taAddr = 6,
+        taPhone = 7,
+        taWork = 8,
+        taJob = 9
     };
 }
 
@@ -110,8 +109,7 @@ namespace Sert
         taSport = 1,
         taDate = 2,
         taRankFrom = 3,
-        taRankTo = 4,
-        taRes = 5
+        taRankTo = 4
     };
 }
 

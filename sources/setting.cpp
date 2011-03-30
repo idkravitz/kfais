@@ -18,7 +18,7 @@ bool Sett::LoadSettings()
 
     table_settings[ttSport].title = "Спортсмены";
     table_settings[ttSport].tblName = "sportsmen";
-    table_settings[ttSport].colName << "id" << "Фото" << "Ф.И.О"
+    table_settings[ttSport].colName << "id" << "Ф.И.О"
             << "Дата рождения" << "Разряды" << "Регистрационный №"
             << "Тренер" << "Адресс" << "Телефон" << "Место работы"
             << "Должность" << "Примечание";
@@ -36,7 +36,7 @@ bool Sett::LoadSettings()
     table_settings[ttSert].title = "Аттестации";
     table_settings[ttSert].tblName = "sertifications";
     table_settings[ttSert].colName << "Рег. № сертификата" << "Спорстмен" << "Дата"
-            << "Разряд с" << "Разряд на" << "Исход" << "Примечание";
+            << "Разряд с" << "Разряд на" << "Примечание";
 
     table_settings[ttFee].title = "Взносы";
     table_settings[ttFee].tblName = "fee";

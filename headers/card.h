@@ -121,7 +121,6 @@ private:
     QDateEdit *edtDate;
     QComboBox *cbRankFrom;
     QComboBox *cbRankTo;
-    QLineEdit *edtRes;
 
     void CreateWidgets();
 

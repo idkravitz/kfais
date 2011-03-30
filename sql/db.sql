@@ -2,7 +2,6 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE sportsmen(
     id INTEGER NOT NULL PRIMARY KEY,
-    photo BLOB,
     name TEXT NOT NULL,
     birthday DATE NOT NULL,
 	rank_id INTEGER,
@@ -41,7 +40,6 @@ CREATE TABLE sertifications(
     date DATE NOT NULL,
     rank_from_id INTEGER,	--If sportsman haven't any rank
     rank_to_id INTEGER NOT NULL,
-    result TEXT,
     note TEXT,
 	FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (rank_from_id) REFERENCES ranks(id) ON DELETE CASCADE ON UPDATE CASCADE,

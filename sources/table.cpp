@@ -26,7 +26,7 @@ void Table::CreateWidgets()
     tb->addAction(QIcon(":/resource/Last.ico"), tr("Конец"), this, SLOT(SetLast()));
     tb->addAction(QIcon(":/resource/Add.ico"), tr("Добавить"), this, SLOT(Add()));
     tb->addAction(QIcon(":/resource/Delete.ico"), tr("Удалить"), this, SLOT(Delete()));
-    tb->addAction(QIcon(":/resource/Edit.ico"), tr("Редактировать"), this, SLOT(Edit()));
+    tb->addAction(QIcon(":/resource/Edit.png"), tr("Редактировать"), this, SLOT(Edit()));
 
     addToolBar(tb);
 
@@ -152,11 +152,10 @@ inline Card *Table::_CreateCard(int aId) const
 
 void TblSport::TableSpecificConfig()
 {
-    model->setRelation(4, QSqlRelation("ranks", "id", "name"));
-    model->setRelation(6, QSqlRelation("coaches", "id", "name"));
+    model->setRelation(Sport::taRank, QSqlRelation("ranks", "id", "name"));
+    model->setRelation(Sport::taCoach, QSqlRelation("coaches", "id", "name"));
     model->select();
     view->setColumnHidden(0, true);
-    view->setColumnHidden(Sport::taPhoto, true);
 }
 
 TblSport::TblSport(QWidget *aParent):
@@ -174,7 +173,7 @@ Card *TblSport::CreateCard(int aId) const
 
 void TblCoach::TableSpecificConfig()
 {
-    model->setRelation(3, QSqlRelation(Sett::GetTblName(ttClub), "id", "name"));
+    model->setRelation(Coach::taClub, QSqlRelation(Sett::GetTblName(ttClub), "id", "name"));
     model->select();
     view->setColumnHidden(0, true);
 }
@@ -207,9 +206,9 @@ Card *TblClub::CreateCard(int aId) const
 
 void TblSert::TableSpecificConfig()
 { 
-    model->setRelation(1, QSqlRelation("sportsmen", "id", "name"));    
-    model->setRelation(3, QSqlRelation("ranks", "id", "name"));
-    model->setRelation(4, QSqlRelation("ranks", "id", "name"));
+    model->setRelation(Sert::taSport, QSqlRelation("sportsmen", "id", "name"));
+    model->setRelation(Sert::taRankFrom, QSqlRelation("ranks", "id", "name"));
+    model->setRelation(Sert::taRankTo, QSqlRelation("ranks", "id", "name"));
     model->select();
 }
 
@@ -228,7 +227,7 @@ Card *TblSert::CreateCard(int aId) const
 
 void TblFee::TableSpecificConfig()
 {
-    model->setRelation(1, QSqlRelation("sportsmen", "id", "name"));    
+    model->setRelation(Fee::taSport, QSqlRelation("sportsmen", "id", "name"));
     model->select();
     view->setColumnHidden(0, true);
 }
@@ -248,8 +247,8 @@ Card *TblFee::CreateCard(int aId) const
 
 void TblSportComp::TableSpecificConfig()
 {
-    model->setRelation(1, QSqlRelation("sportsmen", "id", "name"));    
-    model->setRelation(4, QSqlRelation("categories", "id", "name"));    
+    model->setRelation(SportComp::taSport, QSqlRelation("sportsmen", "id", "name"));
+    model->setRelation(SportComp::taCateg, QSqlRelation("categories", "id", "name"));
     model->select();
     view->setColumnHidden(0, true);
 }
