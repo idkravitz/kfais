@@ -2,6 +2,7 @@
 
 QMdiArea *Sett::mdiArea;
 TblSett Sett::table_settings[ttRank + 1];
+RepSett Sett::report_settings[rtSport + 1];
 
 QMdiArea *Sett::GetMA()
 {
@@ -64,6 +65,8 @@ bool Sett::LoadSettings()
     table_settings[ttRank].tblName = "ranks";
     table_settings[ttRank].colName << "id" << "Название" << "Примечание";
 
+    report_settings[rtSport].title = "Спортсмены";
+
     return true;
 }
 
@@ -118,4 +121,9 @@ QString Sett::GetErrMsgTitle()
 QString Sett::GetErrMsgDef()
 {
     return QObject::tr("Вееденные данные не корректны");
+}
+
+QString Sett::GetRepTitle(RepType aType)
+{
+    return QObject::tr(report_settings[aType].title);
 }

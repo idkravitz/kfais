@@ -15,6 +15,8 @@ private:
 
     void CreateMenu();
 
+    bool IsOpen(TblType aTT) const;
+
 private slots:
     void OpenTblSport();
     void OpenTblCoach();
@@ -26,9 +28,12 @@ private slots:
     void OpenTblCateg();
     void OpenTblRank();
 
-    bool IsOpen(TblType aTT) const;
+    void OpenRepSport();
+
     QMdiSubWindow *OpenTbl(TblType aTT, Table *aTbl);
+//    QMdiSubWindow *OpenRep(RepType aTT, Report *aRep);
     void CloseTable(QObject *aTbl);
+    void CloseReport(QObject *aTbl);
 
 public:
     MainWindow(QWidget *aParent = 0);

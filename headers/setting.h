@@ -20,6 +20,12 @@ enum TblType
     ttRank = 9          //ranks
 };
 
+enum RepType
+{
+    rtAbstract = 0,
+    rtSport = 1
+};
+
 struct TblSett{
     const char *title;
     QString tblName;
@@ -27,11 +33,16 @@ struct TblSett{
     QVector<char*> colName;
 };
 
+struct RepSett{
+    const char *title;
+};
+
 class Sett
 {
 private:
     static QMdiArea *mdiArea;
     static TblSett table_settings[ttRank + 1];
+    static RepSett report_settings[rtSport + 1];
 
 public:
     static QMdiArea *GetMA();
@@ -42,6 +53,8 @@ public:
 
     static QVector<int> &GetVecColWidth(TblType aType);
     static QVector<char*> &GetVecColName(TblType aType);
+
+    static QString GetRepTitle(RepType aType);
 
     static QString GetNoteName();
 
