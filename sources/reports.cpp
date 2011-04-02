@@ -143,3 +143,7 @@ QString RepSport::GetQuery()
            "ranks r ON s.coach_id = c.id AND s.rank_id = r.id WHERE c.id = " +
            QString::number(vecId[cbCoach->currentIndex()]) + ";";
 }
+
+/******************************* Sertification *******************************/
+
+
