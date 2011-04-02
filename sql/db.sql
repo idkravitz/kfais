@@ -4,24 +4,24 @@ CREATE TABLE sportsmen(
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     birthday DATE NOT NULL,
-	rank_id INTEGER,
+	rank_id INTEGER DEFAULT 0,
     reg_number TEXT,
-    coach_id INTEGER,
+    coach_id INTEGER DEFAULT 0,
     address TEXT,
     phone TEXT,
     workplace TEXT,
     job TEXT,
 	note TEXT,
-	FOREIGN KEY (coach_id) REFERENCES coaches(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	FOREIGN KEY (rank_id) REFERENCES ranks(id) ON DELETE SET NULL ON UPDATE CASCADE);
+	FOREIGN KEY (coach_id) REFERENCES coaches(id) ON DELETE SET DEFAULT ON UPDATE CASCADE,
+	FOREIGN KEY (rank_id) REFERENCES ranks(id) ON DELETE SET DEFAULT ON UPDATE CASCADE);
 
 CREATE TABLE coaches(
 	id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     phone TEXT,
-	club_id INTEGER,
+	club_id INTEGER DEFAULT 0,
 	note TEXT,
-	FOREIGN KEY (club_id) REFERENCES clubs(id) ON DELETE SET NULL ON UPDATE CASCADE);
+	FOREIGN KEY (club_id) REFERENCES clubs(id) ON DELETE SET DEFAULT ON UPDATE CASCADE);
 
 CREATE TABLE clubs(
     id INTEGER NOT NULL PRIMARY KEY,
@@ -38,12 +38,12 @@ CREATE TABLE sertifications(
     num_rec_sert TEXT NOT NULL PRIMARY KEY,
 	sportsman_id INTEGER NOT NULL,
     date DATE NOT NULL,
-    rank_from_id INTEGER,	--If sportsman haven't any rank
+    rank_from_id INTEGER DEFAULT 0,	--If sportsman haven't any rank
     rank_to_id INTEGER NOT NULL,
     note TEXT,
 	FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (rank_from_id) REFERENCES ranks(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	FOREIGN KEY (rank_to_id) REFERENCES ranks(id) ON DELETE SET NULL ON UPDATE CASCADE);
+	FOREIGN KEY (rank_from_id) REFERENCES ranks(id) ON DELETE SET DEFAULT ON UPDATE CASCADE,
+	FOREIGN KEY (rank_to_id) REFERENCES ranks(id) ON DELETE SET DEFAULT ON UPDATE CASCADE);
 
 CREATE TABLE fee(
     id INTEGER NOT NULL PRIMARY KEY,
@@ -54,7 +54,7 @@ CREATE TABLE fee(
 
 CREATE TABLE sportsmen_competitions(
     id INTEGER NOT NULL PRIMARY KEY,
-    sportsman_id INTEGER,
+    sportsman_id INTEGER DEFAULT 0,
 	name TEXT,
 	DSO TEXT NOT NULL,
     category_id INTEGER NOT NULL,
@@ -78,3 +78,8 @@ CREATE TABLE categories(
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
 	note TEXT);
+
+INSERT INTO clubs (id, name) VALUES (0, '');
+INSERT INTO coaches (id, name) VALUES (0, '');
+INSERT INTO ranks (id, name) VALUES (0, '');
+INSERT INTO sportsmen (id, name, birthday) VALUES (0, '', '2000-01-01');
