@@ -1,37 +1,45 @@
 #include "reports.h"
-#include <QAxObject>
 
 /********************************************************************/
 /******************************* Model ******************************/
 /********************************************************************/
 
-void SportsMen::makeReport()
+QAxObject *BaseReport::openDocument()
 {
-    //const int xlDouble = -4119;
-    const int xlSingle = 1;
     QAxObject *excel = new QAxObject("Excel.Application", 0);
     excel->dynamicCall("SetVisible(bool)", true);
     QAxObject *workbooks = excel->querySubObject("Workbooks");
     QAxObject *workbook = workbooks->querySubObject("Add()");
     QAxObject *sheet = workbook->querySubObject("ActiveSheet");
     sheet->dynamicCall( "Select()" );
-// Adjust columns
-    QString headers[] = {
-                         QObject::tr("РегНомер"),
-                         QObject::tr("ФИО"),
-                         QObject::tr("Дата рождения"),
-                         QObject::tr("Адрес"),
-                         QObject::tr("Телефон"),
-                         QObject::tr("Место р/уч"),
-                         QObject::tr("Должность"),
-                         QObject::tr("Тренер"),
-                         QObject::tr("Разряд"),
-                        };
-    for(uint i = 0; i < sizeof(headers) / sizeof(QString); ++i)
+    return sheet;
+}
+
+
+void SportsmenReport::makeReport()
+{
+    const char *headers[] = {
+        "РегНомер",
+        "ФИО",
+        "Дата рождения",
+        "Адрес",
+        "Телефон",
+        "Место р/уч",
+        "Должность",
+        "Тренер",
+        "Разряд",
+    };
+    writeBody(headers);
+}
+
+void SportsmenReport::writeBody(const char *headers[])
+{
+    QAxObject *sheet = openDocument();
+    for(uint i = 0; i < sizeof(headers) / sizeof(*headers); ++i)
     {
         QAxObject *range = sheet->querySubObject("Range(const QString&)",
                                                  QString('A'+i) + QString::number(1));
-        range->dynamicCall("SetValue(const QVariant&)", QVariant(headers[i]));
+        range->dynamicCall("SetValue(const QVariant&)", QString(headers[i]));
         range->querySubObject("Font")->setProperty("Bold", true);
         range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
     }
@@ -56,6 +64,19 @@ void SportsMen::makeReport()
     font->setProperty("Size", 10);
 
     sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
+}
+
+void CertificationReport::makeReport()
+{
+    const char* headers[] = {
+        "ФИО",
+        "Дата рождения",
+        "Разряд",
+        "Тренер",
+        "Рег. №",
+        "Аттестуется на"
+    };
+    writeBody(headers);
 }
 
 /********************************************************************/
@@ -137,7 +158,7 @@ QString Report::GetQuery()
 /******************************* Sportsmen *******************************/
 
 RepSport::RepSport(QWidget *aParent):
-        Report(aParent, new SportsMen)
+        Report(aParent, new SportsmenReport)
 {
     CreateWidgets();
 
@@ -176,7 +197,7 @@ QString RepSport::GetQuery()
 /******************************* Sertifications *******************************/
 
 RepSert::RepSert(QWidget *aParent):
-        Report(aParent, new SportsMen) //Must be modified for sertifications
+        Report(aParent, new SportsmenReport) //Must be modified for sertifications
 {
     CreateWidgets();
 }
