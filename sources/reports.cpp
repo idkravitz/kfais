@@ -1,11 +1,10 @@
 #include "reports.h"
-#include <QAxObject>
 
 /********************************************************************/
 /******************************* Model ******************************/
 /********************************************************************/
 
-void SportsMen::makeReport()
+QAxObject *BaseReport::openDocument()
 {
     QAxObject *excel = new QAxObject("Excel.Application", 0);
     excel->dynamicCall("SetVisible(bool)", true);
@@ -13,32 +12,43 @@ void SportsMen::makeReport()
     QAxObject *workbook = workbooks->querySubObject("Add()");
     QAxObject *sheet = workbook->querySubObject("ActiveSheet");
     sheet->dynamicCall( "Select()" );
-// Adjust columns
-    QString headers[] = {
-                         QObject::tr("№"),
-                         QObject::tr("РегНомер"),
-                         QObject::tr("ФИО"),
-                         QObject::tr("Дата рождения"),
-                         QObject::tr("Адрес"),
-                         QObject::tr("Телефон"),
-                         QObject::tr("Место р/уч"),
-                         QObject::tr("Должность"),
-                         QObject::tr("Тренер"),
-                         QObject::tr("Разряд"),
-                        };
-    for(int i = 0; i < sizeof(headers) / sizeof(QString); ++i)
+    return sheet;
+}
+
+
+void SportsmenReport::makeReport()
+{
+    const char *headers[] = {
+        "РегНомер",
+        "ФИО",
+        "Дата рождения",
+        "Адрес",
+        "Телефон",
+        "Место р/уч",
+        "Должность",
+        "Тренер",
+        "Разряд",
+    };
+    writeBody(headers, sizeof(headers)/sizeof(*headers));
+}
+
+void SportsmenReport::writeBody(const char *headers[], uint length)
+{
+    QAxObject *sheet = openDocument();
+    qDebug() << sizeof(headers);
+    for(uint i = 0; i < length; ++i)
     {
         QAxObject *range = sheet->querySubObject("Range(const QString&)",
                                                  QString('A'+i) + QString::number(1));
-        range->dynamicCall("SetValue(const QVariant&)", QVariant(headers[i]));
+        range->dynamicCall("SetValue(const QVariant&)", QObject::tr(headers[i]));
         range->querySubObject("Font")->setProperty("Bold", true);
+        range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
     }
-    int rowid = 2;
-    qDebug() << "Vasay";
+    int rowid = 2, fieldsCount;
     while(query->next())
     {
-        qDebug() << "Vasay";
-        for(int i = 0; i < query->record().count(); ++i)
+        fieldsCount = query->record().count();
+        for(int i = 0; i < fieldsCount; ++i)
         {
             QAxObject *range = sheet->querySubObject("Range(const QString&)",
                                                      QString('A'+i) + QString::number(rowid));
@@ -46,7 +56,29 @@ void SportsMen::makeReport()
         }
         rowid++;
     }
+    QAxObject *exported = sheet->querySubObject("Range(const QString&)",
+                            (QString("A2:") + (QString('A'+(fieldsCount-1)) + QString::number(rowid-1))));
+    exported->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+
+    QAxObject *font = exported->querySubObject("Font");
+    font->setProperty("Name", QObject::tr("Arial"));
+    font->setProperty("Size", 10);
+
     sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
+}
+
+void CertificationReport::makeReport()
+{
+    const char* headers[] = {
+        "ФИО",
+        "Дата рождения",
+        "Разряд",
+        "Тренер",
+        "Рег. №",
+        "Аттестуется на",
+        "Примечание",
+    };
+    writeBody(headers, sizeof(headers)/sizeof(*headers));
 }
 
 /********************************************************************/
@@ -128,9 +160,24 @@ QString Report::GetQuery()
 /******************************* Sportsmen *******************************/
 
 RepSport::RepSport(QWidget *aParent):
-        Report(aParent, new SportsMen)
+        Report(aParent, new SportsmenReport)
 {
     CreateWidgets();
+
+    QSqlQuery q;
+    q.exec("SELECT * FROM coaches");
+    QStringList lst;
+    int id;
+    while (q.next())
+    {
+        id = q.record().value(0).toInt();
+        if(id)
+        {
+            vecId.push_back(id);
+            lst.push_back(q.record().value(1).toString());
+        }
+    }
+    InitComboBox(cbCoach, lst);
 }
 
 void RepSport::CreateWidgets()
@@ -143,16 +190,16 @@ void RepSport::CreateWidgets()
 
 QString RepSport::GetQuery()
 {
-    return "SELECT s.id, s.reg_number, s.name, s.birthday, s.address, s.phone, "
+    return "SELECT s.reg_number, s.name, s.birthday, s.address, s.phone, "
            "s.workplace, s.job, c.name, r.name FROM sportsmen s LEFT OUTER JOIN coaches c, "
-           "ranks r ON s.coach_id = c.id AND s.rank_id = r.id WHERE c.id = " +
+           "ranks r ON s.coach_id = c.id AND s.rank_id = r.id WHERE s.id <> 0 and c.id = " +
            QString::number(vecId[cbCoach->currentIndex()]) + ";";
 }
 
 /******************************* Sertifications *******************************/
 
 RepSert::RepSert(QWidget *aParent):
-        Report(aParent, new SportsMen) //Must be modified for sertifications
+        Report(aParent, new CertificationReport)
 {
     CreateWidgets();
 }
@@ -193,7 +240,7 @@ QString RepSert::GetQuery()
     {
         return  "select sp.name, sp.birthday, c.name, sp.reg_number, r1.name, r2.name, se.note from sertifications se "
                 "left outer join sportsmen sp, coaches c, ranks r1, ranks r2 on se.sportsman_id = sp.id and sp.coach_id = c.id "
-                "and se.rank_from_id = r1.id and se.rank_to_id = r2.id where c.id = " +
+                "and se.rank_from_id = r1.id and se.rank_to_id = r2.id where c.id = "
                 + QString::number(vecId[cb->currentIndex()]) + ";";
     }
     return "";

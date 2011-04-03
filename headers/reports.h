@@ -2,6 +2,7 @@
 #define REPORTS_H
 
 #include "setting.h"
+#include <QAxObject>
 
 /********************************************************************/
 /******************************* Model ******************************/
@@ -10,6 +11,12 @@
 class BaseReport{
 protected:
     QSqlQuery *query;
+    QAxObject *openDocument();
+    enum LineStyle {
+        xlSingle = 1,
+        xlDouble = -4119,
+    };
+
 public:
     BaseReport(QSqlQuery *aQuery = 0):
         query(aQuery) {}
@@ -17,7 +24,14 @@ public:
     void setQuery(QSqlQuery *aQuery) { query = aQuery; }
 };
 
-class SportsMen: public BaseReport {
+class SportsmenReport: public BaseReport {
+protected:
+    void writeBody(const char *header[], uint length);
+public:
+    virtual void makeReport();
+};
+
+class CertificationReport: public SportsmenReport {
 public:
     virtual void makeReport();
 };
