@@ -146,15 +146,15 @@ namespace SportComp
     enum Atr
     {
         taId = 0,
-        taSport = 1,
-        taName = 2,
-        taDSO = 3,
-        taCateg = 4,
-        taDrawNum = 5,
-        taUnit = 6,
-        taPrzPlc = 7,
-        taFigCount = 8,
-        taFigWon = 9
+        //taSport,
+        taName,
+        taDSO,
+        taCateg,
+        taDrawNum,
+        taUnit,
+        taPrzPlc,
+        taFigCount,
+        taFigWon
     };
 }
 

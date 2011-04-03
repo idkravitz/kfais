@@ -267,7 +267,7 @@ Card *TblFee::CreateCard(int aId) const
 
 void TblSportComp::TableSpecificConfig()
 {
-    model->setRelation(SportComp::taSport, QSqlRelation("sportsmen", "id", "name"));
+    //model->setRelation(SportComp::taSport, QSqlRelation("sportsmen", "id", "name"));
     model->setRelation(SportComp::taCateg, QSqlRelation("categories", "id", "name"));
     model->select();
     view->setColumnHidden(0, true);
@@ -277,6 +277,9 @@ TblSportComp::TblSportComp(QWidget *aParent):
         Table(aParent, ttSportComp)
 {
     TableSpecificConfig();
+//    model->setTable(Sett::GetTblName(ttSportComp));
+//    view->setModel(model);
+//    model->select();
 }
 
 Card *TblSportComp::CreateCard(int aId) const
