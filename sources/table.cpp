@@ -33,12 +33,13 @@ void Table::CreateWidgets()
     model = new QSqlRelationalTableModel(this);
     model->setTable(Sett::GetTblName(type));
     model->setEditStrategy(QSqlTableModel::OnRowChange);
-//    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
 
     view = new QTableView;
     view->setModel(model);
     Sett::SetParam(view);
     connect(view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(OpenCard(QModelIndex)));
+    view->horizontalHeader()->setHighlightSections(false);
+    connect(view->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(SetSort(int)));
 
     ApplyTableSettings();
 
@@ -46,14 +47,19 @@ void Table::CreateWidgets()
     setCentralWidget(view);
 }
 
+void Table::SetTableHeaders()
+{
+    QVector<char*> *n = &Sett::GetVecColName(type);
+    for (int i = 0; i < n->size(); ++i)
+        model->setHeaderData(i, Qt::Horizontal, tr(n->at(i)));
+}
+
 void Table::ApplyTableSettings()
 {
     QVector<int> *w = &Sett::GetVecColWidth(type);
-    QVector<char*> *n = &Sett::GetVecColName(type);
     for (int i = 0; i < w->size(); ++i)
         view->setColumnWidth(i, w->at(i));
-    for (int i = 0; i < n->size(); ++i)
-        model->setHeaderData(i, Qt::Horizontal, tr(n->at(i)));
+    SetTableHeaders();
 }
 
 void Table::SaveTableSettings()
@@ -147,6 +153,18 @@ inline Card *Table::_CreateCard(int aId) const
     sw->show();
     connect(c, SIGNAL(destroyed(QObject *)), this, SLOT(CloseCard(QObject *)));
     return c;
+}
+
+void Table::SetSort(int aI)
+{
+    QVector<QString> v;
+    v << "[^]" << "[v]";
+    prevSortVal = Qt::SortOrder(prevSortCol == aI ? !prevSortVal : Qt::AscendingOrder);
+    SetTableHeaders();
+    model->setSort(aI, prevSortVal);
+    model->setHeaderData(aI, Qt::Horizontal, model->headerData(aI, Qt::Horizontal).toString() + " " + v[prevSortVal]);
+    model->select();
+    prevSortCol = aI;
 }
 
 /******************************* Sportsmen *******************************/

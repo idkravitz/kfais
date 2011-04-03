@@ -16,7 +16,12 @@ private:
     TblType type;
     MapCard mapCard;
 
+    Qt::SortOrder prevSortVal;
+    int prevSortCol;
+
     void CreateWidgets();
+
+    void SetTableHeaders();
 
     void ApplyTableSettings();
     void SaveTableSettings();
@@ -32,6 +37,7 @@ private slots:
 
     void OpenCard(QModelIndex aMIndex);
     void CloseCard(QObject *aObj);
+    void SetSort(int aI);
 
 protected:
     QTableView *view;
