@@ -29,17 +29,18 @@ void SportsmenReport::makeReport()
         "Тренер",
         "Разряд",
     };
-    writeBody(headers);
+    writeBody(headers, sizeof(headers)/sizeof(*headers));
 }
 
-void SportsmenReport::writeBody(const char *headers[])
+void SportsmenReport::writeBody(const char *headers[], uint length)
 {
     QAxObject *sheet = openDocument();
-    for(uint i = 0; i < sizeof(headers) / sizeof(*headers); ++i)
+    qDebug() << sizeof(headers);
+    for(uint i = 0; i < length; ++i)
     {
         QAxObject *range = sheet->querySubObject("Range(const QString&)",
                                                  QString('A'+i) + QString::number(1));
-        range->dynamicCall("SetValue(const QVariant&)", QString(headers[i]));
+        range->dynamicCall("SetValue(const QVariant&)", QObject::tr(headers[i]));
         range->querySubObject("Font")->setProperty("Bold", true);
         range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
     }
@@ -74,9 +75,10 @@ void CertificationReport::makeReport()
         "Разряд",
         "Тренер",
         "Рег. №",
-        "Аттестуется на"
+        "Аттестуется на",
+        "Примечание",
     };
-    writeBody(headers);
+    writeBody(headers, sizeof(headers)/sizeof(*headers));
 }
 
 /********************************************************************/
@@ -197,7 +199,7 @@ QString RepSport::GetQuery()
 /******************************* Sertifications *******************************/
 
 RepSert::RepSert(QWidget *aParent):
-        Report(aParent, new SportsmenReport) //Must be modified for sertifications
+        Report(aParent, new CertificationReport)
 {
     CreateWidgets();
 }
@@ -238,7 +240,7 @@ QString RepSert::GetQuery()
     {
         return  "select sp.name, sp.birthday, c.name, sp.reg_number, r1.name, r2.name, se.note from sertifications se "
                 "left outer join sportsmen sp, coaches c, ranks r1, ranks r2 on se.sportsman_id = sp.id and sp.coach_id = c.id "
-                "and se.rank_from_id = r1.id and se.rank_to_id = r2.id where c.id = " +
+                "and se.rank_from_id = r1.id and se.rank_to_id = r2.id where c.id = "
                 + QString::number(vecId[cb->currentIndex()]) + ";";
     }
     return "";

@@ -26,7 +26,7 @@ public:
 
 class SportsmenReport: public BaseReport {
 protected:
-    void writeBody(const char *header[]);
+    void writeBody(const char *header[], uint length);
 public:
     virtual void makeReport();
 };
