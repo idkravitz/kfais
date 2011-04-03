@@ -8,7 +8,8 @@
 /******************************* Model ******************************/
 /********************************************************************/
 
-class BaseReport{
+class BaseReport
+{
 protected:
     QSqlQuery *query;
     QAxObject *openDocument();
@@ -24,14 +25,22 @@ public:
     void setQuery(QSqlQuery *aQuery) { query = aQuery; }
 };
 
-class SportsmenReport: public BaseReport {
+class SportsmenReport: public BaseReport
+{
 protected:
     void writeBody(const char *header[], uint length);
 public:
     virtual void makeReport();
 };
 
-class CertificationReport: public SportsmenReport {
+class CertificationReport: public SportsmenReport
+{
+public:
+    virtual void makeReport();
+};
+
+class DrawingReport: public BaseReport
+{
 public:
     virtual void makeReport();
 };
@@ -102,6 +111,26 @@ private slots:
 
 public:
     RepSert(QWidget *aParent);
+};
+
+class RepDraw: public Report{
+    Q_OBJECT
+
+private:
+//    QComboBox *cbTbl;
+//    QLabel *lbl;
+//    QComboBox *cb;
+//    QVector<int> vecId;
+
+    void CreateWidgets();
+
+    QString GetQuery();
+
+//private slots:
+//    void ChangeTbl(int aIndex);
+
+public:
+    RepDraw(QWidget *aParent);
 };
 
 #endif // REPORTS_H

@@ -56,9 +56,9 @@ CREATE TABLE sportsmen_competitions(
     id INTEGER NOT NULL PRIMARY KEY,
     sportsman_id INTEGER DEFAULT 0,
 	name TEXT,
-	DSO TEXT NOT NULL,
+	DSO TEXT,
     category_id INTEGER NOT NULL,
-    draw_number INTEGER NOT NULL,
+    draw_number INTEGER,
     units INTEGER NOT NULL,
     prize_place INTEGER,
     fights_count INTEGER,
@@ -78,6 +78,12 @@ CREATE TABLE categories(
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
 	note TEXT);
+
+CREATE VIEW sportsmen_competitions_view as 
+		select sc.id, s.name, sc.DSO, sc.category_id, sc.draw_number, sc.units, sc.prize_place, sc.fights_count, sc.fights_won, sc.note 
+		from sportsmen_competitions sc inner join sportsmen s on sc.sportsman_id=s.id where sc.sportsman_id <> 0
+	UNION
+		select id, name, DSO, category_id, draw_number, units, prize_place, fights_count, fights_won, note from sportsmen_competitions where sportsman_id=0; 
 
 INSERT INTO clubs (id, name) VALUES (0, '');
 INSERT INTO coaches (id, name) VALUES (0, '');

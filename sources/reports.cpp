@@ -43,7 +43,7 @@ void SportsmenReport::writeBody(const char *headers[], uint length)
         range->querySubObject("Font")->setProperty("Bold", true);
         range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
     }
-    int rowid = 2, fieldsCount;
+    int rowid = 2, fieldsCount = length;
     while(query->next())
     {
         fieldsCount = query->record().count();
@@ -245,3 +245,33 @@ QString RepSert::GetQuery()
     return "";
 }
 
+/******************************* Drawing *******************************/
+
+
+RepDraw::RepDraw(QWidget *aParent):
+        Report(aParent, new CertificationReport)
+{
+    CreateWidgets();
+}
+
+void RepDraw::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+
+//    AddWidToLt(lt, tr("Выборка по:"), cbTbl = new QComboBox, 0, 0);
+//    QStringList lst;
+//    lst << Sett::GetColName(ttSport, Sport::taCoach) << Sett::GetColName(ttCoach, Coach::taClub);
+//    cbTbl->addItems(lst);
+//    connect(cbTbl, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeTbl(int)));
+
+//    lbl = new QLabel(cbTbl->currentText() + ":");
+//    AddWidToLt(lt, lbl, cb = new QComboBox, 1, 0);
+//    InitComboBox(cb, GetLstRec("SELECT * FROM coaches", vecId));
+
+    CreateBasicWidgets(lt);
+}
+
+QString RepDraw::GetQuery()
+{
+    return "";
+}

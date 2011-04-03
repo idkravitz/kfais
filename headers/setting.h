@@ -27,7 +27,8 @@ enum RepType
 {
     rtAbstract = 0,
     rtSport = 1,
-    rtSert = 2
+    rtSert = 2,
+    rtDraw = 3,
 };
 
 struct TblSett{

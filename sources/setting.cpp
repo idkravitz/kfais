@@ -58,7 +58,7 @@ bool Sett::LoadSettings()
             << "Примечание";
 
     table_settings[ttSportComp].title = "Распределения \"Спортсмен - соревнование\"";
-    table_settings[ttSportComp].tblName = "sportsmen_competitions";
+    table_settings[ttSportComp].tblName = "sportsmen_competitions_view";
     table_settings[ttSportComp].colName << "id" << "Спортсмен"
             << "Название" << "ДСО" << "Категория" << "draw number"
             << "Единицы" << "prize_place" << "Поединков"
@@ -80,6 +80,7 @@ bool Sett::LoadSettings()
 
     report_settings[rtSport].title = "Спортсмены";
     report_settings[rtSert].title = "Аттестации";
+    report_settings[rtDraw].title = "Протокол взвешивания, мандатной комиссии и жеребьевки";
 
     return true;
 }
