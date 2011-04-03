@@ -21,7 +21,8 @@ Card::Card(QWidget *aParent, QSqlRelationalTableModel *aTblModel, TblType aType,
     setAttribute(Qt::WA_DeleteOnClose);
 
     model = new QSqlRelationalTableModel(this);
-    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
+    InitModel(aId);
+//    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
 
     mapper = new QDataWidgetMapper(this);
     mapper->setModel(model);
@@ -63,10 +64,10 @@ void Card::CreateBasicWidgets(QLayout *aLt)
     setLayout(lt);
 }
 
-void Card::InitModel(const QString &aFilter)
+void Card::InitModel(int aId)
 {
     model->setTable(Sett::GetTblName(type));
-    model->setFilter(Sett::GetTblName(type) + "." + aFilter);
+    model->setFilter(Sett::GetTblName(type) + ".id = " + QString::number(aId));
     for (int i = 0; i < tblModel->columnCount(); ++i)
     {
         QSqlRelation tmpRelation = tblModel->relation(i);
@@ -162,7 +163,6 @@ inline QGroupBox *CardSport::_AddTable(TblType aType, QTableView *aView, QSqlRel
 CardSport::CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttSport, aId)
 {
-    InitModel("id = " + QString::number(aId));
     CreateWidgets();
     _SetCBModel(cbRank, Sport::taRank, Rank::taName);
     _SetCBModel(cbCoach, Sport::taCoach, Coach::taName);
@@ -233,7 +233,6 @@ bool CardSport::IsValid() const
 CardCoach::CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttCoach, aId)
 {
-    InitModel("id = " + QString::number(aId));
     CreateWidgets();
     _SetCBModel(cbClub, Coach::taClub, Club::taName);
     mapper->toFirst();
@@ -258,7 +257,6 @@ bool CardCoach::IsValid() const
 CardClub::CardClub(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttClub, aId)
 {
-    InitModel("id = " + QString::number(aId));
     CreateWidgets();
     mapper->toFirst();
 }
@@ -281,7 +279,6 @@ bool CardClub::IsValid() const
 CardSert::CardSert(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttSert, aId)
 {
-    InitModel("num_rec_sert = " + QString::number(aId));
     CreateWidgets();
 
     _SetCBModel(cbSport, Sert::taSport, Sport::taName);
@@ -295,10 +292,6 @@ void CardSert::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
 
-    AddWid(lt, Sert::taNumRecSert, edtNum = new QLineEdit, 0);
-    QRegExp rx( "^[1-9]{1}[0-9]*$" );
-    edtNum->setValidator(new QRegExpValidator(rx, this));
-
     AddWid(lt, Sert::taSport, cbSport = new QComboBox, 1);
     AddWid(lt, Sert::taDate, edtDate = new QDateEdit, 2);
     edtDate->setCalendarPopup(true);
@@ -309,8 +302,7 @@ void CardSert::CreateWidgets()
 
 bool CardSert::IsValid() const
 {
-    return !CheckCond(edtNum->text().isEmpty(), tr("Введите регистрационный номер сертификата")) &&
-           !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите спортсмена"));
+    return !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите спортсмена"));
 }
 
 /******************************* Fee *******************************/
@@ -318,7 +310,6 @@ bool CardSert::IsValid() const
 CardFee::CardFee(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttFee, aId)
 {
-    InitModel("id = " + QString::number(aId));
     CreateWidgets();
     _SetCBModel(cbSport, Fee::taSport, Sport::taName);
     mapper->toFirst();
@@ -351,7 +342,6 @@ CardSportComp::CardSportComp(QWidget *aParent, QSqlRelationalTableModel *aTblMod
 CardComp::CardComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttComp, aId)
 {
-    InitModel("id = " + QString::number(aId));
     CreateWidgets();
     mapper->toFirst();
 }
@@ -376,7 +366,6 @@ bool CardComp::IsValid() const
 CardCateg::CardCateg(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttCateg, aId)
 {
-    InitModel("id = " + QString::number(aId));
     CreateWidgets();
     mapper->toFirst();
 }
@@ -398,7 +387,6 @@ bool CardCateg::IsValid() const
 CardRank::CardRank(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttRank, aId)
 {
-    InitModel("id = " + QString::number(aId));
     CreateWidgets();
     mapper->toFirst();
 }

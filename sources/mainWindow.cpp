@@ -35,6 +35,7 @@ void MainWindow::CreateMenu()
 
     QMenu *mnReports = new QMenu(tr("־עקועû"));
     mnReports->addAction(Sett::GetRepTitle(rtSport), this, SLOT(OpenRepSport()));
+    mnReports->addAction(Sett::GetRepTitle(rtSert), this, SLOT(OpenRepSert()));
 
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);
@@ -154,4 +155,9 @@ QMdiSubWindow *MainWindow::OpenRep(RepType aTT, Report *aRep)
 void MainWindow::OpenRepSport()
 {
     QMdiSubWindow *sw = OpenRep(rtSport, new RepSport(Sett::GetMA()));
+}
+
+void MainWindow::OpenRepSert()
+{
+    QMdiSubWindow *sw = OpenRep(rtSert, new RepSert(Sett::GetMA()));
 }

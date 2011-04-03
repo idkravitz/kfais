@@ -68,4 +68,26 @@ public:
     RepSport(QWidget *aParent);
 };
 
+/******************************* Sertifications *******************************/
+
+class RepSert: public Report{
+    Q_OBJECT
+
+private:
+    QComboBox *cbTbl;
+    QLabel *lbl;
+    QComboBox *cb;
+    QVector<int> vecId;
+
+    void CreateWidgets();
+
+    QString GetQuery();
+
+private slots:
+    void ChangeTbl(int aIndex);
+
+public:
+    RepSert(QWidget *aParent);
+};
+
 #endif // REPORTS_H

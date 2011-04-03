@@ -35,7 +35,7 @@ CREATE TABLE ranks(
 	note TEXT);
 
 CREATE TABLE sertifications( 
-    num_rec_sert TEXT NOT NULL PRIMARY KEY,
+	id INTEGER NOT NULL PRIMARY KEY,
 	sportsman_id INTEGER NOT NULL,
     date DATE NOT NULL,
     rank_from_id INTEGER DEFAULT 0,	--If sportsman haven't any rank
