@@ -7,6 +7,8 @@
 
 void SportsMen::makeReport()
 {
+    //const int xlDouble = -4119;
+    const int xlSingle = 1;
     QAxObject *excel = new QAxObject("Excel.Application", 0);
     excel->dynamicCall("SetVisible(bool)", true);
     QAxObject *workbooks = excel->querySubObject("Workbooks");
@@ -15,7 +17,6 @@ void SportsMen::makeReport()
     sheet->dynamicCall( "Select()" );
 // Adjust columns
     QString headers[] = {
-                         QObject::tr("№"),
                          QObject::tr("РегНомер"),
                          QObject::tr("ФИО"),
                          QObject::tr("Дата рождения"),
@@ -26,19 +27,19 @@ void SportsMen::makeReport()
                          QObject::tr("Тренер"),
                          QObject::tr("Разряд"),
                         };
-    for(int i = 0; i < sizeof(headers) / sizeof(QString); ++i)
+    for(uint i = 0; i < sizeof(headers) / sizeof(QString); ++i)
     {
         QAxObject *range = sheet->querySubObject("Range(const QString&)",
                                                  QString('A'+i) + QString::number(1));
         range->dynamicCall("SetValue(const QVariant&)", QVariant(headers[i]));
         range->querySubObject("Font")->setProperty("Bold", true);
+        range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
     }
-    int rowid = 2;
-    qDebug() << "Vasay";
+    int rowid = 2, fieldsCount;
     while(query->next())
     {
-        qDebug() << "Vasay";
-        for(int i = 0; i < query->record().count(); ++i)
+        fieldsCount = query->record().count();
+        for(int i = 0; i < fieldsCount; ++i)
         {
             QAxObject *range = sheet->querySubObject("Range(const QString&)",
                                                      QString('A'+i) + QString::number(rowid));
@@ -46,6 +47,14 @@ void SportsMen::makeReport()
         }
         rowid++;
     }
+    QAxObject *exported = sheet->querySubObject("Range(const QString&)",
+                            (QString("A2:") + (QString('A'+(fieldsCount-1)) + QString::number(rowid-1))));
+    exported->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+
+    QAxObject *font = exported->querySubObject("Font");
+    font->setProperty("Name", QObject::tr("Arial"));
+    font->setProperty("Size", 10);
+
     sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
 }
 
@@ -121,10 +130,15 @@ RepSport::RepSport(QWidget *aParent):
     QSqlQuery q;
     q.exec("SELECT * FROM coaches");
     QStringList lst;
+    int id;
     while (q.next())
     {
-        vecId.push_back(q.record().value(0).toInt());
-        lst.push_back(q.record().value(1).toString());
+        id = q.record().value(0).toInt();
+        if(id)
+        {
+            vecId.push_back(id);
+            lst.push_back(q.record().value(1).toString());
+        }
     }
     InitComboBox(cbCoach, lst);
 }
@@ -138,8 +152,8 @@ void RepSport::CreateWidgets()
 
 QString RepSport::GetQuery()
 {
-    return "SELECT s.id, s.reg_number, s.name, s.birthday, s.address, s.phone, "
+    return "SELECT s.reg_number, s.name, s.birthday, s.address, s.phone, "
            "s.workplace, s.job, c.name, r.name FROM sportsmen s LEFT OUTER JOIN coaches c, "
-           "ranks r ON s.coach_id = c.id AND s.rank_id = r.id WHERE c.id = " +
+           "ranks r ON s.coach_id = c.id AND s.rank_id = r.id WHERE s.id <> 0 and c.id = " +
            QString::number(vecId[cbCoach->currentIndex()]) + ";";
 }
