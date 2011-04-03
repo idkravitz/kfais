@@ -7,9 +7,14 @@ RepSett Sett::report_settings[rtSport + 1];
 void AddWidToLt(QGridLayout *aLt, const QString &aLblStr, QWidget *aW, int aRow, int aCol)
 {
     QLabel *lbl = new QLabel(aLblStr);
-    aLt->addWidget(lbl, aRow, aCol);
+    AddWidToLt(aLt, lbl, aW, aRow, aCol);
+}
+
+void AddWidToLt(QGridLayout *aLt, QLabel *aLbl, QWidget *aW, int aRow, int aCol)
+{
+    aLt->addWidget(aLbl, aRow, aCol);
     aLt->addWidget(aW, aRow, aCol + 1);
-    lbl->setBuddy(aW);
+    aLbl->setBuddy(aW);
 }
 
 QMdiArea *Sett::GetMA()
@@ -44,7 +49,7 @@ bool Sett::LoadSettings()
 
     table_settings[ttSert].title = "Аттестации";
     table_settings[ttSert].tblName = "sertifications";
-    table_settings[ttSert].colName << "Рег. № сертификата" << "Спорстмен" << "Дата"
+    table_settings[ttSert].colName << "id" << "Спорстмен" << "Дата"
             << "Разряд с" << "Разряд на" << "Примечание";
 
     table_settings[ttFee].title = "Взносы";
@@ -74,6 +79,7 @@ bool Sett::LoadSettings()
     table_settings[ttRank].colName << "id" << "Название" << "Примечание";
 
     report_settings[rtSport].title = "Спортсмены";
+    report_settings[rtSert].title = "Аттестации";
 
     return true;
 }

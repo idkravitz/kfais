@@ -29,7 +29,7 @@ protected:
 
     Card(QWidget *aParent, QSqlRelationalTableModel *aTblModel, TblType aType, int aId);
     void CreateBasicWidgets(QLayout *aLt);
-    void InitModel(const QString &aFilter);
+    void InitModel(int aId);
     void AddWid(QGridLayout *aLt, int aTblAtrI, QWidget *aW, int aRow, int aCol = 0);
 
     virtual bool IsValid() const;
@@ -116,7 +116,6 @@ class CardSert: public Card
     Q_OBJECT
 
 private:
-    QLineEdit *edtNum;
     QComboBox *cbSport;
     QDateEdit *edtDate;
     QComboBox *cbRankFrom;

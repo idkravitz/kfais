@@ -64,11 +64,25 @@ void SportsMen::makeReport()
 
 inline void InitComboBox(QComboBox *aCB, const QStringList &aLst)
 {
+    aCB->clear();
     aCB->addItems(aLst);
     aCB->setInsertPolicy(QComboBox::NoInsert);
     aCB->setEditable(true);
     QCompleter *comp = new QCompleter(aLst);
     aCB->setCompleter(comp);
+}
+
+QStringList GetLstRec(const QString &aStrQ, QVector<int> &aVecId)
+{
+    aVecId.clear();
+    QSqlQuery q(aStrQ);
+    QStringList lst;
+    while (q.next())
+    {
+        aVecId.push_back(q.record().value(0).toInt());
+        lst.push_back(q.record().value(1).toString());
+    }
+    return lst;
 }
 
 Report::Report(QWidget *aParent, BaseReport *aLogRep):
@@ -147,6 +161,7 @@ void RepSport::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
     AddWidToLt(lt, Sett::GetColName(ttSport, Sport::taCoach) + ":", cbCoach = new QComboBox, 0, 0);
+    InitComboBox(cbCoach, GetLstRec("SELECT * FROM coaches", vecId));
     CreateBasicWidgets(lt);
 }
 
@@ -158,6 +173,50 @@ QString RepSport::GetQuery()
            QString::number(vecId[cbCoach->currentIndex()]) + ";";
 }
 
-/******************************* Sertification *******************************/
+/******************************* Sertifications *******************************/
 
+RepSert::RepSert(QWidget *aParent):
+        Report(aParent, new SportsMen) //Must be modified for sertifications
+{
+    CreateWidgets();
+}
+
+void RepSert::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+
+    AddWidToLt(lt, tr("Выборка по:"), cbTbl = new QComboBox, 0, 0);
+    QStringList lst;
+    lst << Sett::GetColName(ttSport, Sport::taCoach) << Sett::GetColName(ttCoach, Coach::taClub);
+    cbTbl->addItems(lst);
+    connect(cbTbl, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeTbl(int)));
+
+    lbl = new QLabel(cbTbl->currentText() + ":");
+    AddWidToLt(lt, lbl, cb = new QComboBox, 1, 0);
+    InitComboBox(cb, GetLstRec("SELECT * FROM coaches", vecId));
+
+    CreateBasicWidgets(lt);
+}
+
+void RepSert::ChangeTbl(int aIndex)
+{
+    if (!aIndex)
+    {
+        InitComboBox(cb, GetLstRec("SELECT * FROM coaches", vecId));
+    }
+    else
+    {
+        InitComboBox(cb, GetLstRec("SELECT * FROM clubs", vecId));
+    }
+    lbl->setText(cbTbl->currentText() + ":");
+}
+
+QString RepSert::GetQuery()
+{
+    return "";
+//    return "SELECT s.id, s.reg_number, s.name, s.birthday, s.address, s.phone, "
+//           "s.workplace, s.job, c.name, r.name FROM sportsmen s LEFT OUTER JOIN coaches c, "
+//           "ranks r ON s.coach_id = c.id AND s.rank_id = r.id WHERE c.id = " +
+//           QString::number(vecId[cb->currentIndex()]) + ";";
+}
 

@@ -7,6 +7,7 @@
 #include <QtSql>
 
 extern void AddWidToLt(QGridLayout *aLt, const QString &aLblStr, QWidget *aW, int aRow, int aCol);
+extern void AddWidToLt(QGridLayout *aLt, QLabel *aLbl, QWidget *aW, int aRow, int aCol);
 
 enum TblType
 {
@@ -25,7 +26,8 @@ enum TblType
 enum RepType
 {
     rtAbstract = 0,
-    rtSport = 1
+    rtSport = 1,
+    rtSert = 2
 };
 
 struct TblSett{
@@ -120,7 +122,7 @@ namespace Sert
 {
     enum Atr
     {
-        taNumRecSert = 0,
+        taId = 0,
         taSport = 1,
         taDate = 2,
         taRankFrom = 3,

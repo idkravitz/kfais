@@ -33,7 +33,7 @@ void Table::CreateWidgets()
     model = new QSqlRelationalTableModel(this);
     model->setTable(Sett::GetTblName(type));
     model->setEditStrategy(QSqlTableModel::OnRowChange);
-    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
+//    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
 
     view = new QTableView;
     view->setModel(model);
@@ -211,6 +211,7 @@ void TblSert::TableSpecificConfig()
     model->setRelation(Sert::taRankFrom, QSqlRelation("ranks", "id", "name"));
     model->setRelation(Sert::taRankTo, QSqlRelation("ranks", "id", "name"));
     model->select();
+    view->setColumnHidden(0, true);
 }
 
 TblSert::TblSert(QWidget *aParent):
