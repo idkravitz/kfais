@@ -15,7 +15,6 @@ QAxObject *BaseReport::openDocument()
     return sheet;
 }
 
-
 void SportsmenReport::makeReport()
 {
     const char *headers[] = {
@@ -238,7 +237,7 @@ QString RepSert::GetQuery()
 {
     if (!cbTbl->currentIndex())
     {
-        return  "select sp.name, sp.birthday, c.name, sp.reg_number, r1.name, r2.name, se.note from sertifications se "
+        return  "select sp.name, sp.birthday, r1.name, c.name, sp.reg_number, r2.name, se.note from sertifications se "
                 "left outer join sportsmen sp, coaches c, ranks r1, ranks r2 on se.sportsman_id = sp.id and sp.coach_id = c.id "
                 "and se.rank_from_id = r1.id and se.rank_to_id = r2.id where c.id = "
                 + QString::number(vecId[cb->currentIndex()]) + ";";
