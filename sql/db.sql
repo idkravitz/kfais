@@ -3,7 +3,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE sportsmen(
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
-    birthday DATE NOT NULL,
+    birthday DATE,
 	rank_id INTEGER DEFAULT 0,
     reg_number TEXT,
     coach_id INTEGER DEFAULT 0,
