@@ -25,7 +25,6 @@ insert into coaches(name) values ('Иванов');
 insert into coaches(name) values ('Иванов Вячеслав Юрьевич');
 insert into coaches(name) values ('Исаков А.Г.');
 insert into coaches(name) values ('Калманов М.Б.');
-insert into coaches(name) values ('Караульных К');
 insert into coaches(name) values ('Караульных К.А.');
 insert into coaches(name) values ('Каюмов И.Н.');
 insert into coaches(name) values ('Келехсаев Р.У.');
