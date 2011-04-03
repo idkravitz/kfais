@@ -234,10 +234,13 @@ void RepSert::ChangeTbl(int aIndex)
 
 QString RepSert::GetQuery()
 {
+    if (!cbTbl->currentIndex())
+    {
+        return  "select sp.name, sp.birthday, c.name, sp.reg_number, r1.name, r2.name, se.note from sertifications se "
+                "left outer join sportsmen sp, coaches c, ranks r1, ranks r2 on se.sportsman_id = sp.id and sp.coach_id = c.id "
+                "and se.rank_from_id = r1.id and se.rank_to_id = r2.id where c.id = " +
+                + QString::number(vecId[cb->currentIndex()]) + ";";
+    }
     return "";
-//    return "SELECT s.id, s.reg_number, s.name, s.birthday, s.address, s.phone, "
-//           "s.workplace, s.job, c.name, r.name FROM sportsmen s LEFT OUTER JOIN coaches c, "
-//           "ranks r ON s.coach_id = c.id AND s.rank_id = r.id WHERE c.id = " +
-//           QString::number(vecId[cb->currentIndex()]) + ";";
 }
 
