@@ -80,7 +80,7 @@ void CertificationReport::makeReport()
     writeBody(headers, sizeof(headers)/sizeof(*headers));
 }
 
-void DrawingReport::writeHeader(const QString& category, const uint units)
+void DrawingReport::writeHeader(const QString& category)
 {
     const char * headers[] = {
         "¹ ï/ï",
@@ -130,7 +130,6 @@ void DrawingReport::writeLine(uint written)
 
 void DrawingReport::makeReport()
 {
-    uint units = 0, vunits;
     uint written = 0;
     QString category = "", vcat;
     currentRow = pageStartRow = currentPage = 1;
@@ -140,14 +139,12 @@ void DrawingReport::makeReport()
     {
         qDebug() << "the fuck ?";
         vcat = query->value(0).toString();
-        vunits = query->value(1).toUInt();
-        if(!units || category != vcat || units != vunits || written == 16)
+        if(currentRow == 1 || category != vcat || written == 16)
         {
-            if(units)
+            if(currentRow == 1)
                 writeFooter(written);
             category = vcat;
-            units = vunits;
-            writeHeader(category, units);
+            writeHeader(category);
             written = 0;
         }
         writeLine(written++);
@@ -351,7 +348,7 @@ void RepDraw::CreateWidgets()
 
 QString RepDraw::GetQuery()
 {
-    return "select ca.name, sc.units, s.name, s.birthday, cl.name, r.name "
+    return "select ca.name, s.name, s.birthday, cl.name, r.name "
            "from sportsmen_competitions sc inner join sportsmen s, coaches c, clubs cl, "
            "categories ca, competitions co, ranks r on "
            "sc.sportsman_id = s.id and s.coach_id = c.id and c.club_id = cl.id and sc.category_id = ca.id "
