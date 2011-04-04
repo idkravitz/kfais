@@ -1,7 +1,7 @@
 #include "setting.h"
 
 QMdiArea *Sett::mdiArea;
-TblSett Sett::table_settings[ttPrzWin + 1];
+TblSett Sett::table_settings[ttPrzWinView + 1];
 RepSett Sett::report_settings[rtDraw + 1];
 
 void AddWidToLt(QGridLayout *aLt, const QString &aLblStr, QWidget *aW, int aRow, int aCol)
@@ -78,10 +78,17 @@ bool Sett::LoadSettings()
 
     table_settings[ttPrzWin].title = "Призеры";
     table_settings[ttPrzWin].tblName = "prize_winners";
-    table_settings[ttPrzWin].colName << "id" << "Спортсмен"
-            << "Соревнование" << "Число боев"
-            << "Число побед" << "Место"
+    table_settings[ttPrzWin].colName << "id" << "Спортсмен - соревнование"
+            << "Число боев" << "Число побед" << "Место"
             << "Регион" << "Город" << "Примечание";
+
+    table_settings[ttPrzWinView].title = "Призеры";
+    table_settings[ttPrzWinView].tblName = "prize_winners_view";
+    table_settings[ttPrzWinView].colName << "id" << "Соревнование"
+            << "Дата" << "Спортсмен"
+            << "Число боев" << "Число побед"
+            << "Место" << "Регион"
+            << "Город" << "Примечание";
 
     report_settings[rtSport].title = "Спортсмены";
     report_settings[rtSert].title = "Аттестации";

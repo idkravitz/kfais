@@ -1,5 +1,6 @@
 -- Подумать над правильным склонением
-INSERT INTO competitions (id, name, date, location) VALUES (1, 'Чемпионата и Первенства по КУДО Приморского края', '2010-12-10', 'г.Владивосток');
+INSERT INTO competitions (id, name, name_prot, date, location) VALUES (
+	1, 'Чемпионат и Первенство по КУДО Приморского края', 'Чемпионата и Первенства по КУДО Приморского края', '2010-12-10', 'г.Владивосток');
 
 -- категории
 INSERT INTO categories (name) VALUES ('мужчины 190 ед.');

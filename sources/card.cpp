@@ -131,6 +131,12 @@ inline void Card::_SetCBModel(QComboBox *aCB, int aIn, int aOut)
     aCB->setCompleter(comp);
 }
 
+inline void Card::SetRegExprInt(QLineEdit* aEdt, bool aCanBeZero)
+{
+    QRegExp rx(aCanBeZero ? "^[0-9]*$" : "^[1-9]{1}[0-9]*$");
+    aEdt->setValidator(new QRegExpValidator(rx, this));
+}
+
 /******************************* Sportsmen *******************************/
 
 inline QTableView *CardSport::_InitViewModel(QTableView *aView, QSqlRelationalTableModel *aModel, TblType aType)
@@ -178,8 +184,7 @@ void CardSport::CreateWidgets()
 
     AddWid(lt1, Sport::taCoach, cbCoach = new QComboBox, 1, 2);
     AddWid(lt1, Sport::taRegNum, edtRegNum = new QLineEdit, 1, 4);
-    QRegExp rx( "^[1-9]{1}[0-9]*$" );
-    edtRegNum->setValidator(new QRegExpValidator(rx, this));
+    SetRegExprInt(edtRegNum, false);
 
     AddWid(lt1, Sport::taAddr, edtAddr = new QLineEdit, 2, 2);
     AddWid(lt1, Sport::taPhone, edtPhone = new QLineEdit, 2, 4);
@@ -334,14 +339,22 @@ CardSportComp::CardSportComp(QWidget *aParent, QSqlRelationalTableModel *aTblMod
         Card(aParent, aTblModel, ttSportComp, aId)
 {
     CreateWidgets();
+    _SetCBModel(cbSport, SportComp::taSport, Sport::taName);
+    _SetCBModel(cbComp, SportComp::taComp, Comp::taName);
+    _SetCBModel(cbCateg, SportComp::taCateg, Categ::taName);
+    mapper->toFirst();
 }
 
 void CardSportComp::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
-//    AddWid(lt, Fee::taSport, cbSport = new QComboBox, 0);
-//    AddWid(lt, Fee::taDate, edtDate = new QDateEdit, 1);
-//    edtDate->setCalendarPopup(true);
+    AddWid(lt, SportComp::taSport, cbSport = new QComboBox, 0);
+    AddWid(lt, SportComp::taComp, cbComp = new QComboBox, 1);
+    AddWid(lt, SportComp::taCateg, cbCateg = new QComboBox, 2);
+    AddWid(lt, SportComp::taDrawNum, edtDrawNum = new QLineEdit, 3);
+    SetRegExprInt(edtDrawNum, false);
+    AddWid(lt, SportComp::taUnit, edtUnit = new QLineEdit, 4);
+    SetRegExprInt(edtUnit, false);
     CreateBasicWidgets(lt);
 }
 
@@ -415,4 +428,42 @@ void CardRank::CreateWidgets()
 bool CardRank::IsValid() const
 {
     return !CheckCond(edtName->text().isEmpty(), tr("Выберите название разряда"));
+}
+
+/******************************* Prize winners *******************************/
+
+CardPrzWin::CardPrzWin(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
+        Card(aParent, aTblModel, ttPrzWin, aId)
+{
+    CreateWidgets();
+    mapper->toFirst();
+}
+
+void CardPrzWin::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+
+    edtSportComp = new QLineEdit(this);
+    edtSportComp->hide();
+    mapper->addMapping(edtSportComp, PrzWin::taSportComp);
+
+    AddWidToLt(lt, tr("Соревнование:"), cbComp = new QComboBox, 0, 0);
+    AddWidToLt(lt, tr("Спортсмен:"), cbSport = new QComboBox, 1, 0);
+
+    AddWid(lt, PrzWin::taFightsCount, edtFightsCount = new QLineEdit, 2);
+    SetRegExprInt(edtFightsCount);
+    AddWid(lt, PrzWin::taFightsWon, edtFightsWon = new QLineEdit, 3);
+    SetRegExprInt(edtFightsWon);
+    AddWid(lt, PrzWin::taPlace, edtPlace = new QLineEdit, 4);
+    SetRegExprInt(edtPlace, false);
+    AddWid(lt, PrzWin::taRegion, edtRegion = new QLineEdit, 5);
+    AddWid(lt, PrzWin::taCity, edtCity = new QLineEdit, 6);
+
+    CreateBasicWidgets(lt);
+}
+
+bool CardPrzWin::IsValid() const
+{
+//    return !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите спортсмена"));
+    return true;
 }

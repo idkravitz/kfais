@@ -35,6 +35,7 @@ protected:
     virtual bool IsValid() const;
 
     inline void _SetCBModel(QComboBox *aCB, int aIn, int aOut);
+    inline void SetRegExprInt(QLineEdit* aEdt, bool aCanBeZero = true);
 
 public:
     int GetId() const;
@@ -155,10 +156,11 @@ class CardSportComp: public Card
     Q_OBJECT
 
 private:
-    QComboBox *cbName;
-    QLineEdit *edtDSO;
-    QComboBox *cbCat;
+    QComboBox *cbSport;
+    QComboBox *cbComp;
+    QComboBox *cbCateg;
     QLineEdit *edtDrawNum;
+    QLineEdit *edtUnit;
 
     void CreateWidgets();
 
@@ -219,6 +221,30 @@ private:
 
 public:
     CardRank(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+};
+
+/******************************* Prize winners *******************************/
+
+class CardPrzWin: public Card
+{
+    Q_OBJECT
+
+private:
+    QComboBox *cbSport;
+    QComboBox *cbComp;
+    QLineEdit *edtSportComp;    //For hack
+    QLineEdit *edtFightsCount;
+    QLineEdit *edtFightsWon;
+    QLineEdit *edtPlace;
+    QLineEdit *edtRegion;
+    QLineEdit *edtCity;
+
+    void CreateWidgets();
+
+    bool IsValid() const;
+
+public:
+    CardPrzWin(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
 
 #endif // CARD_H
