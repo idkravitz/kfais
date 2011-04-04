@@ -52,21 +52,6 @@ CREATE TABLE fee(
 	note TEXT,
 	FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
-CREATE TABLE sportsmen_competitions(
-    id INTEGER NOT NULL PRIMARY KEY,
-    sportsman_id INTEGER DEFAULT 0,
-	name TEXT,
-	DSO TEXT,
-    category_id INTEGER NOT NULL,
-    draw_number INTEGER,
-    units INTEGER NOT NULL,
-    prize_place INTEGER,
-    fights_count INTEGER,
-    fights_won INTEGER,
-	note TEXT,
-	FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL ON UPDATE CASCADE);
-
 CREATE TABLE competitions(
 	id INTEGER NOT NULL PRIMARY KEY,
 	name TEXT NOT NULL,
@@ -74,18 +59,37 @@ CREATE TABLE competitions(
     location TEXT,
 	note TEXT);
 
+CREATE TABLE sportsmen_competitions(
+    id INTEGER NOT NULL PRIMARY KEY,
+    sportsman_id INTEGER NOT NULL,
+    competition_id INTEGER NOT NULL,
+    category_id INTEGER DEFAULT 0,
+    draw_number INTEGER,
+    units INTEGER NOT NULL,
+	note TEXT,
+	FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET DEFAULT ON UPDATE CASCADE);
+
 CREATE TABLE categories(
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
 	note TEXT);
 
-CREATE VIEW sportsmen_competitions_view as 
-		select sc.id, s.name, sc.DSO, sc.category_id, sc.draw_number, sc.units, sc.prize_place, sc.fights_count, sc.fights_won, sc.note 
-		from sportsmen_competitions sc inner join sportsmen s on sc.sportsman_id=s.id where sc.sportsman_id <> 0
-	UNION
-		select id, name, DSO, category_id, draw_number, units, prize_place, fights_count, fights_won, note from sportsmen_competitions where sportsman_id=0; 
+CREATE TABLE prize_winners(
+	id INTEGER NOT NULL PRIMARY KEY,
+	sportsman_id INTEGER NOT NULL,
+	competition_id INTEGER NOT NULL,
+	fights_count INTEGER,
+    fights_won INTEGER,
+    region TEXT,						--For result protocol
+    city TEXT,      					--For result protocol
+    note TEXT,
+    FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
 INSERT INTO clubs (id, name) VALUES (0, '');
 INSERT INTO coaches (id, name) VALUES (0, '');
 INSERT INTO ranks (id, name) VALUES (0, '');
-INSERT INTO sportsmen (id, name, birthday) VALUES (0, '', '2000-01-01');
+--INSERT INTO sportsmen (id, name, birthday) VALUES (0, '', '2000-01-01');
+INSERT INTO categories (id, name) VALUES (0, '');
