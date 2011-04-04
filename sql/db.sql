@@ -78,19 +78,17 @@ CREATE TABLE categories(
 
 CREATE TABLE prize_winners(
 	id INTEGER NOT NULL PRIMARY KEY,
-	sportsman_id INTEGER NOT NULL,
-	competition_id INTEGER NOT NULL,
+	sportsman_competition_id INTEGER NOT NULL,
 	fights_count INTEGER,
     fights_won INTEGER,
     place INTEGER,
     region TEXT,						--For result protocol
     city TEXT,      					--For result protocol
     note TEXT,
-    FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE ON UPDATE CASCADE);
+    FOREIGN KEY (sportsman_competition_id) REFERENCES sportsmen_competitions(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
 INSERT INTO clubs (id, name) VALUES (0, '');
 INSERT INTO coaches (id, name) VALUES (0, '');
 INSERT INTO ranks (id, name) VALUES (0, '');
---INSERT INTO sportsmen (id, name, birthday) VALUES (0, '', '2000-01-01');
+INSERT INTO sportsmen (id, name, birthday) VALUES (0, '', '2000-01-01');
 INSERT INTO categories (id, name) VALUES (0, '');

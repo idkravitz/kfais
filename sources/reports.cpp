@@ -80,6 +80,10 @@ void CertificationReport::makeReport()
     writeBody(headers, sizeof(headers)/sizeof(*headers));
 }
 
+void DrawingReport::makeReport()
+{
+}
+
 /********************************************************************/
 /******************************* View *******************************/
 /********************************************************************/
