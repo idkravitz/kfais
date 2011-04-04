@@ -15,3 +15,6 @@ INSERT INTO sportsmen_competitions (sportsman_id, category_id, units) VALUES ((s
 INSERT INTO sportsmen_competitions (sportsman_id, category_id, units) VALUES ((select id from sportsmen where name='Карпов Иван Анатольевич'), (select id from categories where name='мужчины'), 190)
 INSERT INTO sportsmen_competitions (sportsman_id, category_id, units) VALUES ((select id from sportsmen where name='Карпов Иван Анатольевич'), (select id from categories where name='мужчины'), 190)
   */
+
+INSERT INTO prize_winners (sportsman_id, competition_id, fights_count, fights_won, place, region, city) VALUES((SELECT id FROM sportsmen where name = 'Васильев Артем'), 1, 2, 2, 1, 'Приморский край', 'Владивосток');
+INSERT INTO prize_winners (sportsman_id, competition_id, fights_count, fights_won, place, region, city) VALUES((SELECT id FROM sportsmen where name = 'Шихардин Андрей'), 1, 2, 1, 2, 'Приморский край', 'Уссурийск');
