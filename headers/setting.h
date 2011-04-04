@@ -12,23 +12,24 @@ extern void AddWidToLt(QGridLayout *aLt, QLabel *aLbl, QWidget *aW, int aRow, in
 enum TblType
 {
     ttAbstract = 0,
-    ttSport = 1,        //sportmen
-    ttCoach = 2,        //coachs
-    ttClub = 3,         //clubs
-    ttSert = 4,         //sertifications
-    ttFee = 5,          //fee
-    ttSportComp = 6,    //sportsmen-competitions
-    ttComp = 7,         //competitions
-    ttCateg = 8,        //categories
-    ttRank = 9          //ranks
+    ttSport,        //sportmen
+    ttCoach,        //coachs
+    ttClub,         //clubs
+    ttSert,         //sertifications
+    ttFee,          //fee
+    ttSportComp,    //sportsmen_competitions
+    ttComp,         //competitions
+    ttCateg,        //categories
+    ttRank,         //ranks
+    ttPrzWin        //prize_winners
 };
 
 enum RepType
 {
     rtAbstract = 0,
-    rtSport = 1,
-    rtSert = 2,
-    rtDraw = 3,
+    rtSport,
+    rtSert,
+    rtDraw,
 };
 
 struct TblSett{
@@ -46,8 +47,8 @@ class Sett
 {
 private:
     static QMdiArea *mdiArea;
-    static TblSett table_settings[ttRank + 1];
-    static RepSett report_settings[rtSport + 1];
+    static TblSett table_settings[ttPrzWin + 1];
+    static RepSett report_settings[rtDraw + 1];
 
 public:
     static QMdiArea *GetMA();
@@ -77,15 +78,15 @@ namespace Sport
     enum Atr
     {
         taId = 0,
-        taName = 1,
-        taBirth = 2,
-        taRank = 3,
-        taRegNum = 4,
-        taCoach = 5,
-        taAddr = 6,
-        taPhone = 7,
-        taWork = 8,
-        taJob = 9
+        taName,
+        taBirth,
+        taRank,
+        taRegNum,
+        taCoach,
+        taAddr,
+        taPhone,
+        taWork,
+        taJob
     };
 }
 
@@ -94,9 +95,9 @@ namespace Coach
     enum Atr
     {
         taId = 0,
-        taName = 1,
-        taPhone = 2,
-        taClub = 3
+        taName,
+        taPhone,
+        taClub
     };
 }
 
@@ -105,8 +106,8 @@ namespace Club
     enum Atr
     {
         taId = 0,
-        taName = 1,
-        taAddr = 2
+        taName,
+        taAddr
     };
 }
 
@@ -115,7 +116,7 @@ namespace Rank
     enum Atr
     {
         taId = 0,
-        taName = 1
+        taName
     };
 }
 
@@ -124,10 +125,10 @@ namespace Sert
     enum Atr
     {
         taId = 0,
-        taSport = 1,
-        taDate = 2,
-        taRankFrom = 3,
-        taRankTo = 4
+        taSport,
+        taDate,
+        taRankFrom,
+        taRankTo
     };
 }
 
@@ -136,8 +137,8 @@ namespace Fee
     enum Atr
     {
         taId = 0,
-        taSport = 1,
-        taDate = 2
+        taSport,
+        taDate
     };
 }
 
@@ -146,15 +147,11 @@ namespace SportComp
     enum Atr
     {
         taId = 0,
-        //taSport,
-        taName,
-        taDSO,
+        taSport,
+        taComp,
         taCateg,
         taDrawNum,
-        taUnit,
-        taPrzPlc,
-        taFigCount,
-        taFigWon
+        taUnit
     };
 }
 
@@ -163,9 +160,9 @@ namespace Comp
     enum Atr
     {
         taId = 0,
-        taName = 1,
-        taDate = 2,
-        taLoc = 3
+        taName,
+        taDate,
+        taLoc
     };
 }
 
@@ -177,4 +174,19 @@ namespace Categ
         taName = 1
     };
 }
+
+namespace PrzWin
+{
+    enum Atr
+    {
+        taId = 0,
+        taSport,
+        taComp,
+        taFightsCount,
+        taFightsWin,
+        taRegion,
+        taCity
+    };
+}
+
 #endif // SETTING_H

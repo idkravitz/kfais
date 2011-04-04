@@ -1,8 +1,8 @@
 #include "setting.h"
 
 QMdiArea *Sett::mdiArea;
-TblSett Sett::table_settings[ttRank + 1];
-RepSett Sett::report_settings[rtSport + 1];
+TblSett Sett::table_settings[ttPrzWin + 1];
+RepSett Sett::report_settings[rtDraw + 1];
 
 void AddWidToLt(QGridLayout *aLt, const QString &aLblStr, QWidget *aW, int aRow, int aCol)
 {
@@ -33,8 +33,8 @@ bool Sett::LoadSettings()
     table_settings[ttSport].title = "Спортсмены";
     table_settings[ttSport].tblName = "sportsmen";
     table_settings[ttSport].colName << "id" << "Ф.И.О"
-            << "Дата рождения" << "Разряды" << "Регистрационный №"
-            << "Тренер" << "Адресс" << "Телефон" << "Место работы"
+            << "Дата рождения" << "Разряд" << "Регистрационный №"
+            << "Тренер" << "Адрес" << "Телефон" << "Место работы"
             << "Должность" << "Примечание";
 
     table_settings[ttCoach].title = "Тренеры";
@@ -58,11 +58,10 @@ bool Sett::LoadSettings()
             << "Примечание";
 
     table_settings[ttSportComp].title = "Распределения \"Спортсмен - соревнование\"";
-    table_settings[ttSportComp].tblName = "sportsmen_competitions_view";
-    table_settings[ttSportComp].colName << "id" << "Спортсмен"
-            << "ДСО" << "Категория" << "draw number"
-            << "Единицы" << "prize_place" << "Поединков"
-            << "Побед" << "Примечание";
+    table_settings[ttSportComp].tblName = "sportsmen_competitions";
+    table_settings[ttSportComp].colName << "id" << "Спортсмен" << "Соревнование"
+            << "Категория" << "draw number"
+            << "Единицы" << "Примечание";
 
     table_settings[ttComp].title = "Соревнования";
     table_settings[ttComp].tblName = "competitions";
@@ -77,6 +76,13 @@ bool Sett::LoadSettings()
     table_settings[ttRank].title = "Разряд";
     table_settings[ttRank].tblName = "ranks";
     table_settings[ttRank].colName << "id" << "Название" << "Примечание";
+
+    table_settings[ttPrzWin].title = "Призеры";
+    table_settings[ttPrzWin].tblName = "prize_winners";
+    table_settings[ttPrzWin].colName << "id" << "Спортсмен"
+            << "Соревнование" << "Число боев"
+            << "Число побед" << "Регион"
+            << "Город" << "Примечание";
 
     report_settings[rtSport].title = "Спортсмены";
     report_settings[rtSert].title = "Аттестации";

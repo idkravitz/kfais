@@ -22,7 +22,6 @@ Card::Card(QWidget *aParent, QSqlRelationalTableModel *aTblModel, TblType aType,
 
     model = new QSqlRelationalTableModel(this);
     InitModel(aId);
-//    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
 
     mapper = new QDataWidgetMapper(this);
     mapper->setModel(model);
@@ -203,10 +202,10 @@ QVBoxLayout *CardSport::CreateInnerTbls()
                              tr("Спортивные достижения")));
     lt2->addWidget(_AddTable(ttFee, viewFee = new QTableView, modelFee = new QSqlRelationalTableModel(this)));
 
+    viewSert->setColumnHidden(Sert::taId, true);
     viewSert->setColumnHidden(Sert::taSport, true);
     viewSC->setColumnHidden(SportComp::taId, true);
     viewSC->setColumnHidden(SportComp::taSport, true);
-    viewSC->setColumnHidden(SportComp::taName, true);
     viewFee->setColumnHidden(Fee::taId, true);
     viewFee->setColumnHidden(Fee::taSport, true);
 
@@ -334,7 +333,22 @@ bool CardFee::IsValid() const
 CardSportComp::CardSportComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttSportComp, aId)
 {
+    CreateWidgets();
+}
 
+void CardSportComp::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+//    AddWid(lt, Fee::taSport, cbSport = new QComboBox, 0);
+//    AddWid(lt, Fee::taDate, edtDate = new QDateEdit, 1);
+//    edtDate->setCalendarPopup(true);
+    CreateBasicWidgets(lt);
+}
+
+bool CardSportComp::IsValid() const
+{
+//    return !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите спортсмена"));
+    return true;
 }
 
 /******************************* Competiotions *******************************/

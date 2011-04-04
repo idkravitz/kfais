@@ -154,6 +154,16 @@ class CardSportComp: public Card
 {
     Q_OBJECT
 
+private:
+    QComboBox *cbName;
+    QLineEdit *edtDSO;
+    QComboBox *cbCat;
+    QLineEdit *edtDrawNum;
+
+    void CreateWidgets();
+
+    bool IsValid() const;
+
 public:
     CardSportComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
 };
