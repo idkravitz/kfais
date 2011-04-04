@@ -12,10 +12,21 @@ class BaseReport
 {
 protected:
     QSqlQuery *query;
+    QAxObject *sheet;
+    QAxObject *excel;
     QAxObject *openDocument();
+    QAxObject *getRange(const QString& range);
     enum LineStyle {
         xlSingle = 1,
         xlDouble = -4119,
+    };
+    enum Alignment {
+        xlCenter = -4108,
+        xlRight  = -4152,
+        xlTop    = -4160,
+    };
+    enum Edges {
+        xlEdgeBottom = 9,
     };
 
 public:
@@ -44,8 +55,7 @@ class DrawingReport: public BaseReport
     uint currentRow;
     uint currentPage;
     uint pageStartRow;
-    QAxObject *sheet;
-    void writeHeader(const QString& category);
+    void writeHeader(const QString& category, const QDate &date);
     void writeFooter(uint written);
     void writeLine(uint written);
 public:

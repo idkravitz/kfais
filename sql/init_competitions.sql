@@ -4,6 +4,8 @@ INSERT INTO competitions (id, name, date, location) VALUES (1, 'Чемпиона
 -- категории
 INSERT INTO categories (name) VALUES ('мужчины 190 ед.');
 INSERT INTO categories (name) VALUES ('мужчины 200 ед.');
+INSERT INTO categories (name) VALUES ('1996-1998 г.р. до 240 ед.');
+
 
 -- Для жеребьёвки
 INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES (
@@ -25,11 +27,11 @@ INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) V
 INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES (
     (select id from sportsmen where name='Прохоров Андрей Олегович'),
     1,
-    (select id from categories where name='мужчины 200 ед'));
+    (select id from categories where name='мужчины 200 ед.'));
 INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES (
-    (select id from sportsmen where name='Прохоров Андрей Олегович'),
+    (select id from sportsmen where name='Глушко Никита Эдуардович'),
     1,
-    (select id from categories where name='мужчины'));
+    (select id from categories where name='1996-1998 г.р. до 240 ед.'));
 
 --INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES ((select id from sportsmen where name='Ганжара Владимир'), (select id from categories where name='мужчины'), 190);
 /*INSERT INTO sportsmen_competitions (sportsman_id, category_id) VALUES ((select id from sportsmen where name='Карпов Иван Анатольевич'), (select id from categories where name='мужчины'), 190)
