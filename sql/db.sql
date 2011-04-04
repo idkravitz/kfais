@@ -82,6 +82,7 @@ CREATE TABLE prize_winners(
 	competition_id INTEGER NOT NULL,
 	fights_count INTEGER,
     fights_won INTEGER,
+    place INTEGER,
     region TEXT,						--For result protocol
     city TEXT,      					--For result protocol
     note TEXT,
