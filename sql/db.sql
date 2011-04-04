@@ -55,6 +55,7 @@ CREATE TABLE fee(
 CREATE TABLE competitions(
 	id INTEGER NOT NULL PRIMARY KEY,
 	name TEXT NOT NULL,
+	name_prot TEXT NOT NULL,
     date DATE NOT NULL,
     location TEXT,
 	note TEXT,
@@ -67,7 +68,7 @@ CREATE TABLE sportsmen_competitions(
     competition_id INTEGER NOT NULL,
     category_id INTEGER DEFAULT 0,
     draw_number INTEGER,
-    units INTEGER NOT NULL,
+--    units INTEGER NOT NULL,
 	note TEXT,
 	UNIQUE(sportsman_id, competition_id),
 	FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE,
