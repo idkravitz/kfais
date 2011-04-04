@@ -80,8 +80,79 @@ void CertificationReport::makeReport()
     writeBody(headers, sizeof(headers)/sizeof(*headers));
 }
 
+void DrawingReport::writeHeader(const QString& category, const uint units)
+{
+    const char * headers[] = {
+        "№ п/п",
+        "ФИО",
+        "Дата рожд.",
+        "Команда/город",
+        "Разряд",
+        "(кю, дан)",
+        "№ Жеребьёвки"
+    };
+    for(uint i = 0; i < sizeof(headers)/sizeof(*headers); ++i)
+    {
+        QAxObject *range = sheet->querySubObject("Range(const QString&)",
+                                                 QString('A'+i) + QString::number(currentRow));
+        range->dynamicCall("SetValue(const QVariant&)", QObject::tr(headers[i]));
+        range->querySubObject("Font")->setProperty("Bold", true);
+        range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+    }
+    currentRow++;
+}
+
+void DrawingReport::writeFooter(uint written)
+{
+    for(int i = written; i < 16; ++i, ++currentRow)
+    {
+        sheet->querySubObject("Range(const QString&)", QString('A') + QString::number(currentRow))
+             ->dynamicCall("SetValue(const QVariant&)", QString::number(i+1));
+    }
+    sheet->querySubObject("Range(const QString&)",
+        QString('A') + QString::number(currentRow-16) + QString(":") + QString('A' + 6) + QString::number(currentRow-1))
+        ->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+    currentPage++;
+}
+
+void DrawingReport::writeLine(uint written)
+{
+    sheet->querySubObject("Range(const QString&)", QString('A') + QString::number(currentRow))
+         ->dynamicCall("SetValue(const QVariant&)", QString::number(written+1));
+    for(int i = 2, fieldsCount = query->record().count(); i < fieldsCount; ++i)
+    {
+        QAxObject *range = sheet->querySubObject("Range(const QString&)",
+                                                 QString('A'+i-1) + QString::number(currentRow));
+        range->dynamicCall("SetValue(const QVariant&)", QVariant(query->value(i).value<QString>()));
+    }
+    currentRow++;
+}
+
 void DrawingReport::makeReport()
 {
+    uint units = 0, vunits;
+    uint written = 0;
+    QString category = "", vcat;
+    currentRow = pageStartRow = currentPage = 1;
+    sheet = openDocument();
+    qDebug() << "the fuck ?";
+    while(query->next())
+    {
+        qDebug() << "the fuck ?";
+        vcat = query->value(0).toString();
+        vunits = query->value(1).toUInt();
+        if(!units || category != vcat || units != vunits || written == 16)
+        {
+            if(units)
+                writeFooter(written);
+            category = vcat;
+            units = vunits;
+            writeHeader(category, units);
+            written = 0;
+        }
+        writeLine(written++);
+    }
+    writeFooter(written);
 }
 
 /********************************************************************/
@@ -256,7 +327,7 @@ QString RepSert::GetQuery()
 
 
 RepDraw::RepDraw(QWidget *aParent):
-        Report(aParent, new CertificationReport)
+        Report(aParent, new DrawingReport)
 {
     CreateWidgets();
 }
@@ -280,5 +351,10 @@ void RepDraw::CreateWidgets()
 
 QString RepDraw::GetQuery()
 {
-    return "";
+    return "select ca.name, sc.units, s.name, s.birthday, cl.name, r.name "
+           "from sportsmen_competitions sc inner join sportsmen s, coaches c, clubs cl, "
+           "categories ca, competitions co, ranks r on "
+           "sc.sportsman_id = s.id and s.coach_id = c.id and c.club_id = cl.id and sc.category_id = ca.id "
+           "and sc.competition_id = co.id and s.rank_id = r.id "
+           "order by ca.name, sc.units";
 }

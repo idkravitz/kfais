@@ -41,6 +41,13 @@ public:
 
 class DrawingReport: public BaseReport
 {
+    uint currentRow;
+    uint currentPage;
+    uint pageStartRow;
+    QAxObject *sheet;
+    void writeHeader(const QString& category, const uint units);
+    void writeFooter(uint written);
+    void writeLine(uint written);
 public:
     virtual void makeReport();
 };
