@@ -183,7 +183,7 @@ namespace PrzWin
         taSport,
         taComp,
         taFightsCount,
-        taFightsWin,
+        taFightsWon,
         taPlace,
         taRegion,
         taCity

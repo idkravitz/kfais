@@ -1,5 +1,0 @@
-Files, allowing the bug #8217 to be closed, instead of doing an INNER JOIN do a LEFT JOIN which return also the row where the relation is NULL.
-
-Instruction: copy (replace) files in 'qt/src/sql/models/' and compile sql.pro (in 'qt/src/sql/': qmake -> make/mingw32-make [for windows]). In code use setJoinMode(QSqlRelationTableModel::LeftJoin), function-member of QSqlRelationTableModel.
-
-P.S.: The default is the old InnerJoin mode.

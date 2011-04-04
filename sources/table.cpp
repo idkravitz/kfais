@@ -342,5 +342,5 @@ TblPrzWin::TblPrzWin(QWidget *aParent):
 
 Card *TblPrzWin::CreateCard(int aId) const
 {
-    return new CardRank(Sett::GetMA(), model, aId);
+    return new CardPrzWin(Sett::GetMA(), model, aId);
 }
