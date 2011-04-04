@@ -81,8 +81,8 @@ bool Sett::LoadSettings()
     table_settings[ttPrzWin].tblName = "prize_winners";
     table_settings[ttPrzWin].colName << "id" << "Спортсмен"
             << "Соревнование" << "Число боев"
-            << "Число побед" << "Регион"
-            << "Город" << "Примечание";
+            << "Число побед" << "Место"
+            << "Регион" << "Город" << "Примечание";
 
     report_settings[rtSport].title = "Спортсмены";
     report_settings[rtSert].title = "Аттестации";

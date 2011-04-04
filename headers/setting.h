@@ -184,6 +184,7 @@ namespace PrzWin
         taComp,
         taFightsCount,
         taFightsWin,
+        taPlace,
         taRegion,
         taCity
     };

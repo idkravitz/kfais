@@ -32,6 +32,7 @@ void MainWindow::CreateMenu()
     mnTables->addAction(Sett::GetTblTitle(ttComp), this, SLOT(OpenTblComp()));
     mnTables->addAction(Sett::GetTblTitle(ttCateg), this, SLOT(OpenTblCateg()));
     mnTables->addAction(Sett::GetTblTitle(ttRank), this, SLOT(OpenTblRank()));
+    mnTables->addAction(Sett::GetTblTitle(ttPrzWin), this, SLOT(OpenTblPrzWin()));
 
     QMenu *mnReports = new QMenu(tr("־עקועû"));
     mnReports->addAction(Sett::GetRepTitle(rtSport), this, SLOT(OpenRepSport()));
@@ -143,6 +144,14 @@ void MainWindow::OpenTblRank()
     if (!IsOpen(ttRank))
     {
         QMdiSubWindow *sw = OpenTbl(ttRank, new TblRank(Sett::GetMA()));
+    }
+}
+
+void MainWindow::OpenTblPrzWin()
+{
+    if (!IsOpen(ttPrzWin))
+    {
+        QMdiSubWindow *sw = OpenTbl(ttPrzWin, new TblPrzWin(Sett::GetMA()));
     }
 }
 

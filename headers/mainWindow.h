@@ -28,6 +28,7 @@ private slots:
     void OpenTblComp();
     void OpenTblCateg();
     void OpenTblRank();
+    void OpenTblPrzWin();
 
     void OpenRepSport();
     void OpenRepSert();

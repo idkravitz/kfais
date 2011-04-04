@@ -188,5 +188,21 @@ public:
     TblRank(QWidget *aParent = 0);
 };
 
+/******************************* Prize winners *******************************/
+
+class TblPrzWin: public Table
+{
+    Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) const;
+
+protected:
+    virtual void TableSpecificConfig();
+
+public:
+    TblPrzWin(QWidget *aParent = 0);
+};
+
 #endif // TABLE_H
 
