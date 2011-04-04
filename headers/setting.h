@@ -21,7 +21,8 @@ enum TblType
     ttComp,         //competitions
     ttCateg,        //categories
     ttRank,         //ranks
-    ttPrzWin        //prize_winners
+    ttPrzWin,       //prize_winners
+    ttPrzWinView
 };
 
 enum RepType
@@ -47,7 +48,7 @@ class Sett
 {
 private:
     static QMdiArea *mdiArea;
-    static TblSett table_settings[ttPrzWin + 1];
+    static TblSett table_settings[ttPrzWinView + 1];
     static RepSett report_settings[rtDraw + 1];
 
 public:
@@ -180,8 +181,7 @@ namespace PrzWin
     enum Atr
     {
         taId = 0,
-        taSport,
-        taComp,
+        taSportComp,
         taFightsCount,
         taFightsWon,
         taPlace,

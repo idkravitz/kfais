@@ -436,16 +436,20 @@ CardPrzWin::CardPrzWin(QWidget *aParent, QSqlRelationalTableModel *aTblModel, in
         Card(aParent, aTblModel, ttPrzWin, aId)
 {
     CreateWidgets();
-    _SetCBModel(cbSport, PrzWin::taSport, Sport::taName);
-    _SetCBModel(cbComp, PrzWin::taComp, Comp::taName);
     mapper->toFirst();
 }
 
 void CardPrzWin::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
-    AddWid(lt, PrzWin::taSport, cbSport = new QComboBox, 0);
-    AddWid(lt, PrzWin::taComp, cbComp = new QComboBox, 1);
+
+    edtSportComp = new QLineEdit(this);
+    edtSportComp->hide();
+    mapper->addMapping(edtSportComp, PrzWin::taSportComp);
+
+    AddWidToLt(lt, tr("Соревнование:"), cbComp = new QComboBox, 0, 0);
+    AddWidToLt(lt, tr("Спортсмен:"), cbSport = new QComboBox, 1, 0);
+
     AddWid(lt, PrzWin::taFightsCount, edtFightsCount = new QLineEdit, 2);
     SetRegExprInt(edtFightsCount);
     AddWid(lt, PrzWin::taFightsWon, edtFightsWon = new QLineEdit, 3);

@@ -232,6 +232,7 @@ class CardPrzWin: public Card
 private:
     QComboBox *cbSport;
     QComboBox *cbComp;
+    QLineEdit *edtSportComp;    //For hack
     QLineEdit *edtFightsCount;
     QLineEdit *edtFightsWon;
     QLineEdit *edtPlace;
