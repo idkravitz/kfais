@@ -65,7 +65,7 @@ CREATE TABLE sportsmen_competitions(
     competition_id INTEGER NOT NULL,
     category_id INTEGER DEFAULT 0,
     draw_number INTEGER,
-    units INTEGER NOT NULL,
+--    units INTEGER NOT NULL,
 	note TEXT,
 	FOREIGN KEY (sportsman_id) REFERENCES sportsmen(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE ON UPDATE CASCADE,

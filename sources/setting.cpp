@@ -60,8 +60,7 @@ bool Sett::LoadSettings()
     table_settings[ttSportComp].title = "Распределения \"Спортсмен - соревнование\"";
     table_settings[ttSportComp].tblName = "sportsmen_competitions";
     table_settings[ttSportComp].colName << "id" << "Спортсмен" << "Соревнование"
-            << "Категория" << "draw number"
-            << "Единицы" << "Примечание";
+            << "Категория" << "№ жеребьёвки" << "Примечание";
 
     table_settings[ttComp].title = "Соревнования";
     table_settings[ttComp].tblName = "competitions";
