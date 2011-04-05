@@ -17,6 +17,7 @@ protected:
     QAxObject *openDocument();
     QAxObject *getRange(const QString& range);
     enum LineStyle {
+        xlContinious = 1,
         xlSingle = 1,
         xlDouble = -4119,
     };
@@ -27,6 +28,9 @@ protected:
     };
     enum Edges {
         xlEdgeBottom = 9,
+    };
+    enum Weight {
+        xlHairline = 1,
     };
 
 public:
@@ -61,6 +65,22 @@ class DrawingReport: public BaseReport
 public:
     virtual void makeReport();
 };
+
+class PulkaReport: public BaseReport
+{
+    static const uint pageHeight = 36;
+    static const uint firstRecOffset = 4;
+    static const uint pageWidth = 12;
+
+    uint currentPage;
+    void writeHeader(const QString& category, const QString &competition, const QDate &date);
+    void writeFooter();
+    void writeRec(uint draw_number);
+public:
+    virtual void makeReport();
+};
+
+
 
 /********************************************************************/
 /******************************* View *******************************/
@@ -130,24 +150,32 @@ public:
     RepSert(QWidget *aParent);
 };
 
+/******************************* Drawing *******************************/
+
+
 class RepDraw: public Report{
     Q_OBJECT
 
 private:
-//    QComboBox *cbTbl;
-//    QLabel *lbl;
-//    QComboBox *cb;
-//    QVector<int> vecId;
-
     void CreateWidgets();
 
     QString GetQuery();
-
-//private slots:
-//    void ChangeTbl(int aIndex);
-
 public:
     RepDraw(QWidget *aParent);
 };
+
+/******************************* Pulka *******************************/
+
+class RepPulka: public Report{
+    Q_OBJECT
+
+private:
+    void CreateWidgets();
+
+    QString GetQuery();
+public:
+    RepPulka(QWidget *aParent);
+};
+
 
 #endif // REPORTS_H
