@@ -382,13 +382,11 @@ void PulkaReport::makeReport()
         21.29,
         13.29,
     };
-
     for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
     {
         sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
              ->setProperty("ColumnWidth", widths[i]);
     }
-
     while(query->next())
     {
         vcat = query->value(2).toString();
@@ -828,7 +826,7 @@ void RepPulka::CreateWidgets()
 QString RepPulka::GetQuery()
 {
     return "select co.name_prot, co.date, ca.name, s.name, cl.name, r.name, sc.draw_number "
-           "from sportsmen_competitions sc inner join sportsmen s inner join coaches c inner join s clubs cl inner join  "
+           "from sportsmen_competitions sc inner join sportsmen s inner join coaches c inner join clubs cl inner join  "
            "categories ca inner join competitions co inner join ranks r on "
            "sc.sportsman_id = s.id and s.coach_id = c.id and c.club_id = cl.id and sc.category_id = ca.id "
            "and sc.competition_id = co.id and s.rank_id = r.id "
