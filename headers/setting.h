@@ -8,6 +8,7 @@
 
 extern void AddWidToLt(QGridLayout *aLt, const QString &aLblStr, QWidget *aW, int aRow, int aCol);
 extern void AddWidToLt(QGridLayout *aLt, QLabel *aLbl, QWidget *aW, int aRow, int aCol);
+extern void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ);
 
 enum TblType
 {

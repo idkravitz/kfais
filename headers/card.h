@@ -230,6 +230,8 @@ class CardPrzWin: public Card
     Q_OBJECT
 
 private:
+    QVector<int> vecSportId, vecCompId;
+
     QComboBox *cbSport;
     QComboBox *cbComp;
     QLineEdit *edtSportComp;    //For hack
@@ -242,6 +244,9 @@ private:
     void CreateWidgets();
 
     bool IsValid() const;
+
+private slots:
+    void UpdateCBSport(int aIndex);
 
 public:
     CardPrzWin(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);

@@ -17,6 +17,25 @@ void AddWidToLt(QGridLayout *aLt, QLabel *aLbl, QWidget *aW, int aRow, int aCol)
     aLbl->setBuddy(aW);
 }
 
+void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ)
+{
+    aVecId.clear();
+    QSqlQuery q(aStrQ);
+    QStringList lst;
+    while (q.next())
+    {
+        aVecId.push_back(q.record().value(0).toInt());
+        lst.push_back(q.record().value(1).toString());
+    }
+    aCB->clear();
+    aCB->addItems(lst);
+    aCB->setInsertPolicy(QComboBox::NoInsert);
+    aCB->setEditable(true);
+
+    QCompleter *comp = new QCompleter(lst);
+    aCB->setCompleter(comp);
+}
+
 QMdiArea *Sett::GetMA()
 {
     return mdiArea;

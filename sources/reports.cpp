@@ -1,5 +1,7 @@
 #include "reports.h"
 
+extern void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ);
+
 /********************************************************************/
 /******************************* Model ******************************/
 /********************************************************************/
@@ -249,29 +251,6 @@ void DrawingReport::makeReport()
 /******************************* View *******************************/
 /********************************************************************/
 
-inline void InitComboBox(QComboBox *aCB, const QStringList &aLst)
-{
-    aCB->clear();
-    aCB->addItems(aLst);
-    aCB->setInsertPolicy(QComboBox::NoInsert);
-    aCB->setEditable(true);
-    QCompleter *comp = new QCompleter(aLst);
-    aCB->setCompleter(comp);
-}
-
-QStringList GetLstRec(const QString &aStrQ, QVector<int> &aVecId)
-{
-    aVecId.clear();
-    QSqlQuery q(aStrQ);
-    QStringList lst;
-    while (q.next())
-    {
-        aVecId.push_back(q.record().value(0).toInt());
-        lst.push_back(q.record().value(1).toString());
-    }
-    return lst;
-}
-
 Report::Report(QWidget *aParent, BaseReport *aLogRep):
         QDialog(aParent),
         logRep(aLogRep),
@@ -327,28 +306,28 @@ RepSport::RepSport(QWidget *aParent):
         Report(aParent, new SportsmenReport)
 {
     CreateWidgets();
+    InitComboBox(cbCoach, vecId, "SELECT * FROM coaches");
 
-    QSqlQuery q;
-    q.exec("SELECT * FROM coaches");
-    QStringList lst;
-    int id;
-    while (q.next())
-    {
-        id = q.record().value(0).toInt();
-        if(id)
-        {
-            vecId.push_back(id);
-            lst.push_back(q.record().value(1).toString());
-        }
-    }
-    InitComboBox(cbCoach, lst);
+//    QSqlQuery q;
+//    q.exec("SELECT * FROM coaches");
+//    QStringList lst;
+//    int id;
+//    while (q.next())
+//    {
+//        id = q.record().value(0).toInt();
+//        if(id)
+//        {
+//            vecId.push_back(id);
+//            lst.push_back(q.record().value(1).toString());
+//        }
+//    }
+//    InitComboBox(cbCoach, lst);
 }
 
 void RepSport::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
     AddWidToLt(lt, Sett::GetColName(ttSport, Sport::taCoach) + ":", cbCoach = new QComboBox, 0, 0);
-    InitComboBox(cbCoach, GetLstRec("SELECT * FROM coaches", vecId));
     CreateBasicWidgets(lt);
 }
 
@@ -366,6 +345,7 @@ RepSert::RepSert(QWidget *aParent):
         Report(aParent, new CertificationReport)
 {
     CreateWidgets();
+    InitComboBox(cb, vecId, "SELECT * FROM coaches");
 }
 
 void RepSert::CreateWidgets()
@@ -380,7 +360,6 @@ void RepSert::CreateWidgets()
 
     lbl = new QLabel(cbTbl->currentText() + ":");
     AddWidToLt(lt, lbl, cb = new QComboBox, 1, 0);
-    InitComboBox(cb, GetLstRec("SELECT * FROM coaches", vecId));
 
     CreateBasicWidgets(lt);
 }
@@ -389,11 +368,11 @@ void RepSert::ChangeTbl(int aIndex)
 {
     if (!aIndex)
     {
-        InitComboBox(cb, GetLstRec("SELECT * FROM coaches", vecId));
+        InitComboBox(cb, vecId, "SELECT * FROM coaches");
     }
     else
     {
-        InitComboBox(cb, GetLstRec("SELECT * FROM clubs", vecId));
+        InitComboBox(cb, vecId, "SELECT * FROM clubs");
     }
     lbl->setText(cbTbl->currentText() + ":");
 }

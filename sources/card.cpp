@@ -1,5 +1,7 @@
 #include "card.h"
 
+extern void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ);
+
 inline bool CheckCond(bool aCond, const QString &aMsg)
 {
     if (aCond)
@@ -432,11 +434,29 @@ bool CardRank::IsValid() const
 
 /******************************* Prize winners *******************************/
 
+int FindIndexById(const QVector<int> &aVecId, int aIndex)
+{
+    for (int  i = 0; i < aVecId.size(); ++i)
+    {
+        if (aIndex == aVecId[i])
+        {
+            return i;
+        }
+    }
+}
+
 CardPrzWin::CardPrzWin(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttPrzWin, aId)
 {
     CreateWidgets();
     mapper->toFirst();
+
+    QSqlQuery q("SELECT competition_id, sportsman_id FROM sportsmen_competitions WHERE id = " + edtSportComp->text());
+    q.next();
+    cbComp->setCurrentIndex(FindIndexById(vecCompId, q.record().value(0).toInt()));
+    UpdateCBSport(cbComp->currentIndex());
+    cbSport->setCurrentIndex(FindIndexById(vecSportId, q.record().value(1).toInt()));
+    connect(cbComp, SIGNAL(currentIndexChanged(int)), this, SLOT(UpdateCBSport(int)));
 }
 
 void CardPrzWin::CreateWidgets()
@@ -449,6 +469,7 @@ void CardPrzWin::CreateWidgets()
 
     AddWidToLt(lt, tr("Соревнование:"), cbComp = new QComboBox, 0, 0);
     AddWidToLt(lt, tr("Спортсмен:"), cbSport = new QComboBox, 1, 0);
+    InitComboBox(cbComp, vecCompId, "SELECT id, name || ' ' || date FROM competitions");
 
     AddWid(lt, PrzWin::taFightsCount, edtFightsCount = new QLineEdit, 2);
     SetRegExprInt(edtFightsCount);
@@ -464,6 +485,20 @@ void CardPrzWin::CreateWidgets()
 
 bool CardPrzWin::IsValid() const
 {
-//    return !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите спортсмена"));
+    QSqlQuery q("SELECT id from sportsmen_competitions WHERE sportsman_id = " +
+                QString::number(vecSportId[cbSport->currentIndex()]) +
+                " AND competition_id = " + QString::number(vecCompId[cbComp->currentIndex()]));
+    if (!q.next())
+    {
+        return false;
+    }
+    edtSportComp->setText(q.record().value(0).toString());
     return true;
+}
+
+void CardPrzWin::UpdateCBSport(int aIndex)
+{
+    InitComboBox(cbSport, vecSportId,
+                "SELECT s.id, s.name FROM sportsmen_competitions sc JOIN sportsmen s ON "
+                "sc.sportsman_id = s.id WHERE sc.competition_id = " + QString::number(vecCompId[aIndex]));
 }

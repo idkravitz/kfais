@@ -197,9 +197,6 @@ class TblPrzWin: public Table
 private:
     Card *CreateCard(int aId) const;
 
-protected:
-    virtual void TableSpecificConfig();
-
 public:
     TblPrzWin(QWidget *aParent = 0);
 };

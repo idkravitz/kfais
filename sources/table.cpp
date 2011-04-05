@@ -326,14 +326,6 @@ Card *TblRank::CreateCard(int aId) const
 
 /******************************* Prize winners *******************************/
 
-void TblPrzWin::TableSpecificConfig()
-{
-//    model->setRelation(PrzWin::taSport, QSqlRelation("sportsmen", "id", "name"));
-//    model->setRelation(PrzWin::taComp, QSqlRelation("competitions", "id", "name"));
-    model->select();
-    view->setColumnHidden(0, true);
-}
-
 TblPrzWin::TblPrzWin(QWidget *aParent):
         Table(aParent, ttPrzWinView)
 {
