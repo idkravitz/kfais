@@ -25,12 +25,16 @@ protected:
         xlCenter = -4108,
         xlRight  = -4152,
         xlTop    = -4160,
+        xlBottom = -4107,
     };
     enum Edges {
         xlEdgeBottom = 9,
     };
     enum Weight {
         xlHairline = 1,
+    };
+    enum PageOrientation {
+        xlLandscape = 2,
     };
 
 public:

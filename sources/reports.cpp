@@ -161,7 +161,11 @@ void DrawingReport::writeHeader(const QString& category, const QDate &date)
         range->dynamicCall("SetValue(const QVariant&)", QObject::tr(headers[i]));
         range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
     }
-    QAxObject *font3 = getRange(QString("A%1:F%1").arg(QString::number(currentRow)))->querySubObject("Font");
+    QAxObject *range3 = getRange(QString("A%1:F%1").arg(QString::number(currentRow))),
+              *range4 = getRange(QString("A%1:F%1").arg(QString::number(currentRow)));
+    range3->setProperty("RowHeight", 26.25);
+    range4->setProperty("WrapText", true);
+    QAxObject *font3 = range3->querySubObject("Font");
     font3->setProperty("Name", QString("Arial Cyr"));
     font3->setProperty("Size", 10);
     font3->setProperty("Bold", true);
@@ -172,15 +176,20 @@ void DrawingReport::writeFooter(uint written)
 {
     for(int i = written; i < 16; ++i, ++currentRow)
     {
-        sheet->querySubObject("Range(const QString&)", QString('A') + QString::number(currentRow))
-             ->dynamicCall("SetValue(const QVariant&)", QString("\n\n")+QString::number(i+1));
+        QAxObject *range = sheet->querySubObject("Range(const QString&)", QString('A') + QString::number(currentRow));
+        range->dynamicCall("SetValue(const QVariant&)", QString::number(i+1));
     }
-    sheet->querySubObject("Range(const QString&)",
-        QString('A') + QString::number(currentRow-16) + QString(":") + QString('A' + 5) + QString::number(currentRow-1))
-        ->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+    QAxObject *range0 = sheet->querySubObject("Range(const QString&)",
+        QString('A') + QString::number(currentRow-16) + QString(":") + QString('A' + 5) + QString::number(currentRow-1));
+    range0->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+    range0->setProperty("RowHeight", 39);
+    range0->setProperty("WrapText", true);
     QAxObject *range1 = getRange(QString("A%1:A%2").arg(currentRow - 16).arg(currentRow - 1)),
-              *range2 = getRange(QString("B%1:F%2").arg(currentRow - 16).arg(currentRow - 1));
+              *range2 = getRange(QString("B%1:F%2").arg(currentRow - 16).arg(currentRow - 1)),
+              *range3 = getRange(QString("A%1:F%2").arg(currentRow - 16).arg(currentRow - 1));
+    range3->setProperty("WrapText", true);
     range1->setProperty("HorizontalAlignment", xlRight);
+    range1->setProperty("VerticalAlignment", xlBottom);
     QAxObject *font1 = range1->querySubObject("Font");
     font1->setProperty("Name", QString("Arial Cyr"));
     font1->setProperty("Size", 12);
@@ -216,7 +225,8 @@ void DrawingReport::writeLine(uint written)
     {
         QAxObject *range = sheet->querySubObject("Range(const QString&)",
                                                  QString('A'+i-1) + QString::number(currentRow));
-        range->dynamicCall("SetValue(const QVariant&)", QVariant(query->value(i).value<QString>()));
+        range->dynamicCall("SetValue(const QVariant&)",
+            (i != 3 ? query->value(i).value<QString>() : query->value(i).value<QDate>().toString("dd.MM.yyyy")));
     }
     currentRow++;
 }
@@ -242,7 +252,24 @@ void DrawingReport::makeReport()
         writeLine(written++);
     }
     writeFooter(written);
-    sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
+
+    const double widths[] = {
+        6.29,
+        30.29,
+        11.14,
+        18.71,
+        12.29,
+        14.71
+    };
+    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    {
+        sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
+             ->setProperty("ColumnWidth", widths[i]);
+    }
+    sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
+
+    sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 300);
+    //sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
 }
 
 void PulkaReport::writeHeader(const QString &category, const QString &competition, const QDate &date)
@@ -384,6 +411,8 @@ void PulkaReport::makeReport()
         sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
              ->setProperty("ColumnWidth", widths[i]);
     }
+    sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
+    sheet->querySubObject("PageSetup")->setProperty("Orientation", xlLandscape);
     //sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
 }
 
