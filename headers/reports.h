@@ -84,7 +84,22 @@ public:
     virtual void makeReport();
 };
 
+class ResultsReport: public BaseReport
+{
+    static const uint pageHeight = 34;
+    uint currentPage;
+    void writeHeader(const QString& category, const QString &competition, const QDate &date);
+    void writeFooter();
+    void writeRec();
+public:
+    virtual void makeReport();
+};
 
+class TechnicalReport: public BaseReport
+{
+public:
+    virtual void makeReport();
+};
 
 /********************************************************************/
 /******************************* View *******************************/
@@ -179,6 +194,32 @@ private:
     QString GetQuery();
 public:
     RepPulka(QWidget *aParent);
+};
+
+/******************************* Results *******************************/
+
+class RepResults: public Report{
+    Q_OBJECT
+
+private:
+    void CreateWidgets();
+
+    QString GetQuery();
+public:
+    RepResults(QWidget *aParent);
+};
+
+/******************************* Technical Results *******************************/
+
+class RepTechnical: public Report{
+    Q_OBJECT
+
+private:
+    void CreateWidgets();
+
+    QString GetQuery();
+public:
+    RepTechnical(QWidget *aParent);
 };
 
 

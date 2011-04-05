@@ -39,6 +39,8 @@ void MainWindow::CreateMenu()
     mnReports->addAction(Sett::GetRepTitle(rtSert), this, SLOT(OpenRepSert()));
     mnReports->addAction(Sett::GetRepTitle(rtDraw), this, SLOT(OpenRepDraw()));
     mnReports->addAction(Sett::GetRepTitle(rtPulka), this, SLOT(OpenRepPulka()));
+    mnReports->addAction(Sett::GetRepTitle(rtResults), this, SLOT(OpenRepResults()));
+    mnReports->addAction(Sett::GetRepTitle(rtTechnical), this, SLOT(OpenRepTechnical()));
 
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);
@@ -181,4 +183,14 @@ void MainWindow::OpenRepDraw()
 void MainWindow::OpenRepPulka()
 {
     /*QMdiSubWindow *sw = */OpenRep(rtDraw, new RepPulka(Sett::GetMA()));
+}
+
+void MainWindow::OpenRepResults()
+{
+    /*QMdiSubWindow *sw = */OpenRep(rtDraw, new RepResults(Sett::GetMA()));
+}
+
+void MainWindow::OpenRepTechnical()
+{
+    /*QMdiSubWindow *sw = */OpenRep(rtDraw, new RepTechnical(Sett::GetMA()));
 }

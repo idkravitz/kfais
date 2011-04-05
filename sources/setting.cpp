@@ -94,7 +94,8 @@ bool Sett::LoadSettings()
     report_settings[rtSert].title = "Аттестации";
     report_settings[rtDraw].title = "Протокол взвешивания, мандатной комиссии и жеребьевки";
     report_settings[rtPulka].title = "Пулька";
-
+    report_settings[rtResults].title = "Протокол Результатов";
+    report_settings[rtTechnical].title = "Технические результаты";
     return true;
 }
 

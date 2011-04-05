@@ -220,7 +220,7 @@ void DrawingReport::writeFooter(uint written)
 void DrawingReport::writeLine(uint written)
 {
     sheet->querySubObject("Range(const QString&)", QString('A') + QString::number(currentRow))
-         ->dynamicCall("SetValue(const QVariant&)", QString("\n\n")+QString::number(written+1));
+         ->dynamicCall("SetValue(const QVariant&)", QString::number(written+1));
     for(int i = 2, fieldsCount = query->record().count(); i < fieldsCount; ++i)
     {
         QAxObject *range = sheet->querySubObject("Range(const QString&)",
@@ -238,6 +238,19 @@ void DrawingReport::makeReport()
     currentRow = pageStartRow = currentPage = 1;
     sheet = openDocument();
     excel->querySubObject("ActiveWindow")->setProperty("Zoom", 85);
+    const double widths[] = {
+        6.29,
+        30.29,
+        11.14,
+        18.71,
+        12.29,
+        14.71
+    };
+    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    {
+        sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
+             ->setProperty("ColumnWidth", widths[i]);
+    }
     while(query->next())
     {
         vcat = query->value(0).toString();
@@ -253,19 +266,6 @@ void DrawingReport::makeReport()
     }
     writeFooter(written);
 
-    const double widths[] = {
-        6.29,
-        30.29,
-        11.14,
-        18.71,
-        12.29,
-        14.71
-    };
-    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
-    {
-        sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
-             ->setProperty("ColumnWidth", widths[i]);
-    }
     sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
 
     sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 300);
@@ -367,6 +367,27 @@ void PulkaReport::makeReport()
     bool start = true;
     uint draw_number;
     excel->querySubObject("ActiveWindow")->setProperty("Zoom", 75);
+    const double widths[] = {
+        21.29,
+        13.29,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        21.29,
+        13.29,
+    };
+
+    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    {
+        sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
+             ->setProperty("ColumnWidth", widths[i]);
+    }
 
     while(query->next())
     {
@@ -390,30 +411,209 @@ void PulkaReport::makeReport()
         writeRec(draw_number);
     }
     writeFooter();
-    const double widths[] = {
-        21.29,
-        13.29,
-        7,
-        7,
-        7,
-        7,
-        7,
-        7,
-        7,
-        7,
-        7,
-        21.29,
-        13.29,
-    };
+    sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
+    sheet->querySubObject("PageSetup")->setProperty("Orientation", xlLandscape);
+    //sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
+}
 
+void ResultsReport::writeHeader(const QString &category, const QString &competition, const QDate &date)
+{
+    uint offset = (currentPage - 1) * pageHeight + 1;
+    QAxObject *range = getRange(QString("A%1:K%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("Протокол результатов соревнований"));
+    range->setProperty("HorizontalAlignment", xlCenter);
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->querySubObject("Font")->setProperty("Size", 14);
+    range->querySubObject("Font")->setProperty("Bold", true);
+    offset++;
+
+    range = getRange(QString("A%1:K%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", competition);
+    range->setProperty("HorizontalAlignment", xlCenter);
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->querySubObject("Font")->setProperty("Size", 14);
+    range->querySubObject("Font")->setProperty("Bold", true);
+    offset++;
+
+    range = getRange(QString("A%1:K%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("СК «Бастион», ") + date.toString());
+    range->setProperty("HorizontalAlignment", xlCenter);
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->querySubObject("Font")->setProperty("Size", 14);
+    range->querySubObject("Font")->setProperty("Bold", true);
+    offset+=2;
+
+    range = getRange(QString("A%1:K%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("категория ") + category);
+    range->setProperty("HorizontalAlignment", xlCenter);
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->querySubObject("Font")->setProperty("Size", 12);
+    range->querySubObject("Font")->setProperty("Bold", true);
+    offset++;
+
+    const char *headers[] = {
+        "№ п/п",
+        "ФИО",
+        "Год рожд.",
+        "Техн. квалиф. разряд",
+        "Область, край, республика",
+        "Город, населенный пункт",
+        "Д.С.О. Ведомство",
+        "СК, ДЮСШ, СДЮСШОР",
+        "Ф.И.О. Тренера",
+        "Кол-во боев/ побед",
+        "Занятое место",
+    };
+    for(int i = 0; i < sizeof(headers)/sizeof(*headers); ++i)
+    {
+        QAxObject *range = getRange(QString('A' + i) + QString::number(offset));
+        range->dynamicCall("SetValue(const QVariant&)", QObject::tr(headers[i]));
+    }
+}
+
+void ResultsReport::writeRec()
+{
+    uint place = query->value(11).toUInt();
+    uint offset = (currentPage - 1) * pageHeight + 6 + place;
+
+    for(int i = 3; i < 8 ; ++i)
+    {
+        QAxObject *range = getRange(QString('A' + i - 2) + QString::number(offset));
+        range->dynamicCall("SetValue(const QVariant&)", query->value(i).value<QString>());
+    }
+
+//    qDebug() << query->value(9).value<QString>();
+//    qDebug() << "SPARTA";
+//    qDebug() << query->value(10).value<QString>();
+//
+    QAxObject *range = getRange(QString("J%1").arg(offset));
+    range->dynamicCall("SetValue(const QString&)",
+        "'" + query->value(9).value<QString>() + "/" + query->value(10).value<QString>());
+
+
+    range = getRange(QString("C%1").arg(offset));
+    int year = query->value(4).value<QDate>().year();
+    qDebug() << year;
+    range->dynamicCall("SetValue(const QVariant&)", (year > 0 ? ("'" + QString::number(year)) : QString()));
+
+    range = getRange(QString("G%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("КУДО"));
+
+    range = getRange(QString("H%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", query->value(8).value<QString>());
+
+    range = getRange(QString("I%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", query->value(12).value<QString>());
+
+    range = getRange(QString("K%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", query->value(11).value<QString>());
+
+    range = getRange(QString("A%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", query->value(11).value<QString>() + ".");
+// 4       5           6        7           8        9         10            11              12        13
+// s.name, s.birthday, ra.name, pw.region, pw.city, cl.name, pw.fights_won, pw.fights_count, pw.place, co.name
+
+}
+
+void ResultsReport::writeFooter()
+{
+    uint offset = currentPage * pageHeight - 16;
+    QAxObject *range = getRange(QString("A%1:B%1").arg(offset - 1)),
+            *range2 = getRange(QString("A%1:B%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range2->dynamicCall("Merge()");
+
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("Гл. судья"));
+    range2->dynamicCall("SetValue(const QVariant&)", QObject::tr("Гл. секретарь"));
+
+    range = getRange(QString("C%1:E%1").arg(offset - 1)),
+    range2 = getRange(QString("C%1:E%1").arg(offset));
+
+    range->dynamicCall("Merge()");
+    range2->dynamicCall("Merge()");
+
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("Григорьев Д.А."));
+    range2->dynamicCall("SetValue(const QVariant&)", QObject::tr("Штаненкова Ж.Л."));
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range2->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->querySubObject("Font")->setProperty("Size", 12);
+    range2->querySubObject("Font")->setProperty("Size", 12);
+
+    range = getRange(QString("A%1:K%2").arg(offset - 12).arg(offset - 4));
+    range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->setProperty("WrapText", true);
+
+    range = getRange(QString("A%1:K%2").arg(offset - 11).arg(offset - 4));
+    range->querySubObject("Font")->setProperty("Size", 11);
+
+    range = getRange(QString("A%1:K%1").arg(offset - 12));
+    range->querySubObject("Font")->setProperty("Size", 10);
+    range->querySubObject("Font")->setProperty("Bold", true);
+    range->setProperty("HorizontalAlignment", xlCenter);
+
+    range = getRange(QString("B%1:K%2").arg(offset - 12).arg(offset - 4));
+    range->setProperty("HorizontalAlignment", xlCenter);
+
+    currentPage++;
+}
+
+void ResultsReport::makeReport()
+{
+    QString category = "", vcat;
+    sheet = openDocument();
+    currentPage = 1;
+    bool start = true;
+    excel->querySubObject("ActiveWindow")->setProperty("Zoom", 75);
+    const double widths[] = {
+        3.29,
+        30,
+        5.71,
+        8.43,
+        18.29,
+        13.43,
+        9.57,
+        13.29,
+        20.43,
+        6.43,
+        7,
+    };
     for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
     {
         sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
              ->setProperty("ColumnWidth", widths[i]);
     }
+    while(query->next())
+    {
+        vcat = query->value(0).toString();
+        if(start || category != vcat)
+        {
+            if(!start)
+            {
+                writeFooter();
+            }
+            else
+            {
+                start = false;
+            }
+            category = vcat;
+            writeHeader(category, query->value(1).toString(), query->value(2).toDate());
+        }
+        writeRec();
+    }
+    writeFooter();
+
     sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
     sheet->querySubObject("PageSetup")->setProperty("Orientation", xlLandscape);
-    //sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
+}
+
+void TechnicalReport::makeReport()
+{
+
 }
 
 /********************************************************************/
@@ -603,8 +803,8 @@ void RepDraw::CreateWidgets()
 QString RepDraw::GetQuery()
 {
     return "select ca.name, co.date, s.name, s.birthday, cl.name, r.name "
-           "from sportsmen_competitions sc inner join sportsmen s, coaches c, clubs cl, "
-           "categories ca, competitions co, ranks r on "
+           "from sportsmen_competitions sc inner join sportsmen s inner join coaches c inner join clubs cl inner join "
+           "categories ca inner join competitions co inner join ranks r on "
            "sc.sportsman_id = s.id and s.coach_id = c.id and c.club_id = cl.id and sc.category_id = ca.id "
            "and sc.competition_id = co.id and s.rank_id = r.id "
            "order by ca.name";
@@ -628,9 +828,61 @@ void RepPulka::CreateWidgets()
 QString RepPulka::GetQuery()
 {
     return "select co.name_prot, co.date, ca.name, s.name, cl.name, r.name, sc.draw_number "
-           "from sportsmen_competitions sc inner join sportsmen s, coaches c, clubs cl, "
-           "categories ca, competitions co, ranks r on "
+           "from sportsmen_competitions sc inner join sportsmen s inner join coaches c inner join s clubs cl inner join  "
+           "categories ca inner join competitions co inner join ranks r on "
            "sc.sportsman_id = s.id and s.coach_id = c.id and c.club_id = cl.id and sc.category_id = ca.id "
            "and sc.competition_id = co.id and s.rank_id = r.id "
            "order by ca.name, sc.draw_number";
+}
+
+/******************************* Results *******************************/
+
+RepResults::RepResults(QWidget *aParent):
+        Report(aParent, new ResultsReport)
+{
+    CreateWidgets();
+}
+
+void RepResults::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+
+    CreateBasicWidgets(lt);
+}
+
+QString RepResults::GetQuery()
+{
+    return "select ca.name, com.name_prot, com.date, s.name, s.birthday, ra.name, pw.region, pw.city, cl.name, pw.fights_won, pw.fights_count, pw.place, co.name "
+            "from prize_winners pw inner join sportsmen_competitions sc inner join sportsmen s inner join categories ca "
+            "inner join coaches co inner join ranks ra inner join clubs cl inner join competitions com on "
+            "pw.sportsman_competition_id=sc.id and sc.sportsman_id=s.id and sc.category_id=ca.id and s.rank_id=ra.id and "
+            "s.coach_id=co.id and co.club_id=cl.id and sc.competition_id=com.id "
+            "where sc.competition_id=1 "
+            "order by ca.name, pw.place";
+}
+
+/******************************* Technical *******************************/
+
+RepTechnical::RepTechnical(QWidget *aParent):
+        Report(aParent, new TechnicalReport)
+{
+    CreateWidgets();
+}
+
+void RepTechnical::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+
+    CreateBasicWidgets(lt);
+}
+
+QString RepTechnical::GetQuery()
+{
+    return "select ca.name, com.name_prot, com.date, s.name, s.birthday, ra.name, pw.region, pw.city, cl.name, pw.fights_won, pw.fights_count, pw.place, co.name "
+           "from prize_winners pw inner join sportsmen_competitions sc inner join sportsmen s inner join categories ca "
+           "inner join coaches co inner join ranks ra inner join clubs cl inner join competitions com on "
+           "pw.sportsman_competition_id=sc.id and sc.sportsman_id=s.id and sc.category_id=ca.id and s.rank_id=ra.id and "
+           "s.coach_id=co.id and co.club_id=cl.id and sc.competition_id=com.id "
+           "where sc.competition_id= 1"
+           "order by ca.name, pw.place";
 }

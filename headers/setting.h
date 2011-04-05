@@ -32,6 +32,8 @@ enum RepType
     rtSert,
     rtDraw,
     rtPulka,
+    rtResults,
+    rtTechnical,
 };
 
 struct TblSett{

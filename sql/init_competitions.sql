@@ -58,3 +58,17 @@ INSERT INTO prize_winners (sportsman_competition_id, fights_count, fights_won, p
     2,
     'Приморский край',
     'Уссурийск');
+INSERT INTO prize_winners (sportsman_competition_id, fights_count, fights_won, place, region, city) VALUES(
+    (SELECT id FROM sportsmen_competitions WHERE sportsman_id=(SELECT id FROM sportsmen where name = 'Глушко Никита Эдуардович') and competition_id=1),
+    2,
+    2,
+    1,
+    'Приморский край',
+    'Владивосток');
+INSERT INTO prize_winners (sportsman_competition_id, fights_count, fights_won, place, region, city) VALUES(
+    (SELECT id FROM sportsmen_competitions WHERE sportsman_id=(SELECT id FROM sportsmen where name = 'Прохоров Андрей Олегович') and competition_id=1),
+    2,
+    2,
+    1,
+    'Приморский край',
+    'Владивосток');
