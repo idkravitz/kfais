@@ -179,6 +179,9 @@ public:
 
 class RepCompetitionBased: public Report {
     Q_OBJECT
+private slots:
+    void cbTextChanged(const QString& text);
+
 protected:
     QComboBox *cbCompetition;
     QVector<int> vecId;
