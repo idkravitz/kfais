@@ -81,7 +81,7 @@ void MainWindow::OpenTblSport()
 {
     if (!IsOpen(ttSport))
     {
-        QMdiSubWindow *sw = OpenTbl(ttSport, new TblSport(Sett::GetMA()));
+        OpenTbl(ttSport, new TblSport(Sett::GetMA()));
     }
 }
 
@@ -89,7 +89,7 @@ void MainWindow::OpenTblCoach()
 {
     if (!IsOpen(ttCoach))
     {
-        QMdiSubWindow *sw = OpenTbl(ttCoach, new TblCoach(Sett::GetMA()));
+        OpenTbl(ttCoach, new TblCoach(Sett::GetMA()));
     }
 }
 
@@ -97,7 +97,7 @@ void MainWindow::OpenTblClub()
 {
     if (!IsOpen(ttClub))
     {
-        QMdiSubWindow *sw = OpenTbl(ttClub, new TblClub(Sett::GetMA()));
+        OpenTbl(ttClub, new TblClub(Sett::GetMA()));
     }
 }
 
@@ -105,7 +105,7 @@ void MainWindow::OpenTblSert()
 {
     if (!IsOpen(ttSert))
     {
-        QMdiSubWindow *sw = OpenTbl(ttSert, new TblSert(Sett::GetMA()));
+        OpenTbl(ttSert, new TblSert(Sett::GetMA()));
     }
 }
 
@@ -113,7 +113,7 @@ void MainWindow::OpenTblFee()
 {
     if (!IsOpen(ttFee))
     {
-        QMdiSubWindow *sw = OpenTbl(ttFee, new TblFee(Sett::GetMA()));
+        OpenTbl(ttFee, new TblFee(Sett::GetMA()));
     }
 }
 
@@ -121,7 +121,7 @@ void MainWindow::OpenTblSportComp()
 {
     if (!IsOpen(ttSportComp))
     {
-        QMdiSubWindow *sw = OpenTbl(ttSportComp, new TblSportComp(Sett::GetMA()));
+        OpenTbl(ttSportComp, new TblSportComp(Sett::GetMA()));
     }
 }
 
@@ -129,7 +129,7 @@ void MainWindow::OpenTblComp()
 {
     if (!IsOpen(ttComp))
     {
-        QMdiSubWindow *sw = OpenTbl(ttComp, new TblComp(Sett::GetMA()));
+        OpenTbl(ttComp, new TblComp(Sett::GetMA()));
     }
 }
 
@@ -138,7 +138,7 @@ void MainWindow::OpenTblCateg()
 {
     if (!IsOpen(ttCateg))
     {
-        QMdiSubWindow *sw = OpenTbl(ttCateg, new TblCateg(Sett::GetMA()));
+        OpenTbl(ttCateg, new TblCateg(Sett::GetMA()));
     }
 }
 
@@ -146,7 +146,7 @@ void MainWindow::OpenTblRank()
 {
     if (!IsOpen(ttRank))
     {
-        QMdiSubWindow *sw = OpenTbl(ttRank, new TblRank(Sett::GetMA()));
+        OpenTbl(ttRank, new TblRank(Sett::GetMA()));
     }
 }
 
@@ -154,7 +154,7 @@ void MainWindow::OpenTblPrzWin()
 {
     if (!IsOpen(ttPrzWin))
     {
-        QMdiSubWindow *sw = OpenTbl(ttPrzWin, new TblPrzWin(Sett::GetMA()));
+        OpenTbl(ttPrzWin, new TblPrzWin(Sett::GetMA()));
     }
 }
 
@@ -167,30 +167,30 @@ QMdiSubWindow *MainWindow::OpenRep(RepType aTT, Report *aRep)
 
 void MainWindow::OpenRepSport()
 {
-    /*QMdiSubWindow *sw = */OpenRep(rtSport, new RepSport(Sett::GetMA()));
+    OpenRep(rtSport, new RepSport(Sett::GetMA()));
 }
 
 void MainWindow::OpenRepSert()
 {
-    /*QMdiSubWindow *sw = */OpenRep(rtSert, new RepSert(Sett::GetMA()));
+    OpenRep(rtSert, new RepSert(Sett::GetMA()));
 }
 
 void MainWindow::OpenRepDraw()
 {
-    /*QMdiSubWindow *sw = */OpenRep(rtDraw, new RepDraw(Sett::GetMA()));
+    OpenRep(rtDraw, new RepDraw(Sett::GetMA()));
 }
 
 void MainWindow::OpenRepPulka()
 {
-    /*QMdiSubWindow *sw = */OpenRep(rtDraw, new RepPulka(Sett::GetMA()));
+    OpenRep(rtDraw, new RepPulka(Sett::GetMA()));
 }
 
 void MainWindow::OpenRepResults()
 {
-    /*QMdiSubWindow *sw = */OpenRep(rtDraw, new RepResults(Sett::GetMA()));
+    OpenRep(rtDraw, new RepResults(Sett::GetMA()));
 }
 
 void MainWindow::OpenRepTechnical()
 {
-    /*QMdiSubWindow *sw = */OpenRep(rtDraw, new RepTechnical(Sett::GetMA()));
+    OpenRep(rtDraw, new RepTechnical(Sett::GetMA()));
 }

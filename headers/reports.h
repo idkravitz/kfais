@@ -116,7 +116,6 @@ class Report: public QDialog
 private:
     BaseReport *logRep;
     QSqlQuery *query;
-    QPushButton *btnExport;
 
     void closeEvent(QCloseEvent *aE);
 
@@ -124,12 +123,15 @@ private slots:
     void Export();
 
 protected:
+    QPushButton *btnExport;
+
     void CreateBasicWidgets(QGridLayout *aLt);
 
     virtual QString GetQuery();
+    void keyPressEvent(QKeyEvent *aE);
 
 public:
-    Report(QWidget *aParent, BaseReport *aLogRep);
+    Report(QWidget *aParent, BaseReport *aLogRep, const QString &title);
     ~Report();
 };
 
@@ -173,15 +175,26 @@ public:
     RepSert(QWidget *aParent);
 };
 
+
+
+class RepCompetitionBased: public Report {
+    Q_OBJECT
+protected:
+    QComboBox *cbCompetition;
+    QVector<int> vecId;
+
+    void CreateWidgets();
+public:
+    RepCompetitionBased(QWidget *aParent, BaseReport *report, const QString &title);
+};
+
 /******************************* Drawing *******************************/
 
 
-class RepDraw: public Report{
+class RepDraw: public RepCompetitionBased{
     Q_OBJECT
 
 private:
-    void CreateWidgets();
-
     QString GetQuery();
 public:
     RepDraw(QWidget *aParent);
@@ -189,12 +202,10 @@ public:
 
 /******************************* Pulka *******************************/
 
-class RepPulka: public Report{
+class RepPulka: public RepCompetitionBased{
     Q_OBJECT
 
 private:
-    void CreateWidgets();
-
     QString GetQuery();
 public:
     RepPulka(QWidget *aParent);
@@ -202,12 +213,10 @@ public:
 
 /******************************* Results *******************************/
 
-class RepResults: public Report{
+class RepResults: public RepCompetitionBased{
     Q_OBJECT
 
 private:
-    void CreateWidgets();
-
     QString GetQuery();
 public:
     RepResults(QWidget *aParent);
@@ -215,12 +224,10 @@ public:
 
 /******************************* Technical Results *******************************/
 
-class RepTechnical: public Report{
+class RepTechnical: public RepCompetitionBased{
     Q_OBJECT
 
 private:
-    void CreateWidgets();
-
     QString GetQuery();
 public:
     RepTechnical(QWidget *aParent);
