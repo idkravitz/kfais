@@ -23,11 +23,7 @@ private:
 
     void SetTableHeaders();
 
-    void ApplyTableSettings();
-    void SaveTableSettings();
-
 private slots:
-    void UpdateTable();
     void SetFirst();
     void SetNext();
     void SetPrev();
@@ -40,6 +36,9 @@ private slots:
     void CloseCard(QObject *aObj);
     void SetSort(int aI);
 
+    void ApplyTableSettings();
+    void SaveTableSettings();
+
 protected:
     TableView *view;
 
@@ -48,6 +47,8 @@ protected:
 //    void Init(const QString &aTitle, const QString &aTblName);
     inline Card *_CreateCard(int aId) const;
     virtual Card *CreateCard(int aId) const = 0;
+
+    void Init(const QString &aQuery);
 
 public:
     Table(QWidget *aParent, TblType aType);

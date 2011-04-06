@@ -8,7 +8,6 @@ Table::Table(QWidget *aParent, TblType aType):
 {
     setAttribute(Qt::WA_DeleteOnClose);
     model = new TableModel(this);
-    connect(model, SIGNAL(Refresh()), this, SLOT(UpdateTable()));
     CreateWidgets();
     view->setModel(model);
 }
@@ -43,11 +42,6 @@ void Table::CreateWidgets()
 
     setWindowTitle(Sett::GetTblTitle(type));
     setCentralWidget(view);
-}
-
-void Table::UpdateTable()
-{
-    ApplyTableSettings();
 }
 
 void Table::SetTableHeaders()
@@ -168,15 +162,24 @@ void Table::SetSort(int aI)
 //    prevSortCol = aI;
 }
 
+void Table::Init(const QString &aQuery)
+{
+    model->SetQuery(aQuery);
+    model->Select();
+    ApplyTableSettings();
+    connect(model, SIGNAL(Refresh()), this, SLOT(ApplyTableSettings()));
+    connect(model, SIGNAL(BeforeRefresh()), this, SLOT(SaveTableSettings()));
+}
+
 /******************************* Sportsmen *******************************/
 
 TblSport::TblSport(QWidget *aParent):
         Table(aParent, ttSport)
 {
-    model->SetQuery(
-            "SELECT s.id, s.name, s.birthday, r.name, s.reg_number, c.name, s.address, s.phone, s.workplace, s.job, s.note "
-            "FROM sportsmen s LEFT OUTER JOIN coaches c ON s.coach_id = c.id LEFT OUTER JOIN ranks r ON s.rank_id = r.id");
-    model->Select();
+    Init("SELECT s.id, s.name, s.birthday, r.name, s.reg_number, c.name, s.address, s.phone, s.workplace, s.job, s.note "
+         "FROM sportsmen s "
+         "LEFT OUTER JOIN coaches c ON s.coach_id = c.id "
+         "LEFT OUTER JOIN ranks r ON s.rank_id = r.id");
 }
 
 Card *TblSport::CreateCard(int aId) const
@@ -189,9 +192,9 @@ Card *TblSport::CreateCard(int aId) const
 TblCoach::TblCoach(QWidget *aParent):
         Table(aParent, ttCoach)
 {
-    model->SetQuery("SELECT c.id, c.name, c.phone, cl.name, c.note "
-                     "FROM coaches c LEFT OUTER JOIN clubs cl ON c.club_id = cl.id");
-    model->Select();
+    Init("SELECT c.id, c.name, c.phone, cl.name, c.note "
+         "FROM coaches c "
+         "LEFT OUTER JOIN clubs cl ON c.club_id = cl.id");
 }
 
 Card *TblCoach::CreateCard(int aId) const
@@ -204,8 +207,7 @@ Card *TblCoach::CreateCard(int aId) const
 TblClub::TblClub(QWidget *aParent):
         Table(aParent, ttClub)
 {
-    model->SetQuery("SELECT id, name, address, note FROM clubs");
-    model->Select();
+    Init("SELECT id, name, address, note FROM clubs");
 }
 
 Card *TblClub::CreateCard(int aId) const
@@ -218,10 +220,9 @@ Card *TblClub::CreateCard(int aId) const
 TblSert::TblSert(QWidget *aParent):
         Table(aParent, ttSert)
 {
-    model->SetQuery("SELECT se.id, s.name, se.date, r1.name, r2.name, se.note FROM sertifications se "
-                     "JOIN sportsmen s, ranks r2 ON se.sportsman_id = s.id AND se.rank_to_id = r2.id "
-                     "LEFT OUTER JOIN ranks r1 ON se.rank_from_id = r1.id");
-    model->Select();
+    Init("SELECT se.id, s.name, se.date, r1.name, r2.name, se.note FROM sertifications se "
+         "JOIN sportsmen s ON se.sportsman_id = s.id JOIN ranks r2 ON se.rank_to_id = r2.id "
+         "LEFT OUTER JOIN ranks r1 ON se.rank_from_id = r1.id");
 }
 
 Card *TblSert::CreateCard(int aId) const
@@ -234,9 +235,8 @@ Card *TblSert::CreateCard(int aId) const
 TblFee::TblFee(QWidget *aParent):
         Table(aParent, ttFee)
 {
-    model->SetQuery("SELECT f.id, s.name, f.date, f.note FROM fee f "
-                     "JOIN sportsmen s ON f.sportsman_id = s.id");
-    model->Select();
+    Init("SELECT f.id, s.name, f.date, f.note FROM fee f "
+         "JOIN sportsmen s ON f.sportsman_id = s.id");
 }
 
 Card *TblFee::CreateCard(int aId) const
@@ -249,11 +249,11 @@ Card *TblFee::CreateCard(int aId) const
 TblSportComp::TblSportComp(QWidget *aParent):
         Table(aParent, ttSportComp)
 {
-    model->SetQuery("SELECT sc.id, sp.name, co.name, co.date, ca.name, sc.draw_number, sc.units, sc.note "
-                     "FROM sportsmen_competitions sc JOIN sportsmen sp, competitions co "
-                     "ON sc.sportsman_id = sp.id AND sc.competition_id = co.id "
-                     "LEFT OUTER JOIN categories ca ON sc.category_id = ca.id");
-    model->Select();
+    Init("SELECT sc.id, sp.name, co.name, co.date, ca.name, sc.draw_number, sc.units, sc.note "
+         "FROM sportsmen_competitions sc "
+         "JOIN sportsmen sp ON sc.sportsman_id = sp.id "
+         "JOIN competitions co ON sc.competition_id = co.id "
+         "LEFT OUTER JOIN categories ca ON sc.category_id = ca.id");
 }
 
 Card *TblSportComp::CreateCard(int aId) const
@@ -266,8 +266,7 @@ Card *TblSportComp::CreateCard(int aId) const
 TblComp::TblComp(QWidget *aParent):
         Table(aParent, ttComp)
 {
-    model->SetQuery("SELECT id, name, name_prot, date, location, note FROM competitions");
-    model->Select();
+    Init("SELECT id, name, name_prot, date, location, note FROM competitions");
 }
 
 Card *TblComp::CreateCard(int aId) const
@@ -280,8 +279,7 @@ Card *TblComp::CreateCard(int aId) const
 TblCateg::TblCateg(QWidget *aParent):
         Table(aParent, ttCateg)
 {
-    model->SetQuery("SELECT id, name, note FROM categories");
-    model->Select();
+    Init("SELECT id, name, note FROM categories");
 }
 
 Card *TblCateg::CreateCard(int aId) const
@@ -294,8 +292,7 @@ Card *TblCateg::CreateCard(int aId) const
 TblRank::TblRank(QWidget *aParent):
         Table(aParent, ttRank)
 {
-    model->SetQuery("SELECT id, name, note FROM ranks");
-    model->Select();
+    Init("SELECT id, name, note FROM ranks");
 }
 
 Card *TblRank::CreateCard(int aId) const
@@ -308,11 +305,11 @@ Card *TblRank::CreateCard(int aId) const
 TblPrzWin::TblPrzWin(QWidget *aParent):
         Table(aParent, ttPrzWin)
 {
-    model->SetQuery("SELECT pw.id, c.name, c.date, s.name, pw.fights_count, pw.fights_won, pw.place, pw.region, "
-                     "pw.city, pw.note FROM prize_winners pw "
-                     "JOIN sportsmen_competitions sc ON pw.sportsman_competition_id = sc.id "
-                     "JOIN sportsmen s, competitions c ON sc.sportsman_id = s.id AND sc.competition_id = c.id");
-    model->Select();
+    Init("SELECT pw.id, c.name, c.date, s.name, pw.fights_count, pw.fights_won, pw.place, pw.region, "
+         "pw.city, pw.note FROM prize_winners pw "
+         "JOIN sportsmen_competitions sc ON pw.sportsman_competition_id = sc.id "
+         "JOIN sportsmen s ON sc.sportsman_id = s.id "
+         "JOIN competitions c ON sc.competition_id = c.id");
 }
 
 Card *TblPrzWin::CreateCard(int aId) const
