@@ -1,4 +1,5 @@
 #include "reports.h"
+#include "card.h"
 
 extern void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ, int aCurId);
 
@@ -850,7 +851,18 @@ void RepCompetitionBased::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
     AddWidToLt(lt, tr("Использовать соревнование:"), cbCompetition = new QComboBox, 0, 0);
+    QPushButton *btnComp = new QPushButton();
+    lt->addWidget(btnComp, 0, 2);
+    connect(btnComp, SIGNAL(clicked()), this, SLOT(OpenCardCompetition()));
     CreateBasicWidgets(lt);
+}
+
+void RepCompetitionBased::OpenCardCompetition()
+{
+    if (!btnExport->isEnabled()) return;
+    int id = vecId[cbCompetition->currentIndex()];
+    if (mapperCard.SetCard(ttComp, id)) return;
+    mapperCard.InsertCard(ttComp, id, new CardComp(Sett::GetMA(), 0, id), this);
 }
 
 /******************************* Drawing *******************************/

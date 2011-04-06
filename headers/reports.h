@@ -175,18 +175,18 @@ public:
     RepSert(QWidget *aParent);
 };
 
-
-
 class RepCompetitionBased: public Report {
     Q_OBJECT
 private slots:
     void cbTextChanged(const QString& text);
+    void OpenCardCompetition();
 
 protected:
     QComboBox *cbCompetition;
     QVector<int> vecId;
 
     void CreateWidgets();
+
 public:
     RepCompetitionBased(QWidget *aParent, BaseReport *report, const QString &title);
 };
