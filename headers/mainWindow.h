@@ -33,6 +33,9 @@ private slots:
     void OpenRepSport();
     void OpenRepSert();
     void OpenRepDraw();
+    void OpenRepPulka();
+    void OpenRepResults();
+    void OpenRepTechnical();
 
     QMdiSubWindow *OpenTbl(TblType aTT, Table *aTbl);
     QMdiSubWindow *OpenRep(RepType aTT, Report *aRep);

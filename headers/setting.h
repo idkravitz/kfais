@@ -33,6 +33,9 @@ enum RepType
     rtSport,
     rtSert,
     rtDraw,
+    rtPulka,
+    rtResults,
+    rtTechnical,
 };
 
 struct TblSett{

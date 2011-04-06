@@ -17,6 +17,27 @@ QAxObject *BaseReport::openDocument()
     return sheet;
 }
 
+QString genitiveDate(const QDate &date)
+{
+    const char *months[12] = {
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
+    };
+    return date.isValid() ?
+        QString("%1 %2 %3").arg(date.day()).arg(QObject::tr(months[date.month() - 1])).arg(date.year()) + QObject::tr("г."):
+        QString();
+}
+
 QAxObject *BaseReport::getRange(const QString &range)
 {
     return sheet->querySubObject("Range(const QString&)", range);
@@ -117,7 +138,7 @@ void DrawingReport::writeHeader(const QString& category, const QDate &date)
     daten->dynamicCall("SetValue(const QVariant&)", QObject::tr("Дата"));
 
     QAxObject *dateval = getRange(QString("B%1").arg(curRow));
-    dateval->dynamicCall("SetValue(const QVariant&)", date.toString("dd MMMM yyyy") + QObject::tr("г."));
+    dateval->dynamicCall("SetValue(const QVariant&)", genitiveDate(date));
     dateval->querySubObject("Borders(int)", xlEdgeBottom)->setProperty("LineStyle", xlSingle);
 
     QAxObject *categn = getRange(QString("C%1").arg(curRow));
@@ -163,10 +184,15 @@ void DrawingReport::writeHeader(const QString& category, const QDate &date)
         range->dynamicCall("SetValue(const QVariant&)", QObject::tr(headers[i]));
         range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
     }
-    QAxObject *font3 = getRange(QString("A%1:F%1").arg(QString::number(currentRow)))->querySubObject("Font");
+    QAxObject *range3 = getRange(QString("A%1:F%1").arg(QString::number(currentRow))),
+              *range4 = getRange(QString("A%1:F%1").arg(QString::number(currentRow)));
+    range3->setProperty("RowHeight", 26.25);
+    range4->setProperty("WrapText", true);
+    QAxObject *font3 = range3->querySubObject("Font");
     font3->setProperty("Name", QString("Arial Cyr"));
     font3->setProperty("Size", 10);
     font3->setProperty("Bold", true);
+    getRange(QString("F%1").arg(currentRow))->setProperty("WrapText", false);
     currentRow++;
 }
 
@@ -174,15 +200,20 @@ void DrawingReport::writeFooter(uint written)
 {
     for(int i = written; i < 16; ++i, ++currentRow)
     {
-        sheet->querySubObject("Range(const QString&)", QString('A') + QString::number(currentRow))
-             ->dynamicCall("SetValue(const QVariant&)", QString("\n\n")+QString::number(i+1));
+        QAxObject *range = sheet->querySubObject("Range(const QString&)", QString('A') + QString::number(currentRow));
+        range->dynamicCall("SetValue(const QVariant&)", QString::number(i+1));
     }
-    sheet->querySubObject("Range(const QString&)",
-        QString('A') + QString::number(currentRow-16) + QString(":") + QString('A' + 5) + QString::number(currentRow-1))
-        ->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+    QAxObject *range0 = sheet->querySubObject("Range(const QString&)",
+        QString('A') + QString::number(currentRow-16) + QString(":") + QString('A' + 5) + QString::number(currentRow-1));
+    range0->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+    range0->setProperty("RowHeight", 39);
+    range0->setProperty("WrapText", true);
     QAxObject *range1 = getRange(QString("A%1:A%2").arg(currentRow - 16).arg(currentRow - 1)),
-              *range2 = getRange(QString("B%1:F%2").arg(currentRow - 16).arg(currentRow - 1));
+              *range2 = getRange(QString("B%1:F%2").arg(currentRow - 16).arg(currentRow - 1)),
+              *range3 = getRange(QString("A%1:F%2").arg(currentRow - 16).arg(currentRow - 1));
+    range3->setProperty("WrapText", true);
     range1->setProperty("HorizontalAlignment", xlRight);
+    range1->setProperty("VerticalAlignment", xlBottom);
     QAxObject *font1 = range1->querySubObject("Font");
     font1->setProperty("Name", QString("Arial Cyr"));
     font1->setProperty("Size", 12);
@@ -213,12 +244,13 @@ void DrawingReport::writeFooter(uint written)
 void DrawingReport::writeLine(uint written)
 {
     sheet->querySubObject("Range(const QString&)", QString('A') + QString::number(currentRow))
-         ->dynamicCall("SetValue(const QVariant&)", QString("\n\n")+QString::number(written+1));
+         ->dynamicCall("SetValue(const QVariant&)", QString::number(written+1));
     for(int i = 2, fieldsCount = query->record().count(); i < fieldsCount; ++i)
     {
         QAxObject *range = sheet->querySubObject("Range(const QString&)",
                                                  QString('A'+i-1) + QString::number(currentRow));
-        range->dynamicCall("SetValue(const QVariant&)", QVariant(query->value(i).value<QString>()));
+        range->dynamicCall("SetValue(const QVariant&)",
+            (i != 3 ? query->value(i).value<QString>() : query->value(i).value<QDate>().toString("dd.MM.yyyy")));
     }
     currentRow++;
 }
@@ -230,6 +262,19 @@ void DrawingReport::makeReport()
     currentRow = pageStartRow = currentPage = 1;
     sheet = openDocument();
     excel->querySubObject("ActiveWindow")->setProperty("Zoom", 85);
+    const double widths[] = {
+        6.29,
+        30.29,
+        11.14,
+        18.71,
+        12.29,
+        14.71
+    };
+    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    {
+        sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
+             ->setProperty("ColumnWidth", widths[i]);
+    }
     while(query->next())
     {
         vcat = query->value(0).toString();
@@ -244,7 +289,410 @@ void DrawingReport::makeReport()
         writeLine(written++);
     }
     writeFooter(written);
-    sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
+
+    sheet->querySubObject("PageSetup")->setProperty("Zoom", 89);
+
+    sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 600);
+    //sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
+}
+
+void PulkaReport::writeHeader(const QString &category, const QString &competition, const QDate &date)
+{
+    uint offset = (currentPage - 1) * pageHeight + 1;
+    QAxObject *range = getRange(QString("A%1:M%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("Протокол хода ") + competition);
+    offset++;
+
+    range = getRange(QString("D%1:E%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("Категория"));
+
+    range = getRange(QString("F%1:K%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", category);
+
+    range = getRange(QString("L%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("г. Владивосток"));
+
+    range = getRange(QString("M%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", date.toString("dd.MM.yyyy") + QObject::tr("г."));
+    offset++;
+
+    range = getRange(QString("A%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", QString::number(currentPage));
+    range = getRange(QString("A%1:M%2").arg(offset-2).arg(offset));
+    range->querySubObject("Font")->setProperty("Name", "Calibri");
+    range->querySubObject("Font")->setProperty("Size", 11);
+    offset++;
+    for(int i = 0; i < 8; ++i, offset += 4)
+    {
+        QAxObject *range = getRange(QString("A%1:B%2").arg(offset).arg(offset + 1));
+        range->dynamicCall("Merge()");
+        range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+        range->setProperty("WrapText", true);
+
+        range = getRange(QString("L%1:M%2").arg(offset).arg(offset + 1));
+        range->dynamicCall("Merge()");
+        range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+        range->setProperty("WrapText", true);
+    }
+}
+
+void PulkaReport::writeRec(uint draw_number)
+{
+    bool right = draw_number > 8;
+    draw_number = (draw_number - 1) % 8;
+    uint offset = (currentPage - 1) * pageHeight + firstRecOffset + draw_number * 4;
+    QAxObject *range = getRange((right ? QString("L%1:M%2") : QString("A%1:B%2")).arg(offset).arg(offset + 1));
+    range->dynamicCall("SetValue(const QVariant&)",
+        query->value(3).toString() + " " + query->value(4).toString() + " " + query->value(5).toString());
+}
+
+void PulkaReport::writeFooter()
+{
+    uint offset = currentPage * pageHeight;
+    QAxObject *l1 = getRange(QString("A%1").arg(offset));
+    QAxObject *l2 = getRange(QString("H%1:J%1").arg(offset));
+
+    l1->dynamicCall("SetValue(const QVariant&)", QObject::tr("Гл. судья"));
+    l2->dynamicCall("Merge()");
+    l2->dynamicCall("SetValue(const QVariant&)", QObject::tr("Секретарь"));
+    l1->querySubObject("Borders(int)", xlEdgeBottom)->setProperty("LineStyle", xlSingle);
+    l2->querySubObject("Borders(int)", xlEdgeBottom)->setProperty("LineStyle", xlSingle);
+    l1->querySubObject("Font")->setProperty("Name", "Arial Cyr");
+    l2->querySubObject("Font")->setProperty("Name", "Arial Cyr");
+    l1->querySubObject("Font")->setProperty("Size", 11);
+    l2->querySubObject("Font")->setProperty("Size", 11);
+
+    uint fstMainRow = (currentPage - 1) * pageHeight + firstRecOffset,
+         lstMainRow = offset - 3;
+
+    QAxObject *grid = getRange(QString("C%1:K%2").arg(fstMainRow).arg(lstMainRow));
+    grid->querySubObject("Borders")->setProperty("LineStyle", xlContinious);
+    grid->querySubObject("Borders")->setProperty("Weight", xlHairline);
+
+    QAxObject *lCol = getRange(QString("A%1:B%2").arg(fstMainRow).arg(lstMainRow)),
+              *rCol = getRange(QString("L%1:M%2").arg(fstMainRow).arg(lstMainRow));
+    lCol->querySubObject("Font")->setProperty("Name", "Arial Cyr");
+    rCol->querySubObject("Font")->setProperty("Name", "Arial Cyr");
+    lCol->querySubObject("Font")->setProperty("Size", 12);
+    rCol->querySubObject("Font")->setProperty("Size", 12);
+
+    currentPage++;
+}
+
+
+void PulkaReport::makeReport()
+{
+    QString category = "", vcat;
+    sheet = openDocument();
+    currentPage = 1;
+    bool start = true;
+    uint draw_number;
+    excel->querySubObject("ActiveWindow")->setProperty("Zoom", 75);
+    const double widths[] = {
+        21.29,
+        13.29,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        21.29,
+        13.29,
+    };
+    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    {
+        sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
+             ->setProperty("ColumnWidth", widths[i]);
+    }
+    while(query->next())
+    {
+        vcat = query->value(2).toString();
+        draw_number = query->value(6).toUInt();
+        if(start || category != vcat || draw_number > 16)
+        {
+            if(!start)
+            {
+                writeFooter();
+            }
+            else
+            {
+                start = false;
+            }
+            if(draw_number > 16)
+                draw_number -= 16;
+            category = vcat;
+            writeHeader(category, query->value(0).toString(), query->value(1).toDate());
+        }
+        writeRec(draw_number);
+    }
+    writeFooter();
+    sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
+    sheet->querySubObject("PageSetup")->setProperty("Orientation", xlLandscape);
+    sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 600);
+    //sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
+}
+
+void ResultsReport::writeHeader(const QString &category, const QString &competition, const QDate &date)
+{
+    uint offset = (currentPage - 1) * pageHeight + 1;
+    QAxObject *range = getRange(QString("A%1:K%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("Протокол результатов соревнований"));
+    range->setProperty("HorizontalAlignment", xlCenter);
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->querySubObject("Font")->setProperty("Size", 14);
+    range->querySubObject("Font")->setProperty("Bold", true);
+    offset++;
+
+    range = getRange(QString("A%1:K%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", competition);
+    range->setProperty("HorizontalAlignment", xlCenter);
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->querySubObject("Font")->setProperty("Size", 14);
+    range->querySubObject("Font")->setProperty("Bold", true);
+    offset++;
+
+    range = getRange(QString("A%1:K%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("СК «Бастион», ") + genitiveDate(date));
+    range->setProperty("HorizontalAlignment", xlCenter);
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->querySubObject("Font")->setProperty("Size", 14);
+    range->querySubObject("Font")->setProperty("Bold", true);
+    offset+=2;
+
+    range = getRange(QString("A%1:K%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("категория ") + category);
+    range->setProperty("HorizontalAlignment", xlCenter);
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->querySubObject("Font")->setProperty("Size", 12);
+    range->querySubObject("Font")->setProperty("Bold", true);
+    offset++;
+
+    const char *headers[] = {
+        "№ п/п",
+        "ФИО",
+        "Год рожд.",
+        "Техн. квалиф. разряд",
+        "Область, край, республика",
+        "Город, населенный пункт",
+        "Д.С.О. Ведомство",
+        "СК, ДЮСШ, СДЮСШОР",
+        "Ф.И.О. Тренера",
+        "Кол-во боев/ побед",
+        "Занятое место",
+    };
+    for(int i = 0; i < sizeof(headers)/sizeof(*headers); ++i)
+    {
+        QAxObject *range = getRange(QString('A' + i) + QString::number(offset));
+        range->dynamicCall("SetValue(const QVariant&)", QObject::tr(headers[i]));
+    }
+}
+
+void ResultsReport::writeRec()
+{
+    uint place = query->value(11).toUInt();
+    uint offset = (currentPage - 1) * pageHeight + 6 + place;
+
+    for(int i = 3; i < 8 ; ++i)
+    {
+        QAxObject *range = getRange(QString('A' + i - 2) + QString::number(offset));
+        range->dynamicCall("SetValue(const QVariant&)", query->value(i).value<QString>());
+    }
+
+//    qDebug() << query->value(9).value<QString>();
+//    qDebug() << "SPARTA";
+//    qDebug() << query->value(10).value<QString>();
+//
+    QAxObject *range = getRange(QString("J%1").arg(offset));
+    range->dynamicCall("SetValue(const QString&)",
+        "'" + query->value(9).value<QString>() + "/" + query->value(10).value<QString>());
+
+
+    range = getRange(QString("C%1").arg(offset));
+    int year = query->value(4).value<QDate>().year();
+    qDebug() << year;
+    range->dynamicCall("SetValue(const QVariant&)", (year > 0 ? ("'" + QString::number(year)) : QString()));
+
+    range = getRange(QString("G%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("КУДО"));
+
+    range = getRange(QString("H%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", query->value(8).value<QString>());
+
+    range = getRange(QString("I%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", query->value(12).value<QString>());
+
+    range = getRange(QString("K%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", query->value(11).value<QString>());
+
+    range = getRange(QString("A%1").arg(offset));
+    range->dynamicCall("SetValue(const QVariant&)", query->value(11).value<QString>() + ".");
+}
+
+void ResultsReport::writeFooter()
+{
+    uint offset = currentPage * pageHeight - 15;
+    QAxObject *range = getRange(QString("A%1:B%1").arg(offset - 1)),
+            *range2 = getRange(QString("A%1:B%1").arg(offset));
+    range->dynamicCall("Merge()");
+    range2->dynamicCall("Merge()");
+
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("Гл. судья"));
+    range2->dynamicCall("SetValue(const QVariant&)", QObject::tr("Гл. секретарь"));
+
+    range = getRange(QString("C%1:E%1").arg(offset - 1)),
+    range2 = getRange(QString("C%1:E%1").arg(offset));
+
+    range->dynamicCall("Merge()");
+    range2->dynamicCall("Merge()");
+
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("Григорьев Д.А."));
+    range2->dynamicCall("SetValue(const QVariant&)", QObject::tr("Штаненкова Ж.Л."));
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range2->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->querySubObject("Font")->setProperty("Size", 12);
+    range2->querySubObject("Font")->setProperty("Size", 12);
+
+    range = getRange(QString("A%1:K%2").arg(offset - 12).arg(offset - 4));
+    range->querySubObject("Borders")->setProperty("LineStyle", xlSingle);
+    range->querySubObject("Font")->setProperty("Name", "Times New Roman");
+    range->setProperty("WrapText", true);
+
+    range = getRange(QString("A%1:K%2").arg(offset - 11).arg(offset - 4));
+    range->querySubObject("Font")->setProperty("Size", 11);
+
+    range = getRange(QString("A%1:K%1").arg(offset - 12));
+    range->querySubObject("Font")->setProperty("Size", 10);
+    range->querySubObject("Font")->setProperty("Bold", true);
+    range->setProperty("HorizontalAlignment", xlCenter);
+
+    range = getRange(QString("B%1:K%2").arg(offset - 12).arg(offset - 4));
+    range->setProperty("HorizontalAlignment", xlCenter);
+
+    currentPage++;
+}
+
+void ResultsReport::makeReport()
+{
+    QString category = "", vcat;
+    sheet = openDocument();
+    currentPage = 1;
+    bool start = true;
+    excel->querySubObject("ActiveWindow")->setProperty("Zoom", 75);
+    const double widths[] = {
+        3.29,
+        30,
+        5.71,
+        8.43,
+        18.29,
+        13.43,
+        9.57,
+        13.29,
+        20.43,
+        6.43,
+        7,
+    };
+    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    {
+        sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
+             ->setProperty("ColumnWidth", widths[i]);
+    }
+    while(query->next())
+    {
+        vcat = query->value(0).toString();
+        if(start || category != vcat)
+        {
+            if(!start)
+            {
+                writeFooter();
+            }
+            else
+            {
+                start = false;
+            }
+            category = vcat;
+            writeHeader(category, query->value(1).toString(), query->value(2).toDate());
+        }
+        writeRec();
+    }
+    writeFooter();
+
+    sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
+    sheet->querySubObject("PageSetup")->setProperty("Orientation", xlLandscape);
+    sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 600);
+
+}
+
+void TechnicalReport::writeSuperHeader()
+{
+    QAxObject *range = getRange(QString("A%1:B%1").arg(currentRow));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)",
+        QObject::tr("Технические результаты ") + query->value(0).value<QString>() + " " +
+        query->value(2).value<QDate>().toString("dd.MM.yyyy"));
+    currentRow++;
+}
+
+void TechnicalReport::writeHeader()
+{
+    QAxObject *range = getRange(QString("A%1:B%1").arg(currentRow));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)",
+        QObject::tr("Категория ") + query->value(1).value<QString>());
+    currentRow++;
+}
+
+void TechnicalReport::writeLine()
+{
+    QAxObject *range = getRange(QString("A%1").arg(currentRow)),
+            *range2 = getRange(QString("B%1").arg(currentRow));
+    range->dynamicCall("SetValue(const QVariant&)",
+        QString("%1.").arg(query->value(6).value<uint>()));
+    range2->dynamicCall("SetValue(const QVariant&)",
+        QString("%1 (%2 %3)").arg(query->value(3).toString(), query->value(5).toString(),
+                                  query->value(4).toString()));
+    currentRow++;
+}
+
+void TechnicalReport::makeReport()
+{
+    QString category = "", vcat;
+    sheet = openDocument();
+    currentRow = 1;
+    const double widths[] = {
+        2,
+        82,
+    };
+    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    {
+        sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
+             ->setProperty("ColumnWidth", widths[i]);
+    }
+    while(query->next())
+    {
+        vcat = query->value(1).toString();
+        if(currentRow == 1)
+        {
+            writeSuperHeader();
+        }
+        if(category != vcat)
+        {
+            category = vcat;
+            writeHeader();
+        }
+        writeLine();
+    }
+    sheet->querySubObject("Columns")->setProperty("WrapText", true);
 }
 
 /********************************************************************/
@@ -405,25 +853,92 @@ void RepDraw::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
 
-//    AddWidToLt(lt, tr("Выборка по:"), cbTbl = new QComboBox, 0, 0);
-//    QStringList lst;
-//    lst << Sett::GetColName(ttSport, Sport::taCoach) << Sett::GetColName(ttCoach, Coach::taClub);
-//    cbTbl->addItems(lst);
-//    connect(cbTbl, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeTbl(int)));
-
-//    lbl = new QLabel(cbTbl->currentText() + ":");
-//    AddWidToLt(lt, lbl, cb = new QComboBox, 1, 0);
-//    InitComboBox(cb, GetLstRec("SELECT * FROM coaches", vecId));
-
     CreateBasicWidgets(lt);
 }
 
 QString RepDraw::GetQuery()
 {
     return "select ca.name, co.date, s.name, s.birthday, cl.name, r.name "
-           "from sportsmen_competitions sc inner join sportsmen s, coaches c, clubs cl, "
-           "categories ca, competitions co, ranks r on "
+           "from sportsmen_competitions sc inner join sportsmen s inner join coaches c inner join clubs cl inner join "
+           "categories ca inner join competitions co inner join ranks r on "
            "sc.sportsman_id = s.id and s.coach_id = c.id and c.club_id = cl.id and sc.category_id = ca.id "
            "and sc.competition_id = co.id and s.rank_id = r.id "
            "order by ca.name";
+}
+
+/******************************* Pulka *******************************/
+
+RepPulka::RepPulka(QWidget *aParent):
+        Report(aParent, new PulkaReport)
+{
+    CreateWidgets();
+}
+
+void RepPulka::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+
+    CreateBasicWidgets(lt);
+}
+
+QString RepPulka::GetQuery()
+{
+    return "select co.name_prot, co.date, ca.name, s.name, cl.name, r.name, sc.draw_number "
+           "from sportsmen_competitions sc inner join sportsmen s inner join coaches c inner join clubs cl inner join  "
+           "categories ca inner join competitions co inner join ranks r on "
+           "sc.sportsman_id = s.id and s.coach_id = c.id and c.club_id = cl.id and sc.category_id = ca.id "
+           "and sc.competition_id = co.id and s.rank_id = r.id "
+           "order by ca.name, sc.draw_number";
+}
+
+/******************************* Results *******************************/
+
+RepResults::RepResults(QWidget *aParent):
+        Report(aParent, new ResultsReport)
+{
+    CreateWidgets();
+}
+
+void RepResults::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+
+    CreateBasicWidgets(lt);
+}
+
+QString RepResults::GetQuery()
+{
+    return "select ca.name, com.name_prot, com.date, s.name, s.birthday, ra.name, pw.region, pw.city, cl.name, pw.fights_won, pw.fights_count, pw.place, co.name "
+            "from prize_winners pw inner join sportsmen_competitions sc inner join sportsmen s inner join categories ca "
+            "inner join coaches co inner join ranks ra inner join clubs cl inner join competitions com on "
+            "pw.sportsman_competition_id=sc.id and sc.sportsman_id=s.id and sc.category_id=ca.id and s.rank_id=ra.id and "
+            "s.coach_id=co.id and co.club_id=cl.id and sc.competition_id=com.id "
+            "where sc.competition_id=1 "
+            "order by ca.name, pw.place";
+}
+
+/******************************* Technical *******************************/
+
+RepTechnical::RepTechnical(QWidget *aParent):
+        Report(aParent, new TechnicalReport)
+{
+    CreateWidgets();
+}
+
+void RepTechnical::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+
+    CreateBasicWidgets(lt);
+}
+
+QString RepTechnical::GetQuery()
+{
+    return "select com.name_prot, ca.name, com.date, s.name, cl.name, pw.city, pw.place "
+           "from prize_winners pw inner join sportsmen_competitions sc inner join sportsmen s inner join categories ca "
+           "inner join coaches co inner join clubs cl inner join competitions com on "
+           "pw.sportsman_competition_id=sc.id and sc.sportsman_id=s.id and sc.category_id=ca.id and "
+           "s.coach_id=co.id and co.club_id=cl.id and sc.competition_id=com.id "
+           "where sc.competition_id = " "1"
+           " order by ca.name, pw.place";
 }

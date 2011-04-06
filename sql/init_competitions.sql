@@ -13,30 +13,31 @@ INSERT INTO categories (name) VALUES ('1996-1998 г.р. до 240 ед.');
 
 
 -- Для жеребьёвки
-INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES (
+INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id, draw_number) VALUES (
     (select id from sportsmen where name='Карпов Иван Анатольевич'),
     1,
-    (select id from categories where name='мужчины 190 ед.'));
-INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES (
+    (select id from categories where name='мужчины 190 ед.'), 2);
+INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id, draw_number) VALUES (
     (select id from sportsmen where name='Ганжара Владимир'),
     1,
-    (select id from categories where name='мужчины 190 ед.'));
-INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES (
+    (select id from categories where name='мужчины 190 ед.'), 1);
+INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id, draw_number) VALUES (
     (select id from sportsmen where name='Васильев Артем'),
     1,
-    (select id from categories where name='мужчины 190 ед.'));
-INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES (
+    (select id from categories where name='мужчины 190 ед.'), 4);
+INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id, draw_number) VALUES (
     (select id from sportsmen where name='Шихардин Андрей'),
     1,
-    (select id from categories where name='мужчины 190 ед.'));
-INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES (
+    (select id from categories where name='мужчины 190 ед.'), 5);
+
+INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id, draw_number) VALUES (
     (select id from sportsmen where name='Прохоров Андрей Олегович'),
     1,
-    (select id from categories where name='мужчины 200 ед.'));
-INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES (
+    (select id from categories where name='мужчины 200 ед.'), 1);
+INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id, draw_number) VALUES (
     (select id from sportsmen where name='Глушко Никита Эдуардович'),
     1,
-    (select id from categories where name='1996-1998 г.р. до 240 ед.'));
+    (select id from categories where name='1996-1998 г.р. до 240 ед.'), 16);
 
 INSERT INTO sportsmen_competitions (sportsman_id, competition_id, category_id) VALUES (
     (select id from sportsmen where name='Глушко Никита Эдуардович'),
