@@ -755,21 +755,6 @@ RepSport::RepSport(QWidget *aParent):
 {
     CreateWidgets();
     InitComboBox(cbCoach, vecId, "SELECT * FROM coaches", 0);
-
-//    QSqlQuery q;
-//    q.exec("SELECT * FROM coaches");
-//    QStringList lst;
-//    int id;
-//    while (q.next())
-//    {
-//        id = q.record().value(0).toInt();
-//        if(id)
-//        {
-//            vecId.push_back(id);
-//            lst.push_back(q.record().value(1).toString());
-//        }
-//    }
-//    InitComboBox(cbCoach, lst);
 }
 
 void RepSport::CreateWidgets()
@@ -781,10 +766,12 @@ void RepSport::CreateWidgets()
 
 QString RepSport::GetQuery()
 {
-    return "SELECT s.reg_number, s.name, s.birthday, s.address, s.phone, "
-           "s.workplace, s.job, c.name, r.name FROM sportsmen s LEFT OUTER JOIN coaches c, "
-           "ranks r ON s.coach_id = c.id AND s.rank_id = r.id WHERE s.id <> 0 and c.id = " +
-           QString::number(vecId[cbCoach->currentIndex()]) + ";";
+    return " SELECT s.reg_number, s.name, s.birthday, s.address, s.phone, "
+           " s.workplace, s.job, c.name, r.name "
+           " FROM sportsmen s "
+           " LEFT JOIN coaches c ON s.coach_id = c.id "
+           " LEFT JOIN ranks r ON s.rank_id = r.id "
+           " WHERE c.id = " + QString::number(vecId[cbCoach->currentIndex()]) + ";";
 }
 
 /******************************* Sertifications *******************************/
@@ -829,116 +816,114 @@ QString RepSert::GetQuery()
 {
     if (!cbTbl->currentIndex())
     {
-        return  "select sp.name, sp.birthday, r1.name, c.name, sp.reg_number, r2.name, se.note from sertifications se "
-                "left outer join sportsmen sp, coaches c, ranks r1, ranks r2 on se.sportsman_id = sp.id and sp.coach_id = c.id "
-                "and se.rank_from_id = r1.id and se.rank_to_id = r2.id where c.id = "
-                + QString::number(vecId[cb->currentIndex()]) + ";";
+        return  " select sp.name, sp.birthday, r1.name, c.name, sp.reg_number, r2.name, se.note "
+                " from sertifications se "
+                " left join sportsmen sp on se.sportsman_id = sp.id "
+                " left join coaches c on sp.coach_id = c.id "
+                " left join ranks r1 on se.rank_from_id = r1.id "
+                " inner join ranks r2 on se.rank_to_id = r2.id "
+                " where c.id = " + QString::number(vecId[cb->currentIndex()]);
     }
-    return  "select sp.name, sp.birthday, r1.name, c.name, sp.reg_number, r2.name, se.note from sertifications se "
-            "left outer join sportsmen sp, coaches c, ranks r1, ranks r2, clubs cl on se.sportsman_id = sp.id and "
-            "sp.coach_id = c.id and se.rank_from_id = r1.id and se.rank_to_id = r2.id and c.club_id = cl.id where cl.id = "
-            + QString::number(vecId[cb->currentIndex()]) + ";";
+    return  " select sp.name, sp.birthday, r1.name, c.name, sp.reg_number, r2.name, se.note "
+            " from sertifications se "
+            " left join sportsmen sp on se.sportsman_id = sp.id "
+            " left join coaches c on sp.coach_id = c.id "
+            " left join ranks r1 on se.rank_from_id = r1.id "
+            " left join clubs cl on c.club_id = cl.id "
+            " inner join ranks r2 on se.rank_to_id = r2.id "
+            " where cl.id = " + QString::number(vecId[cb->currentIndex()]);
+}
+
+/******************************* Competiiton Based *******************************/
+
+RepCompetitionBased::RepCompetitionBased(QWidget *aParent, BaseReport *report):
+    Report(aParent, report)
+{
+    CreateWidgets();
+    InitComboBox(cbCompetition, vecId, "SELECT id, name FROM competitions", 0);
+    qDebug() << vecId;
+    btnExport->setEnabled(cbCompetition->count() != 0);
+    qDebug() << "here?";
+}
+
+void RepCompetitionBased::CreateWidgets()
+{
+    QGridLayout *lt = new QGridLayout;
+    AddWidToLt(lt, tr("Использовать соревнование:"), cbCompetition = new QComboBox, 0, 0);
+    CreateBasicWidgets(lt);
 }
 
 /******************************* Drawing *******************************/
 
 
-RepDraw::RepDraw(QWidget *aParent):
-        Report(aParent, new DrawingReport)
-{
-    CreateWidgets();
-}
-
-void RepDraw::CreateWidgets()
-{
-    QGridLayout *lt = new QGridLayout;
-
-    CreateBasicWidgets(lt);
-}
+RepDraw::RepDraw(QWidget *aParent): RepCompetitionBased(aParent, new DrawingReport) {}
 
 QString RepDraw::GetQuery()
 {
-    return "select ca.name, co.date, s.name, s.birthday, cl.name, r.name "
-           "from sportsmen_competitions sc inner join sportsmen s inner join coaches c inner join clubs cl inner join "
-           "categories ca inner join competitions co inner join ranks r on "
-           "sc.sportsman_id = s.id and s.coach_id = c.id and c.club_id = cl.id and sc.category_id = ca.id "
-           "and sc.competition_id = co.id and s.rank_id = r.id "
-           "order by ca.name";
+    return " select ca.name, co.date, s.name, s.birthday, cl.name, r.name "
+           " from sportsmen_competitions sc "
+           " inner join sportsmen s on sc.sportsman_id = s.id "
+           " left join coaches c on s.coach_id = c.id"
+           " left join clubs cl on c.club_id = cl.id"
+           " left join ranks r on s.rank_id = r.id "
+           " inner join categories ca on sc.category_id = ca.id "
+           " inner join competitions co on sc.competition_id = co.id "
+           " where sc.competition_id = " +  QString::number(vecId[cbCompetition->currentIndex()]) +
+           " order by ca.name ";
 }
 
 /******************************* Pulka *******************************/
 
-RepPulka::RepPulka(QWidget *aParent):
-        Report(aParent, new PulkaReport)
-{
-    CreateWidgets();
-}
-
-void RepPulka::CreateWidgets()
-{
-    QGridLayout *lt = new QGridLayout;
-
-    CreateBasicWidgets(lt);
-}
+RepPulka::RepPulka(QWidget *aParent): RepCompetitionBased(aParent, new PulkaReport) {}
 
 QString RepPulka::GetQuery()
 {
-    return "select co.name_prot, co.date, ca.name, s.name, cl.name, r.name, sc.draw_number "
-           "from sportsmen_competitions sc inner join sportsmen s inner join coaches c inner join clubs cl inner join  "
-           "categories ca inner join competitions co inner join ranks r on "
-           "sc.sportsman_id = s.id and s.coach_id = c.id and c.club_id = cl.id and sc.category_id = ca.id "
-           "and sc.competition_id = co.id and s.rank_id = r.id "
-           "order by ca.name, sc.draw_number";
+    return " select co.name_prot, co.date, ca.name, s.name, cl.name, r.name, sc.draw_number "
+           " from sportsmen_competitions sc "
+           " inner join sportsmen s on sc.sportsman_id = s.id "
+           " left join coaches c on s.coach_id = c.id "
+           " left join clubs cl on c.club_id = cl.id "
+           " left join ranks r on s.rank_id = r.id "
+           " inner join categories ca on sc.category_id = ca.id "
+           " inner join competitions co on sc.competition_id = co.id "
+           " where sc.competition_id = " +  QString::number(vecId[cbCompetition->currentIndex()]) +
+           " order by ca.name, sc.draw_number ";
 }
 
 /******************************* Results *******************************/
 
-RepResults::RepResults(QWidget *aParent):
-        Report(aParent, new ResultsReport)
-{
-    CreateWidgets();
-}
-
-void RepResults::CreateWidgets()
-{
-    QGridLayout *lt = new QGridLayout;
-
-    CreateBasicWidgets(lt);
-}
+RepResults::RepResults(QWidget *aParent): RepCompetitionBased(aParent, new ResultsReport) {}
 
 QString RepResults::GetQuery()
 {
-    return "select ca.name, com.name_prot, com.date, s.name, s.birthday, ra.name, pw.region, pw.city, cl.name, pw.fights_won, pw.fights_count, pw.place, co.name "
-            "from prize_winners pw inner join sportsmen_competitions sc inner join sportsmen s inner join categories ca "
-            "inner join coaches co inner join ranks ra inner join clubs cl inner join competitions com on "
-            "pw.sportsman_competition_id=sc.id and sc.sportsman_id=s.id and sc.category_id=ca.id and s.rank_id=ra.id and "
-            "s.coach_id=co.id and co.club_id=cl.id and sc.competition_id=com.id "
-            "where sc.competition_id=1 "
-            "order by ca.name, pw.place";
+    return " select ca.name, com.name_prot, com.date, s.name, s.birthday, ra.name, pw.region, "
+           " pw.city, cl.name, pw.fights_won, pw.fights_count, pw.place, co.name "
+           " from prize_winners pw "
+           " inner join sportsmen_competitions sc on pw.sportsman_competition_id=sc.id "
+           " inner join sportsmen s on sc.sportsman_id=s.id "
+           " left join coaches co on s.coach_id=co.id "
+           " left join ranks ra on s.rank_id=ra.id "
+           " left join clubs cl on co.club_id=cl.id "
+           " inner join categories ca on sc.category_id=ca.id "
+           " inner join competitions com on sc.competition_id=com.id "
+           " where sc.competition_id = " +  QString::number(vecId[cbCompetition->currentIndex()]) +
+           " order by ca.name, pw.place ";
 }
 
 /******************************* Technical *******************************/
 
-RepTechnical::RepTechnical(QWidget *aParent):
-        Report(aParent, new TechnicalReport)
-{
-    CreateWidgets();
-}
-
-void RepTechnical::CreateWidgets()
-{
-    QGridLayout *lt = new QGridLayout;
-
-    CreateBasicWidgets(lt);
-}
+RepTechnical::RepTechnical(QWidget *aParent): RepCompetitionBased(aParent, new TechnicalReport) {}
 
 QString RepTechnical::GetQuery()
 {
-    return "select com.name_prot, ca.name, com.date, s.name, cl.name, pw.city, pw.place "
-           "from prize_winners pw inner join sportsmen_competitions sc inner join sportsmen s inner join categories ca "
-           "inner join coaches co inner join clubs cl inner join competitions com on "
-           "pw.sportsman_competition_id=sc.id and sc.sportsman_id=s.id and sc.category_id=ca.id and "
-           "s.coach_id=co.id and co.club_id=cl.id and sc.competition_id=com.id "
-           "where sc.competition_id = " "1"
+    return " select com.name_prot, ca.name, com.date, s.name, cl.name, pw.city, pw.place "
+           " from prize_winners pw "
+           " inner join sportsmen_competitions sc on pw.sportsman_competition_id=sc.id"
+           " inner join sportsmen s on sc.sportsman_id=s.id "
+           " left join coaches co on s.coach_id=co.id "
+           " left join clubs cl on co.club_id=cl.id "
+           " inner join categories ca on sc.category_id=ca.id "
+           " inner join competitions com on sc.competition_id=com.id "
+           " where sc.competition_id = " +  QString::number(vecId[cbCompetition->currentIndex()]) +
            " order by ca.name, pw.place";
 }
