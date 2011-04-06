@@ -97,6 +97,10 @@ public:
 
 class TechnicalReport: public BaseReport
 {
+    uint currentRow;
+    void writeSuperHeader();
+    void writeHeader();
+    void writeLine();
 public:
     virtual void makeReport();
 };

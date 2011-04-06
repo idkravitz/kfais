@@ -609,9 +609,68 @@ void ResultsReport::makeReport()
     sheet->querySubObject("PageSetup")->setProperty("Orientation", xlLandscape);
 }
 
+void TechnicalReport::writeSuperHeader()
+{
+    QAxObject *range = getRange(QString("A%1:B%1").arg(currentRow));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)",
+        QObject::tr("Технические результаты ") + query->value(0).value<QString>() + " " +
+        query->value(2).value<QDate>().toString("dd.MM.yyyy"));
+    currentRow++;
+}
+
+void TechnicalReport::writeHeader()
+{
+    QAxObject *range = getRange(QString("A%1:B%1").arg(currentRow));
+    range->dynamicCall("Merge()");
+    range->dynamicCall("SetValue(const QVariant&)",
+        QObject::tr("Категория ") + query->value(1).value<QString>());
+    currentRow++;
+}
+
+void TechnicalReport::writeLine()
+{
+    QAxObject *range = getRange(QString("A%1").arg(currentRow)),
+            *range2 = getRange(QString("B%1").arg(currentRow));
+    range->dynamicCall("SetValue(const QVariant&)",
+        QString("%1.").arg(query->value(6).value<uint>()));
+    range2->dynamicCall("SetValue(const QVariant&)",
+        QString("%1 (%2 %3)").arg(query->value(3).toString(), query->value(5).toString(),
+                                  query->value(4).toString()));
+    currentRow++;
+    // 1                2       3       4          5        6       7
+    //com.name_prot, ca.name, com.date, s.name, cl.name, pw.city, pw.place
+}
+
 void TechnicalReport::makeReport()
 {
-
+    QString category = "", vcat;
+    sheet = openDocument();
+    currentRow = 1;
+    const double widths[] = {
+        2,
+        82,
+    };
+    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    {
+        sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
+             ->setProperty("ColumnWidth", widths[i]);
+    }
+    while(query->next())
+    {
+        vcat = query->value(1).toString();
+        if(currentRow == 1)
+        {
+            writeSuperHeader();
+        }
+        if(category != vcat)
+        {
+            category = vcat;
+            writeHeader();
+        }
+        writeLine();
+    }
+    sheet->querySubObject("Columns")->setProperty("WrapText", true);
 }
 
 /********************************************************************/
@@ -876,11 +935,11 @@ void RepTechnical::CreateWidgets()
 
 QString RepTechnical::GetQuery()
 {
-    return "select ca.name, com.name_prot, com.date, s.name, s.birthday, ra.name, pw.region, pw.city, cl.name, pw.fights_won, pw.fights_count, pw.place, co.name "
+    return "select com.name_prot, ca.name, com.date, s.name, cl.name, pw.city, pw.place "
            "from prize_winners pw inner join sportsmen_competitions sc inner join sportsmen s inner join categories ca "
-           "inner join coaches co inner join ranks ra inner join clubs cl inner join competitions com on "
-           "pw.sportsman_competition_id=sc.id and sc.sportsman_id=s.id and sc.category_id=ca.id and s.rank_id=ra.id and "
+           "inner join coaches co inner join clubs cl inner join competitions com on "
+           "pw.sportsman_competition_id=sc.id and sc.sportsman_id=s.id and sc.category_id=ca.id and "
            "s.coach_id=co.id and co.club_id=cl.id and sc.competition_id=com.id "
-           "where sc.competition_id= 1"
-           "order by ca.name, pw.place";
+           "where sc.competition_id = " "1"
+           " order by ca.name, pw.place";
 }
