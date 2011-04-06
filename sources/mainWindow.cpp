@@ -149,9 +149,9 @@ void MainWindow::OpenTblRank()
 
 void MainWindow::OpenTblPrzWin()
 {
-    if (!IsOpen(ttPrzWinView))
+    if (!IsOpen(ttPrzWin))
     {
-        QMdiSubWindow *sw = OpenTbl(ttPrzWinView, new TblPrzWin(Sett::GetMA()));
+        QMdiSubWindow *sw = OpenTbl(ttPrzWin, new TblPrzWin(Sett::GetMA()));
     }
 }
 

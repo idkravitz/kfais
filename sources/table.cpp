@@ -8,6 +8,8 @@ Table::Table(QWidget *aParent, TblType aType):
 {
     setAttribute(Qt::WA_DeleteOnClose);
     CreateWidgets();
+    model_ = new TableModel(this);
+    view->setModel(model_);
 }
 
 Table::~Table()
@@ -30,15 +32,8 @@ void Table::CreateWidgets()
 
     addToolBar(tb);
 
-    model = new QSqlRelationalTableModel(this);
-    model->setTable(Sett::GetTblName(type));
-    model->setEditStrategy(QSqlTableModel::OnRowChange);
-
-    view = new QTableView;
-    view->setModel(model);
-    Sett::SetParam(view);
+    view = new TableView;
     connect(view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(OpenCard(QModelIndex)));
-    view->horizontalHeader()->setHighlightSections(false);
     connect(view->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(SetSort(int)));
 
     ApplyTableSettings();
@@ -49,30 +44,29 @@ void Table::CreateWidgets()
 
 void Table::SetTableHeaders()
 {
-    QVector<char*> *n = &Sett::GetVecColName(type);
-    for (int i = 0; i < n->size(); ++i)
-        model->setHeaderData(i, Qt::Horizontal, tr(n->at(i)));
+//    QVector<char*> *n = &Sett::GetVecColName(type);
+//    for (int i = 0; i < n->size(); ++i)
+//        model->setHeaderData(i, Qt::Horizontal, tr(n->at(i)));
 }
 
 void Table::ApplyTableSettings()
 {
-    QVector<int> *w = &Sett::GetVecColWidth(type);
-    for (int i = 0; i < w->size(); ++i)
-        view->setColumnWidth(i, w->at(i));
-    SetTableHeaders();
+//    QVector<int> *w = &Sett::GetVecColWidth(type);
+//    for (int i = 0; i < w->size(); ++i)
+//        view->setColumnWidth(i, w->at(i));
+//    SetTableHeaders();
 }
 
 void Table::SaveTableSettings()
 {
-    QVector<int> *w = &Sett::GetVecColWidth(type);
-    w->resize(model->columnCount());
-    for (int i = 0; i < model->columnCount(); ++i)
-        (*w)[i] = view->columnWidth(i);
+//    QVector<int> *w = &Sett::GetVecColWidth(type);
+//    w->resize(model->columnCount());
+//    for (int i = 0; i < model->columnCount(); ++i)
+//        (*w)[i] = view->columnWidth(i);
 }
 
 void Table::TableSpecificConfig()
 {
-    model->select();
     view->setColumnHidden(0, true);
 }
 
@@ -98,7 +92,7 @@ void Table::SetPrev()
 
 void Table::SetLast()
 {
-    view->selectRow(model->rowCount() - 1);
+    view->selectRow(model_->rowCount() - 1);
 }
 
 void Table::Add()
@@ -115,7 +109,10 @@ void Table::Delete()
 
     if (button == QMessageBox::Yes)
     {
-        model->removeRow(view->currentIndex().row());
+        int curRow = view->currentIndex().row();
+        QString delId = model_->GetVal(view->currentIndex().row(), 0).toString();
+        model_->DelRecord(Sett::GetTblName(type), "id = " + delId);
+        view->selectRow(curRow);
     }
 }
 
@@ -126,7 +123,7 @@ void Table::Edit()
 
 void Table::OpenCard(QModelIndex aMIndex)
 {
-    int id = model->record(aMIndex.row()).value(0).toInt();
+    int id = model_->GetVal(aMIndex.row(), 0).toInt();
     MapCard::const_iterator it = mapCard.find(id);
     if (it != mapCard.end())       //if card already opened
     {
@@ -157,55 +154,43 @@ inline Card *Table::_CreateCard(int aId) const
 
 void Table::SetSort(int aI)
 {
-    QVector<QString> v;
-    v << "[^]" << "[v]";
-    prevSortVal = Qt::SortOrder(prevSortCol == aI ? !prevSortVal : Qt::AscendingOrder);
-    SetTableHeaders();
-    model->setSort(aI, prevSortVal);
-    model->setHeaderData(aI, Qt::Horizontal, model->headerData(aI, Qt::Horizontal).toString() + " " + v[prevSortVal]);
-    model->select();
-    prevSortCol = aI;
+//    QVector<QString> v;
+//    v << "[^]" << "[v]";
+//    prevSortVal = Qt::SortOrder(prevSortCol == aI ? !prevSortVal : Qt::AscendingOrder);
+//    SetTableHeaders();
+//    model->setSort(aI, prevSortVal);
+//    model->setHeaderData(aI, Qt::Horizontal, model->headerData(aI, Qt::Horizontal).toString() + " " + v[prevSortVal]);
+//    model->select();
+//    prevSortCol = aI;
 }
 
 /******************************* Sportsmen *******************************/
 
-void TblSport::TableSpecificConfig()
-{
-    model->setRelation(Sport::taRank, QSqlRelation("ranks", "id", "name"));
-    model->setRelation(Sport::taCoach, QSqlRelation("coaches", "id", "name"));
-    model->select();
-    view->setColumnHidden(0, true);
-}
-
 TblSport::TblSport(QWidget *aParent):
         Table(aParent, ttSport)
-{ 
-    TableSpecificConfig();
+{
+    model_->setQuery(
+            "SELECT s.id, s.name, s.birthday, r.name, s.reg_number, c.name, s.address, s.phone, s.workplace, s.job, s.note "
+            "FROM sportsmen s LEFT OUTER JOIN coaches c ON s.coach_id = c.id LEFT OUTER JOIN ranks r ON s.rank_id = r.id");
 }
 
 Card *TblSport::CreateCard(int aId) const
 {
-    return new CardSport(Sett::GetMA(), model, aId);
+    return new CardSport(Sett::GetMA(), model_, aId);
 }
 
 /******************************* Coaches *******************************/
 
-void TblCoach::TableSpecificConfig()
-{
-    model->setRelation(Coach::taClub, QSqlRelation(Sett::GetTblName(ttClub), "id", "name"));
-    model->select();
-    view->setColumnHidden(0, true);
-}
-
 TblCoach::TblCoach(QWidget *aParent):
         Table(aParent, ttCoach)
 {
-    TableSpecificConfig();
+    model_->setQuery("SELECT c.id, c.name, c.phone, cl.name, c.note "
+                     "FROM coaches c LEFT OUTER JOIN clubs cl ON c.club_id = cl.id");
 }
 
 Card *TblCoach::CreateCard(int aId) const
 {
-    return new CardCoach(Sett::GetMA(), model, aId);
+    return new CardCoach(Sett::GetMA(), model_, aId);
 }
 
 /******************************* Clubs *******************************/
@@ -213,76 +198,57 @@ Card *TblCoach::CreateCard(int aId) const
 TblClub::TblClub(QWidget *aParent):
         Table(aParent, ttClub)
 {
-    TableSpecificConfig();
+    model_->setQuery("SELECT id, name, address, note FROM clubs");
 }
 
 Card *TblClub::CreateCard(int aId) const
 {
-    return new CardClub(Sett::GetMA(), model, aId);
+    return new CardClub(Sett::GetMA(), model_, aId);
 }
 
 /******************************* Sertifications *******************************/
 
-void TblSert::TableSpecificConfig()
-{ 
-    model->setRelation(Sert::taSport, QSqlRelation("sportsmen", "id", "name"));
-    model->setRelation(Sert::taRankFrom, QSqlRelation("ranks", "id", "name"));
-    model->setRelation(Sert::taRankTo, QSqlRelation("ranks", "id", "name"));
-    model->select();
-    view->setColumnHidden(0, true);
-}
-
 TblSert::TblSert(QWidget *aParent):
         Table(aParent, ttSert)
 {
-    TableSpecificConfig();
+    model_->setQuery("SELECT se.id, s.name, se.date, r1.name, r2.name, se.note FROM sertifications se "
+                     "JOIN sportsmen s, ranks r2 ON se.sportsman_id = s.id AND se.rank_to_id = r2.id "
+                     "LEFT OUTER JOIN ranks r1 ON se.rank_from_id = r1.id");
 }
 
 Card *TblSert::CreateCard(int aId) const
 {
-    return new CardSert(Sett::GetMA(), model, aId);
+    return new CardSert(Sett::GetMA(), model_, aId);
 }
 
-/******************************* Fee *******************************/
-
-void TblFee::TableSpecificConfig()
-{
-    model->setRelation(Fee::taSport, QSqlRelation("sportsmen", "id", "name"));
-    model->select();
-    view->setColumnHidden(0, true);
-}
+///******************************* Fee *******************************/
 
 TblFee::TblFee(QWidget *aParent):
         Table(aParent, ttFee)
 {
-    TableSpecificConfig();
+    model_->setQuery("SELECT f.id, s.name, f.date, f.note FROM fee f "
+                     "JOIN sportsmen s ON f.sportsman_id = s.id");
 }
 
 Card *TblFee::CreateCard(int aId) const
 {
-    return new CardFee(Sett::GetMA(), model, aId);
+    return new CardFee(Sett::GetMA(), model_, aId);
 }
 
 /******************************* Sportsmen-Competiotions *******************************/
 
-void TblSportComp::TableSpecificConfig()
-{
-    model->setRelation(SportComp::taSport, QSqlRelation("sportsmen", "id", "name"));
-    model->setRelation(SportComp::taComp, QSqlRelation("competitions", "id", "name"));
-    model->setRelation(SportComp::taCateg, QSqlRelation("categories", "id", "name"));
-    model->select();
-    view->setColumnHidden(0, true);
-}
-
 TblSportComp::TblSportComp(QWidget *aParent):
         Table(aParent, ttSportComp)
 {
-    TableSpecificConfig();
+    model_->setQuery("SELECT sc.id, sp.name, co.name, co.date, ca.name, sc.draw_number, sc.units, sc.note "
+                     "FROM sportsmen_competitions sc JOIN sportsmen sp, competitions co "
+                     "ON sc.sportsman_id = sp.id AND sc.competition_id = co.id "
+                     "LEFT OUTER JOIN categories ca ON sc.category_id = ca.id");
 }
 
 Card *TblSportComp::CreateCard(int aId) const
 {
-    return new CardSportComp(Sett::GetMA(), model, aId);
+    return new CardSportComp(Sett::GetMA(), model_, aId);
 }
 
 /******************************* Competiotions *******************************/
@@ -290,12 +256,12 @@ Card *TblSportComp::CreateCard(int aId) const
 TblComp::TblComp(QWidget *aParent):
         Table(aParent, ttComp)
 {
-    TableSpecificConfig();
+    model_->setQuery("SELECT id, name, name_prot, date, location, note FROM competitions");
 }
 
 Card *TblComp::CreateCard(int aId) const
 {
-    return new CardComp(Sett::GetMA(), model, aId);
+    return new CardComp(Sett::GetMA(), model_, aId);
 }
 
 /******************************* Categories *******************************/
@@ -303,12 +269,12 @@ Card *TblComp::CreateCard(int aId) const
 TblCateg::TblCateg(QWidget *aParent):
         Table(aParent, ttCateg)
 {
-    TableSpecificConfig();
+    model_->setQuery("SELECT id, name, note FROM categories");
 }
 
 Card *TblCateg::CreateCard(int aId) const
 {
-    return new CardCateg(Sett::GetMA(), model, aId);
+    return new CardCateg(Sett::GetMA(), model_, aId);
 }
 
 /******************************* Ranks *******************************/
@@ -316,23 +282,26 @@ Card *TblCateg::CreateCard(int aId) const
 TblRank::TblRank(QWidget *aParent):
         Table(aParent, ttRank)
 {
-    TableSpecificConfig();
+    model_->setQuery("SELECT id, name, note FROM ranks");
 }
 
 Card *TblRank::CreateCard(int aId) const
 {
-    return new CardRank(Sett::GetMA(), model, aId);
+    return new CardRank(Sett::GetMA(), model_, aId);
 }
 
 /******************************* Prize winners *******************************/
 
 TblPrzWin::TblPrzWin(QWidget *aParent):
-        Table(aParent, ttPrzWinView)
+        Table(aParent, ttPrzWin)
 {
-    TableSpecificConfig();
+    model_->setQuery("SELECT pw.id, c.name, c.date, s.name, pw.fights_count, pw.fights_won, pw.place, pw.region, "
+                     "pw.city, pw.note FROM prize_winners pw "
+                     "JOIN sportsmen_competitions sc ON pw.sportsman_competition_id = sc.id "
+                     "JOIN sportsmen s, competitions c ON sc.sportsman_id = s.id AND sc.competition_id = c.id");
 }
 
 Card *TblPrzWin::CreateCard(int aId) const
 {
-    return new CardPrzWin(Sett::GetMA(), model, aId);
+    return new CardPrzWin(Sett::GetMA(), model_, aId);
 }

@@ -1,18 +1,21 @@
 #ifndef CARD_H
 #define CARD_H
 
+#include "tableModelView.h"
 #include "setting.h"
 
 /******************************* Card (basic) *******************************/
+
+typedef QPair<QString, QString> PairQuery;
+typedef QMap<PairQuery, bool> MapQuery;
 
 class Card: public QDialog
 {
     Q_OBJECT
 
 private:
-    QSqlRelationalTableModel *tblModel;    //For update table after submit
+    TableModel *tblModel;    //For update table after submit
     TblType type;
-    int id;
     QPushButton *btnOk;
     QPushButton *btnCancel;
 
@@ -20,22 +23,24 @@ private:
 
 private slots:
     void Ok();
-    void Cancel();
 
 protected:
-    QSqlRelationalTableModel *model;
-    QDataWidgetMapper *mapper;
+    int id;
     QLineEdit *edtNote;
 
-    Card(QWidget *aParent, QSqlRelationalTableModel *aTblModel, TblType aType, int aId);
+    Card(QWidget *aParent, TableModel *aModel, TblType aType, int aId);
+
     void CreateBasicWidgets(QLayout *aLt);
-    void InitModel(int aId);
-    void AddWid(QGridLayout *aLt, int aTblAtrI, QWidget *aW, int aRow, int aCol = 0);
+
+    inline void AddWid(QGridLayout *aLt, int aTblAtrI, QWidget *aW, int aRow, int aCol = 0);
 
     virtual bool IsValid() const;
+    virtual bool Submit();
 
-    inline void _SetCBModel(QComboBox *aCB, int aIn, int aOut);
+    inline bool IsNew() const;
     inline void SetRegExprInt(QLineEdit* aEdt, bool aCanBeZero = true);
+
+    QString CreateQuary(const MapQuery &aMap);
 
 public:
     int GetId() const;
@@ -48,6 +53,9 @@ class CardSport: public Card
     Q_OBJECT
 
 private:
+    QVector<int> vecCoachId;
+    QVector<int> vecRankId;
+
     QLineEdit *edtName;
     QDateEdit *edtDateBirth;
     QLineEdit *edtAddr;
@@ -62,15 +70,18 @@ private:
     QTableView *viewFee, *viewSert, *viewSC;
 
     void CreateWidgets();
-    QVBoxLayout *CreateInnerTbls();
-    inline QTableView *_InitViewModel(QTableView *aView, QSqlRelationalTableModel *aModel, TblType aType);
-    inline QGroupBox *_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel);
-    inline QGroupBox *_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel, const QString &aTitle);
+    void InitWidgets();
+
+//    QVBoxLayout *CreateInnerTbls();
+//    inline QTableView *_InitViewModel(QTableView *aView, QSqlRelationalTableModel *aModel, TblType aType);
+//    inline QGroupBox *_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel);
+//    inline QGroupBox *_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel, const QString &aTitle);
 
     bool IsValid() const;
+    bool Submit();
 
 public:
-    CardSport(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+    CardSport(QWidget *aParent, TableModel *aModel, int aId);
 };
 
 /******************************* Coaches *******************************/
@@ -80,16 +91,20 @@ class CardCoach: public Card
     Q_OBJECT
 
 private:
+    QVector<int> vecClubId;
+
     QLineEdit *edtName;
     QLineEdit *edtPhone;
     QComboBox *cbClub;
 
     void CreateWidgets();
+    void InitWidgets();
 
     bool IsValid() const;
+    bool Submit();
 
 public:
-    CardCoach(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+    CardCoach(QWidget *aParent, TableModel *aTblModel, int aId);
 };
 
 /******************************* Clubs *******************************/
@@ -103,11 +118,13 @@ private:
     QLineEdit *edtAddr;
 
     void CreateWidgets();
+    void InitWidgets();
 
     bool IsValid() const;
+    bool Submit();
 
 public:
-    CardClub(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+    CardClub(QWidget *aParent, TableModel *aTblModel, int aId);
 };
 
 /******************************* Sertifications *******************************/
@@ -117,17 +134,23 @@ class CardSert: public Card
     Q_OBJECT
 
 private:
+    QVector<int> vecSportId;
+    QVector<int> vecRankFromId;
+    QVector<int> vecRankToId;
+
     QComboBox *cbSport;
     QDateEdit *edtDate;
     QComboBox *cbRankFrom;
     QComboBox *cbRankTo;
 
     void CreateWidgets();
+    void InitWidgets();
 
     bool IsValid() const;
+    bool Submit();
 
 public:
-    CardSert(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+    CardSert(QWidget *aParent, TableModel *aTblModel, int aId);
 };
 
 /******************************* Fees *******************************/
@@ -137,15 +160,19 @@ class CardFee: public Card
     Q_OBJECT
 
 private:
+    QVector<int> vecSportId;
+
     QComboBox *cbSport;
     QDateEdit *edtDate;
 
     void CreateWidgets();
+    void InitWidgets();
 
     bool IsValid() const;
+    bool Submit();
 
 public:
-    CardFee(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+    CardFee(QWidget *aParent, TableModel *aTblModel, int aId);
 };
 
 
@@ -156,6 +183,8 @@ class CardSportComp: public Card
     Q_OBJECT
 
 private:
+    QVector<int> vecSportId, vecCompId, vecCategId;
+
     QComboBox *cbSport;
     QComboBox *cbComp;
     QComboBox *cbCateg;
@@ -163,11 +192,13 @@ private:
     QLineEdit *edtUnit;
 
     void CreateWidgets();
+    void InitWidgets();
 
     bool IsValid() const;
+    bool Submit();
 
 public:
-    CardSportComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+    CardSportComp(QWidget *aParent, TableModel *aTblModel, int aId);
 };
 
 /******************************* Competiotions *******************************/
@@ -178,15 +209,18 @@ class CardComp: public Card
 
 private:
     QLineEdit *edtName;
+    QLineEdit *edtNameProt;
     QDateEdit *edtDate;
     QLineEdit *edtLoc;
 
     void CreateWidgets();
+    void InitWidgets();
 
     bool IsValid() const;
+    bool Submit();
 
 public:
-    CardComp(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+    CardComp(QWidget *aParent, TableModel *aModel, int aId);
 };
 
 /******************************* Categories *******************************/
@@ -199,11 +233,13 @@ private:
     QLineEdit *edtName;
 
     void CreateWidgets();
+    void InitWidgets();
 
     bool IsValid() const;
+    bool Submit();
 
 public:
-    CardCateg(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+    CardCateg(QWidget *aParent, TableModel *aModel, int aId);
 };
 
 /******************************* Ranks *******************************/
@@ -216,11 +252,13 @@ private:
     QLineEdit *edtName;
 
     void CreateWidgets();
+    void InitWidgets();
 
     bool IsValid() const;
+    bool Submit();
 
 public:
-    CardRank(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+    CardRank(QWidget *aParent, TableModel *aModel, int aId);
 };
 
 /******************************* Prize winners *******************************/
@@ -234,7 +272,6 @@ private:
 
     QComboBox *cbSport;
     QComboBox *cbComp;
-    QLineEdit *edtSportComp;    //For hack
     QLineEdit *edtFightsCount;
     QLineEdit *edtFightsWon;
     QLineEdit *edtPlace;
@@ -242,14 +279,16 @@ private:
     QLineEdit *edtCity;
 
     void CreateWidgets();
+    void InitWidgets();
 
     bool IsValid() const;
+    bool Submit();
 
 private slots:
     void UpdateCBSport(int aIndex);
 
 public:
-    CardPrzWin(QWidget *aParent, QSqlRelationalTableModel *aTblModel, int aId);
+    CardPrzWin(QWidget *aParent, TableModel *aModel, int aId);
 };
 
 #endif // CARD_H

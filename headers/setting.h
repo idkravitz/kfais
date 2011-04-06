@@ -8,7 +8,7 @@
 
 extern void AddWidToLt(QGridLayout *aLt, const QString &aLblStr, QWidget *aW, int aRow, int aCol);
 extern void AddWidToLt(QGridLayout *aLt, QLabel *aLbl, QWidget *aW, int aRow, int aCol);
-extern void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ);
+extern void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ, int aCurId);
 
 enum TblType
 {
@@ -19,11 +19,12 @@ enum TblType
     ttSert,         //sertifications
     ttFee,          //fee
     ttSportComp,    //sportsmen_competitions
+    ttSportCompView,//sportsmen_competitions_view
     ttComp,         //competitions
     ttCateg,        //categories
     ttRank,         //ranks
     ttPrzWin,       //prize_winners
-    ttPrzWinView
+    ttPrzWinView    //prize_winners_view
 };
 
 enum RepType
@@ -65,8 +66,6 @@ public:
     static QString GetRepTitle(RepType aType);
 
     static QString GetNoteName();
-
-    static void SetParam(QTableView *aView);
 
     static bool LoadSettings();
     static bool SaveSettings();
@@ -163,6 +162,7 @@ namespace Comp
     {
         taId = 0,
         taName,
+        taNameProt,
         taDate,
         taLoc
     };
@@ -183,6 +183,22 @@ namespace PrzWin
     {
         taId = 0,
         taSportComp,
+        taFightsCount,
+        taFightsWon,
+        taPlace,
+        taRegion,
+        taCity
+    };
+}
+
+namespace PrzWinView
+{
+    enum Atr
+    {
+        taId = 0,
+        taComp,
+        taDate,
+        taSport,
         taFightsCount,
         taFightsWon,
         taPlace,

@@ -17,7 +17,7 @@ void AddWidToLt(QGridLayout *aLt, QLabel *aLbl, QWidget *aW, int aRow, int aCol)
     aLbl->setBuddy(aW);
 }
 
-void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ)
+void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ, int aCurId)
 {
     aVecId.clear();
     QSqlQuery q(aStrQ);
@@ -34,6 +34,20 @@ void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ)
 
     QCompleter *comp = new QCompleter(lst);
     aCB->setCompleter(comp);
+
+    int i = 0;
+    while (i < aVecId.size() && aCurId != aVecId[i])
+    {
+        ++i;
+    }
+    if (i < aVecId.size())
+    {
+        aCB->setCurrentIndex(i);
+    }
+    else
+    {
+        aCB->setEditText("");
+    }
 }
 
 QMdiArea *Sett::GetMA()
@@ -79,11 +93,18 @@ bool Sett::LoadSettings()
     table_settings[ttSportComp].title = "Распределения \"Спортсмен - соревнование\"";
     table_settings[ttSportComp].tblName = "sportsmen_competitions";
     table_settings[ttSportComp].colName << "id" << "Спортсмен" << "Соревнование"
-            << "Категория" << "№ жеребьёвки" << "Примечание";
+            << "Категория" << "№ жеребьёвки"
+            << "Единицы" << "Примечание";
+
+    table_settings[ttSportCompView].title = "Распределения \"Спортсмен - соревнование\"";
+    table_settings[ttSportCompView].tblName = "sportsmen_competitions_view";
+    table_settings[ttSportCompView].colName << "id" << "Спортсмен" << "Соревнование"
+            << "Дата" << "Категория"  << "Единицы"
+            << "№ жеребьёвки" << "Примечание";
 
     table_settings[ttComp].title = "Соревнования";
     table_settings[ttComp].tblName = "competitions";
-    table_settings[ttComp].colName << "id" << "Название" << "Дата"
+    table_settings[ttComp].colName << "id" << "Название" << "Название в протоколе" << "Дата"
             << "Место проведения" << "Примечание";
 
     table_settings[ttCateg].title = "Категории";
@@ -150,13 +171,6 @@ QString Sett::GetColName(TblType aType, int aColNum)
 QString Sett::GetNoteName()
 {
     return QObject::tr("Примечание");
-}
-
-void Sett::SetParam(QTableView *aView)
-{
-    aView->setSelectionMode(QAbstractItemView::SingleSelection); //Selection mode - single
-    aView->setSelectionBehavior(QAbstractItemView::SelectRows);  //Selection mode - full row
-    aView->setEditTriggers(QAbstractItemView::NoEditTriggers);   //Disable editing
 }
 
 QString Sett::GetErrMsgTitle()

@@ -1,6 +1,6 @@
 #include "reports.h"
 
-extern void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ);
+extern void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aStrQ, int aCurId);
 
 /********************************************************************/
 /******************************* Model ******************************/
@@ -306,7 +306,7 @@ RepSport::RepSport(QWidget *aParent):
         Report(aParent, new SportsmenReport)
 {
     CreateWidgets();
-    InitComboBox(cbCoach, vecId, "SELECT * FROM coaches");
+    InitComboBox(cbCoach, vecId, "SELECT * FROM coaches", 0);
 
 //    QSqlQuery q;
 //    q.exec("SELECT * FROM coaches");
@@ -345,7 +345,7 @@ RepSert::RepSert(QWidget *aParent):
         Report(aParent, new CertificationReport)
 {
     CreateWidgets();
-    InitComboBox(cb, vecId, "SELECT * FROM coaches");
+    InitComboBox(cb, vecId, "SELECT * FROM coaches", 0);
 }
 
 void RepSert::CreateWidgets()
@@ -368,11 +368,11 @@ void RepSert::ChangeTbl(int aIndex)
 {
     if (!aIndex)
     {
-        InitComboBox(cb, vecId, "SELECT * FROM coaches");
+        InitComboBox(cb, vecId, "SELECT * FROM coaches", 0);
     }
     else
     {
-        InitComboBox(cb, vecId, "SELECT * FROM clubs");
+        InitComboBox(cb, vecId, "SELECT * FROM clubs", 0);
     }
     lbl->setText(cbTbl->currentText() + ":");
 }

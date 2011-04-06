@@ -40,10 +40,11 @@ private slots:
     void SetSort(int aI);
 
 protected:
-    QTableView *view;
-    QSqlRelationalTableModel *model;
+    TableView *view;
 
-    void Init(const QString &aTitle, const QString &aTblName);
+    TableModel *model_ ;
+
+//    void Init(const QString &aTitle, const QString &aTblName);
     inline Card *_CreateCard(int aId) const;
     virtual Card *CreateCard(int aId) const = 0;
 
@@ -64,9 +65,6 @@ class TblSport: public Table
 private:
     Card *CreateCard(int aId) const;
 
-protected:
-    virtual void TableSpecificConfig();
-
 public:
     TblSport(QWidget *aParent = 0);
 };
@@ -79,9 +77,6 @@ class TblCoach: public Table
 
 private:
     Card *CreateCard(int aId) const;
-
-protected:
-    virtual void TableSpecificConfig();
 
 public:
     TblCoach(QWidget *aParent = 0);
@@ -109,9 +104,6 @@ class TblSert: public Table
 private:
     Card *CreateCard(int aId) const;
 
-protected:
-    virtual void TableSpecificConfig();
-
 public:
     TblSert(QWidget *aParent = 0);
 };
@@ -124,9 +116,6 @@ class TblFee: public Table
 
 private:
     Card *CreateCard(int aId) const;
-
-protected:
-    virtual void TableSpecificConfig();
 
 public:
     TblFee(QWidget *aParent = 0);
@@ -141,9 +130,6 @@ class TblSportComp: public Table
 
 private:
     Card *CreateCard(int aId) const;
-
-protected:
-    virtual void TableSpecificConfig();
 
 public:
     TblSportComp(QWidget *aParent = 0);

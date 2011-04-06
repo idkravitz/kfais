@@ -51,6 +51,12 @@ insert into sertifications(sportsman_id, date, rank_from_id, rank_to_id) values(
 	(select id from ranks where name = '10 кю'),
 	(select id from ranks where name = '9 кю'));
 
+insert into sertifications(sportsman_id, date, rank_from_id, rank_to_id) values(
+	(select id from sportsmen where name = 'Ханин Алексей'), 
+	'2011-03-03',
+	NULL,
+	(select id from ranks where name = '10 кю'));
+
 --From "Восход"	
 /*
 insert into sertifications(sportsman_id, date, rank_from_id, rank_to_id) values(
@@ -72,11 +78,11 @@ insert into sertifications(sportsman_id, date, rank_from_id, rank_to_id) values(
 	(select id from ranks where name = '9 кю'));*/
 	
 /************************************ fee ************************************/
-/*
+
 insert into fee(sportsman_id, date) values ((select id from sportsmen where name = 'Дрёмин Николай Иванович'), '2010-07-01');
 insert into fee(sportsman_id, date) values ((select id from sportsmen where name = 'Дрёмин Николай Иванович'), '2011-02-28');
-insert into fee(sportsman_id, date) values ((select id from sportsmen where name = 'Сидоров Федор Иванович'), '2010-03-8');
-*/
+--insert into fee(sportsman_id, date) values ((select id from sportsmen where name = 'Сидоров Федор Иванович'), '2010-03-8');
+
 
 /************************************ sertifications ************************************/
 /*
