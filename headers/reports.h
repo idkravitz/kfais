@@ -128,9 +128,10 @@ protected:
     void CreateBasicWidgets(QGridLayout *aLt);
 
     virtual QString GetQuery();
+    void keyPressEvent(QKeyEvent *aE);
 
 public:
-    Report(QWidget *aParent, BaseReport *aLogRep);
+    Report(QWidget *aParent, BaseReport *aLogRep, const QString &title);
     ~Report();
 };
 
@@ -184,7 +185,7 @@ protected:
 
     void CreateWidgets();
 public:
-    RepCompetitionBased(QWidget *aParent, BaseReport *report);
+    RepCompetitionBased(QWidget *aParent, BaseReport *report, const QString &title);
 };
 
 /******************************* Drawing *******************************/

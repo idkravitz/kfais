@@ -62,7 +62,6 @@ void SportsmenReport::makeReport()
 void SportsmenReport::writeBody(const char *headers[], uint length)
 {
     sheet = openDocument();
-    qDebug() << sizeof(headers);
     for(uint i = 0; i < length; ++i)
     {
         QAxObject *range = sheet->querySubObject("Range(const QString&)",
@@ -151,7 +150,7 @@ void DrawingReport::writeHeader(const QString& category, const QDate &date)
     categval->querySubObject("Borders(int)", xlEdgeBottom)->setProperty("LineStyle", xlSingle);
 
     QAxObject *style1[] = {feder, protocol, protocolName};
-    for(int i = 0; i < sizeof(style1)/sizeof(*style1); ++i)
+    for(uint i = 0; i < sizeof(style1)/sizeof(*style1); ++i)
     {
         QAxObject *font = style1[i]->querySubObject("Font");
         font->setProperty("Name", QString("Arial Cyr"));
@@ -229,7 +228,7 @@ void DrawingReport::writeFooter(uint written)
     secr->dynamicCall("Merge()");
     secr->dynamicCall("SetValue(const QVarialnt&)", QObject::tr("Гл. секретарь"));
     QAxObject *js[] = {judge, secr};
-    for(int i = 0; i < sizeof(js)/sizeof(*js); ++i)
+    for(uint i = 0; i < sizeof(js)/sizeof(*js); ++i)
     {
         js[i]->querySubObject("Borders(int)", xlEdgeBottom)->setProperty("LineStyle", xlSingle);
         QAxObject *font = js[i]->querySubObject("Font");
@@ -270,7 +269,7 @@ void DrawingReport::makeReport()
         12.29,
         14.71
     };
-    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    for(uint i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
     {
         sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
              ->setProperty("ColumnWidth", widths[i]);
@@ -291,9 +290,7 @@ void DrawingReport::makeReport()
     writeFooter(written);
 
     sheet->querySubObject("PageSetup")->setProperty("Zoom", 89);
-
     sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 600);
-    //sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
 }
 
 void PulkaReport::writeHeader(const QString &category, const QString &competition, const QDate &date)
@@ -406,7 +403,7 @@ void PulkaReport::makeReport()
         21.29,
         13.29,
     };
-    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    for(uint i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
     {
         sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
              ->setProperty("ColumnWidth", widths[i]);
@@ -436,7 +433,6 @@ void PulkaReport::makeReport()
     sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
     sheet->querySubObject("PageSetup")->setProperty("Orientation", xlLandscape);
     sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 600);
-    //sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
 }
 
 void ResultsReport::writeHeader(const QString &category, const QString &competition, const QDate &date)
@@ -491,7 +487,7 @@ void ResultsReport::writeHeader(const QString &category, const QString &competit
         "Кол-во боев/ побед",
         "Занятое место",
     };
-    for(int i = 0; i < sizeof(headers)/sizeof(*headers); ++i)
+    for(uint i = 0; i < sizeof(headers)/sizeof(*headers); ++i)
     {
         QAxObject *range = getRange(QString('A' + i) + QString::number(offset));
         range->dynamicCall("SetValue(const QVariant&)", QObject::tr(headers[i]));
@@ -509,19 +505,15 @@ void ResultsReport::writeRec()
         range->dynamicCall("SetValue(const QVariant&)", query->value(i).value<QString>());
     }
 
-//    qDebug() << query->value(9).value<QString>();
-//    qDebug() << "SPARTA";
-//    qDebug() << query->value(10).value<QString>();
-//
     QAxObject *range = getRange(QString("J%1").arg(offset));
     range->dynamicCall("SetValue(const QString&)",
         "'" + query->value(9).value<QString>() + "/" + query->value(10).value<QString>());
 
 
     range = getRange(QString("C%1").arg(offset));
-    int year = query->value(4).value<QDate>().year();
-    qDebug() << year;
-    range->dynamicCall("SetValue(const QVariant&)", (year > 0 ? ("'" + QString::number(year)) : QString()));
+    QDate date = query->value(4).value<QDate>();
+
+    range->dynamicCall("SetValue(const QVariant&)", (date.isValid() ? (QString::number(date.year())) : QString()));
 
     range = getRange(QString("G%1").arg(offset));
     range->dynamicCall("SetValue(const QVariant&)", QObject::tr("КУДО"));
@@ -602,7 +594,7 @@ void ResultsReport::makeReport()
         6.43,
         7,
     };
-    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    for(uint i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
     {
         sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
              ->setProperty("ColumnWidth", widths[i]);
@@ -673,7 +665,7 @@ void TechnicalReport::makeReport()
         2,
         82,
     };
-    for(int i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
+    for(uint i = 0; i < sizeof(widths)/sizeof(*widths); ++i)
     {
         sheet->querySubObject("Columns(const QString&)", QString("%1:%1").arg(QString('A' + i)))
              ->setProperty("ColumnWidth", widths[i]);
@@ -699,13 +691,16 @@ void TechnicalReport::makeReport()
 /******************************* View *******************************/
 /********************************************************************/
 
-Report::Report(QWidget *aParent, BaseReport *aLogRep):
+Report::Report(QWidget *aParent, BaseReport *aLogRep, const QString &title):
         QDialog(aParent),
         logRep(aLogRep),
         query(new QSqlQuery)
 {
     setAttribute(Qt::WA_DeleteOnClose);
+    this->setWindowTitle(tr("Отчёт - ") + title);
 }
+
+void Report::keyPressEvent(QKeyEvent *aE) { if(aE->key() == Qt::Key_Escape) close(); }
 
 Report::~Report()
 {
@@ -751,7 +746,7 @@ QString Report::GetQuery()
 /******************************* Sportsmen *******************************/
 
 RepSport::RepSport(QWidget *aParent):
-        Report(aParent, new SportsmenReport)
+        Report(aParent, new SportsmenReport, tr("Спортсмены"))
 {
     CreateWidgets();
     InitComboBox(cbCoach, vecId, "SELECT * FROM coaches", 0);
@@ -777,7 +772,7 @@ QString RepSport::GetQuery()
 /******************************* Sertifications *******************************/
 
 RepSert::RepSert(QWidget *aParent):
-        Report(aParent, new CertificationReport)
+        Report(aParent, new CertificationReport, tr("Аттестации"))
 {
     CreateWidgets();
     InitComboBox(cb, vecId, "SELECT * FROM coaches", 0);
@@ -836,14 +831,12 @@ QString RepSert::GetQuery()
 
 /******************************* Competiiton Based *******************************/
 
-RepCompetitionBased::RepCompetitionBased(QWidget *aParent, BaseReport *report):
-    Report(aParent, report)
+RepCompetitionBased::RepCompetitionBased(QWidget *aParent, BaseReport *report, const QString &title):
+    Report(aParent, report, title)
 {
     CreateWidgets();
     InitComboBox(cbCompetition, vecId, "SELECT id, name FROM competitions", 0);
-    qDebug() << vecId;
-    btnExport->setEnabled(cbCompetition->count() != 0);
-    qDebug() << "here?";
+    btnExport->setEnabled(!!cbCompetition->count());
 }
 
 void RepCompetitionBased::CreateWidgets()
@@ -856,7 +849,7 @@ void RepCompetitionBased::CreateWidgets()
 /******************************* Drawing *******************************/
 
 
-RepDraw::RepDraw(QWidget *aParent): RepCompetitionBased(aParent, new DrawingReport) {}
+RepDraw::RepDraw(QWidget *aParent): RepCompetitionBased(aParent, new DrawingReport, tr("Жеребьёвка")) {}
 
 QString RepDraw::GetQuery()
 {
@@ -874,7 +867,7 @@ QString RepDraw::GetQuery()
 
 /******************************* Pulka *******************************/
 
-RepPulka::RepPulka(QWidget *aParent): RepCompetitionBased(aParent, new PulkaReport) {}
+RepPulka::RepPulka(QWidget *aParent): RepCompetitionBased(aParent, new PulkaReport, tr("Пулька")) {}
 
 QString RepPulka::GetQuery()
 {
@@ -892,7 +885,7 @@ QString RepPulka::GetQuery()
 
 /******************************* Results *******************************/
 
-RepResults::RepResults(QWidget *aParent): RepCompetitionBased(aParent, new ResultsReport) {}
+RepResults::RepResults(QWidget *aParent): RepCompetitionBased(aParent, new ResultsReport, tr("Протокол Результатов")) {}
 
 QString RepResults::GetQuery()
 {
@@ -912,7 +905,7 @@ QString RepResults::GetQuery()
 
 /******************************* Technical *******************************/
 
-RepTechnical::RepTechnical(QWidget *aParent): RepCompetitionBased(aParent, new TechnicalReport) {}
+RepTechnical::RepTechnical(QWidget *aParent): RepCompetitionBased(aParent, new TechnicalReport, tr("Технические результаты")) {}
 
 QString RepTechnical::GetQuery()
 {
