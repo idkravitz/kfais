@@ -84,6 +84,7 @@ private:
 
 private slots:
     void OpenCardRank();
+    void OpenCardCoach();
 
 public:
     CardSport(QWidget *aParent, TableModel *aModel, int aId);
@@ -107,6 +108,9 @@ private:
 
     bool IsValid() const;
     bool Submit();
+
+private slots:
+    void OpenCardClub();
 
 public:
     CardCoach(QWidget *aParent, TableModel *aTblModel, int aId);
@@ -154,6 +158,11 @@ private:
     bool IsValid() const;
     bool Submit();
 
+private slots:
+    void OpenCardSport();
+    void OpenCardRankFrom();
+    void OpenCardRankTo();
+
 public:
     CardSert(QWidget *aParent, TableModel *aTblModel, int aId);
 };
@@ -175,6 +184,9 @@ private:
 
     bool IsValid() const;
     bool Submit();
+
+private slots:
+    void OpenCardSport();
 
 public:
     CardFee(QWidget *aParent, TableModel *aTblModel, int aId);
@@ -201,6 +213,11 @@ private:
 
     bool IsValid() const;
     bool Submit();
+
+private slots:
+    void OpenCardSport();
+    void OpenCardComp();
+    void OpenCardCateg();
 
 public:
     CardSportComp(QWidget *aParent, TableModel *aTblModel, int aId);
@@ -294,6 +311,9 @@ private:
 
 private slots:
     void UpdateCBSport(int aIndex);
+
+    void OpenCardComp();
+    void OpenCardSport();
 
 public:
     CardPrzWin(QWidget *aParent, TableModel *aModel, int aId);
