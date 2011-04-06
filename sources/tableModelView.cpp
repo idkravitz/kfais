@@ -17,9 +17,11 @@ TableModel::TableModel(QWidget *aParent):
 
 void TableModel::DelRecord(const QString &aTblName, const QString &aCondition)
 {
-    QString q = query().executedQuery();
+    QString str = query().executedQuery();
+    emit BeforeRefresh();
     setQuery("DELETE FROM " + aTblName + " WHERE " + aCondition);
-    setQuery(q);
+    setQuery(str);
+    emit Refresh();
 }
 
 QVariant TableModel::GetVal(int aRow, int aCol)
@@ -34,6 +36,8 @@ int TableModel::GetId(int aRow)
 
 void TableModel::Select()
 {
+    emit BeforeRefresh();
+
     QString str = qMain;
     if (!qFilter.isEmpty()) str += " WHERE " + qFilter;
     if (!qSort.isEmpty()) str +=  " " + qSort;

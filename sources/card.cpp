@@ -685,8 +685,9 @@ void CardPrzWin::InitWidgets()
 {
     QSqlQuery q("SELECT sc.competition_id, sc.sportsman_id, pw.fights_count, pw.fights_won, "
                 "pw.place, pw.region, pw.city, pw.note "
-                "FROM prize_winners pw JOIN sportsmen_competitions sc "
-                "ON pw.sportsman_competition_id = sc.id WHERE pw.id = " + QString::number(id));
+                "FROM prize_winners pw "
+                "JOIN sportsmen_competitions sc ON pw.sportsman_competition_id = sc.id "
+                "WHERE pw.id = " + QString::number(id));
     q.next();
     QSqlRecord r = q.record();
     InitComboBox(cbComp, vecCompId, "SELECT id, name || ' ' || date FROM competitions", r.value(0).toInt());
@@ -732,7 +733,8 @@ bool CardPrzWin::Submit()
 void CardPrzWin::UpdateCBSport(int aIndex)
 {
     InitComboBox(cbSport, vecSportId,
-                "SELECT s.id, s.name FROM sportsmen_competitions sc JOIN sportsmen s ON "
-                "sc.sportsman_id = s.id WHERE sc.competition_id = " + QString::number(vecCompId[aIndex]),
+                "SELECT s.id, s.name FROM sportsmen_competitions sc "
+                "JOIN sportsmen s ON sc.sportsman_id = s.id "
+                "WHERE sc.competition_id = " + QString::number(vecCompId[aIndex]),
                 0);
 }

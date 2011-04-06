@@ -25,6 +25,7 @@ private:
 
 signals:
     void Refresh();
+    void BeforeRefresh();
 
 public:
     TableModel(QWidget *aParent = 0);
