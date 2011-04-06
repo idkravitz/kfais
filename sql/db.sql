@@ -89,6 +89,7 @@ CREATE TABLE prize_winners(
     region TEXT,						--For result protocol
     city TEXT,      					--For result protocol
     note TEXT,
+    UNIQUE(sportsman_competition_id),
     FOREIGN KEY (sportsman_competition_id) REFERENCES sportsmen_competitions(id) ON DELETE CASCADE ON UPDATE CASCADE);
 
 /*
