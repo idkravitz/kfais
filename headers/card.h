@@ -19,6 +19,7 @@ private:
     QPushButton *btnOk;
     QPushButton *btnCancel;
 
+    void keyPressEvent(QKeyEvent *aE);
     void closeEvent(QCloseEvent *aE);
 
 private slots:
@@ -218,6 +219,9 @@ private:
 
     bool IsValid() const;
     bool Submit();
+
+private slots:
+    void UpdateNameProt();
 
 public:
     CardComp(QWidget *aParent, TableModel *aModel, int aId);

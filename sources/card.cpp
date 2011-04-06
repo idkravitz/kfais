@@ -13,6 +13,12 @@ inline bool CheckCond(bool aCond, const QString &aMsg)
     return false;
 }
 
+inline bool IsCBValid(QComboBox *aCB, bool aCanBeEmpty = true)
+{
+    return  (aCanBeEmpty && aCB->currentText().isEmpty()) ||
+            (aCB->count() && aCB->currentText() == aCB->itemText(aCB->currentIndex()));
+}
+
 /******************************* Card (basic) *******************************/
 
 Card::Card(QWidget *aParent, TableModel *aModel, TblType aType, int aId):
@@ -76,6 +82,14 @@ void Card::closeEvent(QCloseEvent *aE)
 {
     Sett::GetMA()->closeActiveSubWindow();
     aE->accept();
+}
+
+void Card::keyPressEvent(QKeyEvent *aE)
+{
+    if (aE->key() == Qt::Key_Escape)
+    {
+        close();
+    }
 }
 
 inline void Card::AddWid(QGridLayout *aLt, int aTAIndex, QWidget *aW, int aRow, int aCol)
@@ -209,6 +223,7 @@ void CardSport::CreateWidgets()
     AddWid(lt1, Sport::taName, edtName = new QLineEdit, 0, 0);
     AddWid(lt1, Sport::taBirth, edtDateBirth = new QDateEdit, 0, 2);
     edtDateBirth->setCalendarPopup(true);
+
     AddWid(lt1, Sport::taRank, cbRank = new QComboBox, 1, 0);
 
     AddWid(lt1, Sport::taCoach, cbCoach = new QComboBox, 1, 2);
@@ -242,12 +257,14 @@ void CardSport::InitWidgets()
     edtPhone->setText(r.value(6).toString());
     edtWorkplace->setText(r.value(7).toString());
     edtJob->setText(r.value(8).toString());
-    edtNote->setText(r.value(8).toString());
+    edtNote->setText(r.value(9).toString());
 }
 
 bool CardSport::IsValid() const
 {
-    return !CheckCond(edtName->text().isEmpty(), tr("Введите Ф.И.О. спортсмена"));
+    return  !CheckCond(edtName->text().isEmpty(), tr("Введите Ф.И.О. спортсмена")) &&
+            !CheckCond(!IsCBValid(cbRank), tr("Выбранный разряд отсутствует в базе")) &&
+            !CheckCond(!IsCBValid(cbCoach), tr("Выбранный тренет отсутствует в базе"));
 }
 
 bool CardSport::Submit()
@@ -301,7 +318,8 @@ void CardCoach::InitWidgets()
 
 bool CardCoach::IsValid() const
 {
-    return !CheckCond(edtName->text().isEmpty(), tr("Введите Ф.И.О. тренера"));
+    return !CheckCond(edtName->text().isEmpty(), tr("Введите Ф.И.О. тренера")) &&
+           !CheckCond(!IsCBValid(cbClub), tr("Выбранный клуб отсутствует в базе"));
 }
 
 bool CardCoach::Submit()
@@ -394,8 +412,10 @@ void CardSert::InitWidgets()
 
 bool CardSert::IsValid() const
 {
-    //проверить на null
-    return !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите спортсмена"));
+    return  !CheckCond(!IsCBValid(cbSport, false), tr("Спортсмен либо не выбран, либо отстутствует в базе")) &&
+            !CheckCond(!IsCBValid(cbRankFrom), tr("Выбранный текущий разряд спортсмена отстутствует в базе")) &&
+            !CheckCond(!IsCBValid(cbRankTo, false), tr("Разряд, на который спортмен аттестуется, "
+                                                       "либо не выбран, либо отстутствует в базе"));
 }
 
 bool CardSert::Submit()
@@ -443,7 +463,7 @@ void CardFee::InitWidgets()
 
 bool CardFee::IsValid() const
 {
-    return !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите спортсмена"));
+    return !CheckCond(!IsCBValid(cbSport, false), tr("Спортсмен либо не выбран, либо отстутствует в базе"));
 }
 
 bool CardFee::Submit()
@@ -494,10 +514,19 @@ void CardSportComp::InitWidgets()
 
 bool CardSportComp::IsValid() const
 {
-//    return !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите спортсмена"));
-//    return !CheckCond(cbSport->currentText().isEmpty(), tr("Выберите соревнование"));
-    //проверка уникальности
-    return true;
+    if (CheckCond(!IsCBValid(cbSport, false), tr("Спортсмен либо не выбран, либо отстутствует в базе")) ||
+        CheckCond(!IsCBValid(cbComp, false), tr("Соревнование либо не выбрано, либо отстутствует в базе")) ||
+        CheckCond(!IsCBValid(cbCateg), tr("Категория отстутствует в базе")))
+    {
+        return false;
+    }
+    QSqlQuery q("SELECT * FROM sportsmen_competitions WHERE "
+                "id <> " + QString::number(GetId()) + " AND "
+                "sportsman_id = " + QString::number(vecSportId[cbSport->currentIndex()]) + " AND "
+                "competition_id = " + QString::number(vecCompId[cbComp->currentIndex()]));
+
+    return !CheckCond(q.next(),
+                      tr("В базе уже есть запись, отражающае участие выбранного спортсмена в выбранном соревновании"));
 }
 
 bool CardSportComp::Submit()
@@ -528,6 +557,7 @@ void CardComp::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
     AddWid(lt, Comp::taName, edtName = new QLineEdit, 0);
+    connect(edtName, SIGNAL(returnPressed()), this, SLOT(UpdateNameProt()));
     AddWid(lt, Comp::taNameProt, edtNameProt = new QLineEdit, 1);
     AddWid(lt, Comp::taDate, edtDate = new QDateEdit, 2);
     edtDate->setCalendarPopup(true);
@@ -550,7 +580,9 @@ void CardComp::InitWidgets()
 
 bool CardComp::IsValid() const
 {
-    return !CheckCond(edtName->text().isEmpty(), tr("Выберите название соревнования"));
+    return  !CheckCond(edtName->text().isEmpty(), tr("Введите название соревнования")) &&
+            !CheckCond(edtNameProt->text().isEmpty(),
+                       tr("Введите название соревнования, как оно будет отображаться в протоколах"));
 }
 
 bool CardComp::Submit()
@@ -563,6 +595,20 @@ bool CardComp::Submit()
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
     QSqlQuery q(CreateQuary(mapQuery));
     return true;
+}
+
+void CardComp::UpdateNameProt()
+{
+    if (edtName->text().isEmpty()) return;
+    int button = QMessageBox::question(this,
+        tr("Подтверждение копирования"),
+        tr("Вы хотите скопировать введенное название в название для протоколов?"),
+            QMessageBox::Yes | QMessageBox::No);
+
+    if (button == QMessageBox::Yes)
+    {
+        edtNameProt->setText(edtName->text());
+    }
 }
 
 /******************************* Categories *******************************/
@@ -706,13 +752,25 @@ void CardPrzWin::InitWidgets()
 
 bool CardPrzWin::IsValid() const
 {
-    return true;
+    if (CheckCond(!IsCBValid(cbSport, false), tr("Спортсмен либо не выбран, либо отстутствует в базе")) ||
+        CheckCond(!IsCBValid(cbComp, false), tr("Соревнование либо не выбрано, либо отстутствует в базе")))
+    {
+        return false;
+    }
+    QSqlQuery q("SELECT sc.id FROM sportsmen_competitions sc "
+                "LEFT OUTER JOIN prize_winners pw ON pw.sportsman_competition_id = sc.id "
+                "JOIN competitions c ON sc.competition_id = c.id "
+                "JOIN sportsmen s ON sc.sportsman_id = s.id "
+                "WHERE pw.id <> " + QString::number(GetId()) + " AND "
+                "c.id = " + QString::number(vecCompId[cbComp->currentIndex()]) + " AND "
+                "s.id = " + QString::number(vecSportId[cbSport->currentIndex()]));
+    return !CheckCond(q.next(),
+                      tr("В базе уже есть запись, отражающае призовое место выбранного спортсмена в выбранном соревновании"));
 }
 
 bool CardPrzWin::Submit()
 {
     QSqlQuery q("SELECT sc.id FROM sportsmen_competitions sc "
-                "LEFT OUTER JOIN prize_winners pw ON pw.sportsman_competition_id = sc.id "
                 "JOIN competitions c ON sc.competition_id = c.id "
                 "JOIN sportsmen s ON sc.sportsman_id = s.id "
                 "WHERE c.id = " + QString::number(vecCompId[cbComp->currentIndex()]) + " AND "
