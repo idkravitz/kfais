@@ -86,7 +86,7 @@ public:
 
 class ResultsReport: public BaseReport
 {
-    static const uint pageHeight = 34;
+    static const uint pageHeight = 33;
     uint currentPage;
     void writeHeader(const QString& category, const QString &competition, const QDate &date);
     void writeFooter();

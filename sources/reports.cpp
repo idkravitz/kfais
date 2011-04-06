@@ -15,6 +15,27 @@ QAxObject *BaseReport::openDocument()
     return sheet;
 }
 
+QString genitiveDate(const QDate &date)
+{
+    const char *months[12] = {
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
+    };
+    return date.isValid() ?
+        QString("%1 %2 %3").arg(date.day()).arg(QObject::tr(months[date.month() - 1])).arg(date.year()) + QObject::tr("г."):
+        QString();
+}
+
 QAxObject *BaseReport::getRange(const QString &range)
 {
     return sheet->querySubObject("Range(const QString&)", range);
@@ -115,7 +136,7 @@ void DrawingReport::writeHeader(const QString& category, const QDate &date)
     daten->dynamicCall("SetValue(const QVariant&)", QObject::tr("Дата"));
 
     QAxObject *dateval = getRange(QString("B%1").arg(curRow));
-    dateval->dynamicCall("SetValue(const QVariant&)", date.toString("dd MMMM yyyy") + QObject::tr("г."));
+    dateval->dynamicCall("SetValue(const QVariant&)", genitiveDate(date));
     dateval->querySubObject("Borders(int)", xlEdgeBottom)->setProperty("LineStyle", xlSingle);
 
     QAxObject *categn = getRange(QString("C%1").arg(curRow));
@@ -169,6 +190,7 @@ void DrawingReport::writeHeader(const QString& category, const QDate &date)
     font3->setProperty("Name", QString("Arial Cyr"));
     font3->setProperty("Size", 10);
     font3->setProperty("Bold", true);
+    getRange(QString("F%1").arg(currentRow))->setProperty("WrapText", false);
     currentRow++;
 }
 
@@ -266,9 +288,9 @@ void DrawingReport::makeReport()
     }
     writeFooter(written);
 
-    sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
+    sheet->querySubObject("PageSetup")->setProperty("Zoom", 89);
 
-    sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 300);
+    sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 600);
     //sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
 }
 
@@ -411,6 +433,7 @@ void PulkaReport::makeReport()
     writeFooter();
     sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
     sheet->querySubObject("PageSetup")->setProperty("Orientation", xlLandscape);
+    sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 600);
     //sheet->querySubObject("Columns")->dynamicCall("AutoFit()");
 }
 
@@ -437,7 +460,7 @@ void ResultsReport::writeHeader(const QString &category, const QString &competit
 
     range = getRange(QString("A%1:K%1").arg(offset));
     range->dynamicCall("Merge()");
-    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("СК «Бастион», ") + date.toString());
+    range->dynamicCall("SetValue(const QVariant&)", QObject::tr("СК «Бастион», ") + genitiveDate(date));
     range->setProperty("HorizontalAlignment", xlCenter);
     range->querySubObject("Font")->setProperty("Name", "Times New Roman");
     range->querySubObject("Font")->setProperty("Size", 14);
@@ -512,14 +535,11 @@ void ResultsReport::writeRec()
 
     range = getRange(QString("A%1").arg(offset));
     range->dynamicCall("SetValue(const QVariant&)", query->value(11).value<QString>() + ".");
-// 4       5           6        7           8        9         10            11              12        13
-// s.name, s.birthday, ra.name, pw.region, pw.city, cl.name, pw.fights_won, pw.fights_count, pw.place, co.name
-
 }
 
 void ResultsReport::writeFooter()
 {
-    uint offset = currentPage * pageHeight - 16;
+    uint offset = currentPage * pageHeight - 15;
     QAxObject *range = getRange(QString("A%1:B%1").arg(offset - 1)),
             *range2 = getRange(QString("A%1:B%1").arg(offset));
     range->dynamicCall("Merge()");
@@ -607,6 +627,8 @@ void ResultsReport::makeReport()
 
     sheet->querySubObject("PageSetup")->setProperty("Zoom", 90);
     sheet->querySubObject("PageSetup")->setProperty("Orientation", xlLandscape);
+    sheet->querySubObject("PageSetup")->setProperty("PrintQuality", 600);
+
 }
 
 void TechnicalReport::writeSuperHeader()
@@ -638,8 +660,6 @@ void TechnicalReport::writeLine()
         QString("%1 (%2 %3)").arg(query->value(3).toString(), query->value(5).toString(),
                                   query->value(4).toString()));
     currentRow++;
-    // 1                2       3       4          5        6       7
-    //com.name_prot, ca.name, com.date, s.name, cl.name, pw.city, pw.place
 }
 
 void TechnicalReport::makeReport()
