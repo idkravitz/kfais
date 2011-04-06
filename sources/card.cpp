@@ -68,7 +68,7 @@ void Card::Ok()
         QMessageBox::critical(0, Sett::GetErrMsgTitle(), Sett::GetErrMsgDef());
         return;
     }
-    tblModel->Refresh();
+    tblModel->Select();
     close();
 }
 
@@ -138,8 +138,6 @@ QString Card::CreateQuary(const MapQuery &aMap)
         }
         str += " WHERE id = " + QString::number(id);
     }
-
-    QMessageBox::critical(0, QObject::tr("Error"), str);
     return str;
 }
 
@@ -530,7 +528,7 @@ void CardComp::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
     AddWid(lt, Comp::taName, edtName = new QLineEdit, 0);
-    AddWid(lt, Comp::taName, edtNameProt = new QLineEdit, 1);
+    AddWid(lt, Comp::taNameProt, edtNameProt = new QLineEdit, 1);
     AddWid(lt, Comp::taDate, edtDate = new QDateEdit, 2);
     edtDate->setCalendarPopup(true);
     AddWid(lt, Comp::taLoc, edtLoc = new QLineEdit, 3);
@@ -669,8 +667,8 @@ void CardPrzWin::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
 
-    AddWidToLt(lt, tr("Соревнование"), cbComp = new QComboBox, 0, 0);
-    AddWidToLt(lt, tr("Спорстмен"), cbSport = new QComboBox, 1, 0);
+    AddWid(lt, PrzWin::taCompName, cbComp = new QComboBox, 0, 0);
+    AddWid(lt, PrzWin::taSport, cbSport = new QComboBox, 1, 0);
     AddWid(lt, PrzWin::taFightsCount, edtFightsCount = new QLineEdit, 2);
     SetRegExprInt(edtFightsCount);
     AddWid(lt, PrzWin::taFightsWon, edtFightsWon = new QLineEdit, 3);

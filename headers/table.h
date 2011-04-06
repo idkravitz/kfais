@@ -4,7 +4,7 @@
 #include "setting.h"
 #include "card.h"
 
-/******************************* Card (basic) *******************************/
+/******************************* Table (basic) *******************************/
 
 typedef QMap<int, Card *> MapCard;
 
@@ -27,6 +27,7 @@ private:
     void SaveTableSettings();
 
 private slots:
+    void UpdateTable();
     void SetFirst();
     void SetNext();
     void SetPrev();
@@ -42,13 +43,11 @@ private slots:
 protected:
     TableView *view;
 
-    TableModel *model_ ;
+    TableModel *model;
 
 //    void Init(const QString &aTitle, const QString &aTblName);
     inline Card *_CreateCard(int aId) const;
     virtual Card *CreateCard(int aId) const = 0;
-
-    virtual void TableSpecificConfig();
 
 public:
     Table(QWidget *aParent, TblType aType);

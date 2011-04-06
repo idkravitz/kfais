@@ -1,7 +1,7 @@
 #include "setting.h"
 
 QMdiArea *Sett::mdiArea;
-TblSett Sett::table_settings[ttPrzWinView + 1];
+TblSett Sett::table_settings[ttPrzWin + 1];
 RepSett Sett::report_settings[rtDraw + 1];
 
 void AddWidToLt(QGridLayout *aLt, const QString &aLblStr, QWidget *aW, int aRow, int aCol)
@@ -59,10 +59,6 @@ bool Sett::LoadSettings()
 {
     mdiArea = new QMdiArea;
 
-    table_settings[ttAbstract].title = "AbstractName";
-    table_settings[ttAbstract].tblName = "AbstractTblName";
-    table_settings[ttAbstract].colName << "AbstractColName";
-
     table_settings[ttSport].title = "Спортсмены";
     table_settings[ttSport].tblName = "sportsmen";
     table_settings[ttSport].colName << "id" << "Ф.И.О"
@@ -93,14 +89,8 @@ bool Sett::LoadSettings()
     table_settings[ttSportComp].title = "Распределения \"Спортсмен - соревнование\"";
     table_settings[ttSportComp].tblName = "sportsmen_competitions";
     table_settings[ttSportComp].colName << "id" << "Спортсмен" << "Соревнование"
-            << "Категория" << "№ жеребьёвки"
+            << "Дата" << "Категория" << "№ жеребьёвки"
             << "Единицы" << "Примечание";
-
-    table_settings[ttSportCompView].title = "Распределения \"Спортсмен - соревнование\"";
-    table_settings[ttSportCompView].tblName = "sportsmen_competitions_view";
-    table_settings[ttSportCompView].colName << "id" << "Спортсмен" << "Соревнование"
-            << "Дата" << "Категория"  << "Единицы"
-            << "№ жеребьёвки" << "Примечание";
 
     table_settings[ttComp].title = "Соревнования";
     table_settings[ttComp].tblName = "competitions";
@@ -118,17 +108,9 @@ bool Sett::LoadSettings()
 
     table_settings[ttPrzWin].title = "Призеры";
     table_settings[ttPrzWin].tblName = "prize_winners";
-    table_settings[ttPrzWin].colName << "id" << "Спортсмен - соревнование"
-            << "Число боев" << "Число побед" << "Место"
+    table_settings[ttPrzWin].colName << "id" << "Спортсмен" << "Соревнование"
+            << "Дата" << "Число боев" << "Число побед" << "Место"
             << "Регион" << "Город" << "Примечание";
-
-    table_settings[ttPrzWinView].title = "Призеры";
-    table_settings[ttPrzWinView].tblName = "prize_winners_view";
-    table_settings[ttPrzWinView].colName << "id" << "Соревнование"
-            << "Дата" << "Спортсмен"
-            << "Число боев" << "Число побед"
-            << "Место" << "Регион"
-            << "Город" << "Примечание";
 
     report_settings[rtSport].title = "Спортсмены";
     report_settings[rtSert].title = "Аттестации";

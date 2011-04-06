@@ -12,19 +12,16 @@ extern void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aS
 
 enum TblType
 {
-    ttAbstract = 0,
-    ttSport,        //sportmen
+    ttSport = 0,        //sportmen
     ttCoach,        //coachs
     ttClub,         //clubs
     ttSert,         //sertifications
     ttFee,          //fee
     ttSportComp,    //sportsmen_competitions
-    ttSportCompView,//sportsmen_competitions_view
     ttComp,         //competitions
     ttCateg,        //categories
     ttRank,         //ranks
     ttPrzWin,       //prize_winners
-    ttPrzWinView    //prize_winners_view
 };
 
 enum RepType
@@ -53,7 +50,7 @@ class Sett
 {
 private:
     static QMdiArea *mdiArea;
-    static TblSett table_settings[ttPrzWinView + 1];
+    static TblSett table_settings[ttPrzWin + 1];
     static RepSett report_settings[rtDraw + 1];
 
 public:
@@ -153,6 +150,7 @@ namespace SportComp
         taId = 0,
         taSport,
         taComp,
+        taCompDate,
         taCateg,
         taDrawNum,
         taUnit
@@ -185,22 +183,8 @@ namespace PrzWin
     enum Atr
     {
         taId = 0,
-        taSportComp,
-        taFightsCount,
-        taFightsWon,
-        taPlace,
-        taRegion,
-        taCity
-    };
-}
-
-namespace PrzWinView
-{
-    enum Atr
-    {
-        taId = 0,
-        taComp,
-        taDate,
+        taCompName,
+        taCompDate,
         taSport,
         taFightsCount,
         taFightsWon,

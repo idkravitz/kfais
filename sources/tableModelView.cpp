@@ -32,8 +32,27 @@ int TableModel::GetId(int aRow)
     return record(aRow).value(0).toInt();
 }
 
-void TableModel::Refresh()
+void TableModel::Select()
 {
-    setQuery(query().executedQuery());
+    QString str = qMain;
+    if (!qFilter.isEmpty()) str += " WHERE " + qFilter;
+    if (!qSort.isEmpty()) str +=  " " + qSort;
+    setQuery(str);
+
+    emit Refresh();
 }
 
+void TableModel::SetQuery(const QString &aQuery)
+{
+    qMain = aQuery;
+}
+
+void TableModel::SetFilter(const QString &aFilter)
+{
+    qFilter = aFilter;
+}
+
+void TableModel::SetSort(const QString &aSort)
+{
+    qSort = aSort;
+}
