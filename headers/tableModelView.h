@@ -38,6 +38,8 @@ public:
     QVariant GetVal(int aRow, int aCol);
     int GetId(int aRow);
 
+    virtual void sort(int column, Qt::SortOrder order);
+
     void Select();
 };
 
