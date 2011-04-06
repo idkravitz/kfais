@@ -62,7 +62,7 @@ bool Sett::LoadSettings()
     table_settings[ttSport].title = "Спортсмены";
     table_settings[ttSport].tblName = "sportsmen";
     table_settings[ttSport].colName << "id" << "Ф.И.О"
-            << "Дата рождения" << "Разряд" << "Регистрационный №"
+            << "Дата рождения" << "Разряд" << "Рег. №"
             << "Тренер" << "Адрес" << "Телефон" << "Место работы"
             << "Должность" << "Примечание";
 

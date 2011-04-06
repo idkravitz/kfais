@@ -12,7 +12,7 @@ extern void InitComboBox(QComboBox *aCB, QVector<int> &aVecId, const QString &aS
 
 enum TblType
 {
-    ttSport = 0,        //sportmen
+    ttSport = 0,    //sportmen
     ttCoach,        //coachs
     ttClub,         //clubs
     ttSert,         //sertifications

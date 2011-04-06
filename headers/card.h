@@ -45,6 +45,7 @@ protected:
 
 public:
     int GetId() const;
+    TblType GetType() const;
 };
 
 /******************************* Sportsmen *******************************/
@@ -80,6 +81,9 @@ private:
 
     bool IsValid() const;
     bool Submit();
+
+private slots:
+    void OpenCardRank();
 
 public:
     CardSport(QWidget *aParent, TableModel *aModel, int aId);
@@ -294,5 +298,30 @@ private slots:
 public:
     CardPrzWin(QWidget *aParent, TableModel *aModel, int aId);
 };
+
+/******************************* Mapper card *******************************/
+
+typedef QPair<TblType, int> KeyMapCard_;
+typedef QPair<Card *, QWidget *> ValMapCard_;
+typedef QMap<KeyMapCard_, ValMapCard_> MapCard_;
+
+class MapperCard: public QObject
+{
+    Q_OBJECT
+
+private:
+    MapCard_ mapCard;
+
+private slots:
+    void CloseCard(QObject *aObj);
+
+public:
+    MapperCard();
+
+    bool SetCard(TblType aType, int aId);
+    void InsertCard(TblType aType, int aId, Card *aCard, QWidget *aParent);
+};
+
+extern MapperCard mapperCard;
 
 #endif // CARD_H

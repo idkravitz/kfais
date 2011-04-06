@@ -35,6 +35,11 @@ int Card::GetId() const
     return id;
 }
 
+TblType Card::GetType() const
+{
+    return type;
+}
+
 void Card::CreateBasicWidgets(QLayout *aLt)
 {
     QGroupBox *gbNote = new QGroupBox(Sett::GetNoteName());
@@ -74,7 +79,7 @@ void Card::Ok()
         QMessageBox::critical(0, Sett::GetErrMsgTitle(), Sett::GetErrMsgDef());
         return;
     }
-    tblModel->Select();
+    if (tblModel) tblModel->Select();
     close();
 }
 
@@ -221,19 +226,22 @@ void CardSport::CreateWidgets()
 {
     QGridLayout *lt1 = new QGridLayout;
     AddWid(lt1, Sport::taName, edtName = new QLineEdit, 0, 0);
-    AddWid(lt1, Sport::taBirth, edtDateBirth = new QDateEdit, 0, 2);
+    AddWid(lt1, Sport::taBirth, edtDateBirth = new QDateEdit, 0, 3);
     edtDateBirth->setCalendarPopup(true);
 
     AddWid(lt1, Sport::taRank, cbRank = new QComboBox, 1, 0);
+    QPushButton *btnRank = new QPushButton();
+    lt1->addWidget(btnRank, 1, 2);
+    connect(btnRank, SIGNAL(clicked()), this, SLOT(OpenCardRank()));
 
-    AddWid(lt1, Sport::taCoach, cbCoach = new QComboBox, 1, 2);
+    AddWid(lt1, Sport::taCoach, cbCoach = new QComboBox, 1, 3);
     AddWid(lt1, Sport::taRegNum, edtRegNum = new QLineEdit, 2, 0);
     SetRegExprInt(edtRegNum);
 
-    AddWid(lt1, Sport::taAddr, edtAddr = new QLineEdit, 2, 2);
+    AddWid(lt1, Sport::taAddr, edtAddr = new QLineEdit, 2, 3);
     AddWid(lt1, Sport::taPhone, edtPhone = new QLineEdit, 3, 0);
 
-    AddWid(lt1, Sport::taWork, edtWorkplace = new QLineEdit, 3, 2);
+    AddWid(lt1, Sport::taWork, edtWorkplace = new QLineEdit, 3, 3);
     AddWid(lt1, Sport::taJob, edtJob = new QLineEdit, 4, 0);
 
     QVBoxLayout *lt = new QVBoxLayout;
@@ -284,6 +292,14 @@ bool CardSport::Submit()
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
     QSqlQuery q(CreateQuary(mapQuery));
     return true;
+}
+
+void CardSport::OpenCardRank()
+{
+    if (!IsCBValid(cbRank, false)) return;
+    int id = vecRankId[cbRank->currentIndex()];
+    if (mapperCard.SetCard(ttRank, id)) return;
+    mapperCard.InsertCard(ttRank, id, new CardRank(Sett::GetMA(), 0, id), this);
 }
 
 /******************************* Coaches *******************************/
@@ -795,4 +811,44 @@ void CardPrzWin::UpdateCBSport(int aIndex)
                 "JOIN sportsmen s ON sc.sportsman_id = s.id "
                 "WHERE sc.competition_id = " + QString::number(vecCompId[aIndex]),
                 0);
+}
+
+/******************************* Mapper card *******************************/
+
+MapperCard mapperCard;
+
+MapperCard::MapperCard()
+{
+    //emty
+}
+
+void MapperCard::InsertCard(TblType aType, int aId, Card *aCard, QWidget *aParent)
+{
+    mapCard.insert(KeyMapCard_(aType, aId), ValMapCard_(aCard, aParent));
+    connect(aCard, SIGNAL(destroyed(QObject *)), this, SLOT(CloseCard(QObject *)));
+    QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(aCard);
+    sw->show();
+}
+
+bool MapperCard::SetCard(TblType aType, int aId)
+{
+    MapCard_::const_iterator it = mapCard.find(KeyMapCard_(aType, aId));
+    if (it != mapCard.end())       //if card already opened
+    {
+        it.value().first->setFocus();
+        return true;
+    }
+    return false;
+}
+
+void MapperCard::CloseCard(QObject *aObj)
+{
+    Card *c = static_cast<Card *>(aObj);
+    MapCard_::iterator it = mapCard.find(KeyMapCard_(c->GetType(), c->GetId()));
+    if (it != mapCard.end())
+    {
+        QWidget *w = it.value().second;
+        mapCard.erase(it);
+        w->setFocus();
+    }
 }

@@ -95,7 +95,7 @@ void Table::SetLast()
 
 void Table::Add()
 {
-    _CreateCard(-1);
+    CreateCard(-1);
 }
 
 void Table::Delete()
@@ -122,13 +122,8 @@ void Table::Edit()
 void Table::OpenCard(QModelIndex aMIndex)
 {
     int id = model->GetVal(aMIndex.row(), 0).toInt();
-    MapCard::const_iterator it = mapCard.find(id);
-    if (it != mapCard.end())       //if card already opened
-    {
-        it.value()->setFocus();
-        return;
-    }
-    mapCard.insert(id, _CreateCard(id));
+    if (mapperCard.SetCard(type, id)) return;
+    mapperCard.InsertCard(type, id, CreateCard(id), this);
 }
 
 void Table::CloseCard(QObject *aObj)
@@ -139,15 +134,6 @@ void Table::CloseCard(QObject *aObj)
         mapCard.erase(it);
     }
     setFocus();
-}
-
-inline Card *Table::_CreateCard(int aId) const
-{
-    Card *c = CreateCard(aId);
-    QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(c);
-    sw->show();
-    connect(c, SIGNAL(destroyed(QObject *)), this, SLOT(CloseCard(QObject *)));
-    return c;
 }
 
 void Table::SetSort(int aI)
