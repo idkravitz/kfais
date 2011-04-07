@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *aParent):
 
     setWindowTitle("Kudo federation AIS");
     setCentralWidget(Sett::GetMA());
+    setWindowIcon(QIcon(":/resource/Main.png"));
 
     CreateMenu();
 }
@@ -17,30 +18,30 @@ void MainWindow::CreateMenu()
     setMenuBar(mnBar);
 
     QMenu *mnFile = new QMenu(tr("Файл"));
-    mnFile->addAction(tr("Выход"), this, SLOT(close()));
+    mnFile->addAction(QIcon(":/resource/Exit.ico"), tr("Выход"), this, SLOT(close()));
 
     QMenu *mnAbout = new QMenu(tr("Помощь"));
-    mnAbout->addAction(tr("О программе"));
+    mnAbout->addAction(QIcon(":/resource/About.ico"), tr("О программе"), this, SLOT(OpenAbout()));
 
     QMenu *mnTables = new QMenu(tr("Таблицы"));
-    mnTables->addAction(Sett::GetTblTitle(ttSport), this, SLOT(OpenTblSport()));
-    mnTables->addAction(Sett::GetTblTitle(ttCoach), this, SLOT(OpenTblCoach()));
-    mnTables->addAction(Sett::GetTblTitle(ttClub), this, SLOT(OpenTblClub()));
-    mnTables->addAction(Sett::GetTblTitle(ttSert), this, SLOT(OpenTblSert()));
-    mnTables->addAction(Sett::GetTblTitle(ttFee), this, SLOT(OpenTblFee()));
-    mnTables->addAction(Sett::GetTblTitle(ttSportComp), this, SLOT(OpenTblSportComp()));
-    mnTables->addAction(Sett::GetTblTitle(ttComp), this, SLOT(OpenTblComp()));
-    mnTables->addAction(Sett::GetTblTitle(ttCateg), this, SLOT(OpenTblCateg()));
-    mnTables->addAction(Sett::GetTblTitle(ttRank), this, SLOT(OpenTblRank()));
-    mnTables->addAction(Sett::GetTblTitle(ttPrzWin), this, SLOT(OpenTblPrzWin()));
+    mnTables->addAction(QIcon(":/resource/Sport.ico"), Sett::GetTblTitle(ttSport), this, SLOT(OpenTblSport()));
+    mnTables->addAction(QIcon(":/resource/Coach.ico"), Sett::GetTblTitle(ttCoach), this, SLOT(OpenTblCoach()));
+    mnTables->addAction(QIcon(":/resource/Club.ico"), Sett::GetTblTitle(ttClub), this, SLOT(OpenTblClub()));
+    mnTables->addAction(QIcon(":/resource/Sert.ico"), Sett::GetTblTitle(ttSert), this, SLOT(OpenTblSert()));
+    mnTables->addAction(QIcon(":/resource/Fee.ico"), Sett::GetTblTitle(ttFee), this, SLOT(OpenTblFee()));
+    mnTables->addAction(QIcon(":/resource/SportComp.ico"), Sett::GetTblTitle(ttSportComp), this, SLOT(OpenTblSportComp()));
+    mnTables->addAction(QIcon(":/resource/Comp.ico"), Sett::GetTblTitle(ttComp), this, SLOT(OpenTblComp()));
+    mnTables->addAction(QIcon(":/resource/Categ.ico"), Sett::GetTblTitle(ttCateg), this, SLOT(OpenTblCateg()));
+    mnTables->addAction(QIcon(":/resource/Rank.ico"), Sett::GetTblTitle(ttRank), this, SLOT(OpenTblRank()));
+    mnTables->addAction(QIcon(":/resource/PrzWin.ico"), Sett::GetTblTitle(ttPrzWin), this, SLOT(OpenTblPrzWin()));
 
     QMenu *mnReports = new QMenu(tr("Отчеты"));
-    mnReports->addAction(Sett::GetRepTitle(rtSport), this, SLOT(OpenRepSport()));
-    mnReports->addAction(Sett::GetRepTitle(rtSert), this, SLOT(OpenRepSert()));
-    mnReports->addAction(Sett::GetRepTitle(rtDraw), this, SLOT(OpenRepDraw()));
-    mnReports->addAction(Sett::GetRepTitle(rtPulka), this, SLOT(OpenRepPulka()));
-    mnReports->addAction(Sett::GetRepTitle(rtResults), this, SLOT(OpenRepResults()));
-    mnReports->addAction(Sett::GetRepTitle(rtTechnical), this, SLOT(OpenRepTechnical()));
+    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtSport), this, SLOT(OpenRepSport()));
+    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtSert), this, SLOT(OpenRepSert()));
+    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtDraw), this, SLOT(OpenRepDraw()));
+    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtPulka), this, SLOT(OpenRepPulka()));
+    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtResults), this, SLOT(OpenRepResults()));
+    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtTechnical), this, SLOT(OpenRepTechnical()));
 
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);
@@ -193,4 +194,11 @@ void MainWindow::OpenRepResults()
 void MainWindow::OpenRepTechnical()
 {
     OpenRep(rtDraw, new RepTechnical(Sett::GetMA()));
+}
+
+void MainWindow::OpenAbout()
+{
+    QMessageBox::about(this, tr("О программе"),
+            tr("<h2>KFAIS v0.9</h2>"
+               "<p>Все права защищены &copy; 2011 django.vl@gmail.com</p>"));
 }

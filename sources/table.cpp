@@ -7,6 +7,8 @@ Table::Table(QWidget *aParent, TblType aType):
         type(aType)
 {
     setAttribute(Qt::WA_DeleteOnClose);
+    setWindowTitle(tr("Таблица - ") + Sett::GetTblTitle(type));
+
     model = new TableModel(this);
     CreateWidgets();
     view->setModel(model);
@@ -40,7 +42,6 @@ void Table::CreateWidgets()
 
     ApplyTableSettings();
 
-    setWindowTitle(Sett::GetTblTitle(type));
     setCentralWidget(view);
 }
 
@@ -95,7 +96,9 @@ void Table::SetLast()
 
 void Table::Add()
 {
-    CreateCard(-1);
+    Card *c = CreateCard(-1);
+    QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(c);
+    sw->show();
 }
 
 void Table::Delete()

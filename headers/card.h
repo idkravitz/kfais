@@ -68,16 +68,14 @@ private:
     QComboBox *cbRank;
     QComboBox *cbCoach;
 
-    QSqlRelationalTableModel *modelFee, *modelSert, *modelSC;
-    QTableView *viewFee, *viewSert, *viewSC;
+    TableModel *modelFee, *modelSert, *modelPrzWin;
+    TableView *viewFee, *viewSert, *viewPrzWin;
 
     void CreateWidgets();
     void InitWidgets();
 
-//    QVBoxLayout *CreateInnerTbls();
-//    inline QTableView *_InitViewModel(QTableView *aView, QSqlRelationalTableModel *aModel, TblType aType);
-//    inline QGroupBox *_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel);
-//    inline QGroupBox *_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel, const QString &aTitle);
+    QVBoxLayout *CreateInnerTbls();
+    inline QGroupBox *_AddTable(TableView *aView, TableModel *aModel, const QString &aTitle);
 
     bool IsValid() const;
     bool Submit();

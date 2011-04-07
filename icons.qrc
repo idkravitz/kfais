@@ -7,5 +7,19 @@
         <file>resource/Last.ico</file>
         <file>resource/Next.ico</file>
         <file>resource/Prev.ico</file>
+        <file>resource/About.ico</file>
+        <file>resource/Exit.ico</file>
+        <file>resource/Main.png</file>
+        <file>resource/Club.ico</file>
+        <file>resource/Coach.ico</file>
+        <file>resource/Sport.ico</file>
+        <file>resource/Fee.ico</file>
+        <file>resource/PrzWin.ico</file>
+        <file>resource/Comp.ico</file>
+        <file>resource/Report.ico</file>
+        <file>resource/Sert.ico</file>
+        <file>resource/SportComp.ico</file>
+        <file>resource/Categ.ico</file>
+        <file>resource/Rank.ico</file>
     </qresource>
 </RCC>

@@ -711,7 +711,9 @@ Report::~Report()
 void Report::CreateBasicWidgets(QGridLayout *aLt)
 {
     QVBoxLayout *lt = new QVBoxLayout;
-    lt->addLayout(aLt);
+
+    QGroupBox *gb = new QGroupBox(tr("Параметры"));
+    gb->setLayout(aLt);
 
     QHBoxLayout *lt1 = new QHBoxLayout;
     btnExport = new QPushButton(tr("Выгрузить"));
@@ -720,7 +722,7 @@ void Report::CreateBasicWidgets(QGridLayout *aLt)
     lt1->addStretch(0);
     connect(btnExport, SIGNAL(clicked()), this, SLOT(Export()));
 
-    lt->addLayout(aLt);
+    lt->addWidget(gb);
     lt->addLayout(lt1);
 
     setLayout(lt);

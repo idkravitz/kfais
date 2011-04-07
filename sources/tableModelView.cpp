@@ -63,7 +63,6 @@ void TableModel::SetSort(const QString &aSort)
 
 void TableModel::sort(int column, Qt::SortOrder order)
 {
-    qDebug() << column;
     qSort = QString("ORDER BY %1 %2").arg(column + 1).arg(order == Qt::AscendingOrder ? "ASC": "DESC");
     Select();
 }

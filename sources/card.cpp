@@ -28,6 +28,7 @@ Card::Card(QWidget *aParent, TableModel *aModel, TblType aType, int aId):
         id(aId)
 {
     setAttribute(Qt::WA_DeleteOnClose);
+    setWindowTitle(tr("Карточка - ") + Sett::GetTblTitle(type));
 }
 
 int Card::GetId() const
@@ -162,58 +163,15 @@ QString Card::CreateQuary(const MapQuery &aMap)
 
 /******************************* Sportsmen *******************************/
 
-//inline QTableView *CardSport::_InitViewModel(QTableView *aView, QSqlRelationalTableModel *aModel, TblType aType)
-//{
-//    aModel->setTable(Sett::GetTblName(aType));
-//    aModel->setFilter("sportsman_id = " + QString::number(GetId()));
-//    aModel->setEditStrategy(QSqlTableModel::OnRowChange);
-
-//    aView->setModel(aModel);
-
-//    return aView;
-//}
-
-//inline QGroupBox *CardSport::_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel, const QString &aTitle)
-//{
-//    QGroupBox *gb = new QGroupBox(aTitle);
-//    QHBoxLayout *lt = new QHBoxLayout;
-//    lt->addWidget(_InitViewModel(aView, aModel, aType));
-//    gb->setLayout(lt);
-//    return gb;
-//}
-
-//inline QGroupBox *CardSport::_AddTable(TblType aType, QTableView *aView, QSqlRelationalTableModel *aModel)
-//{
-//    return _AddTable(aType, aView, aModel, Sett::GetTblTitle(aType));
-//}
-
-//QVBoxLayout *CardSport::CreateInnerTbls()
-//{
-//    QVBoxLayout *lt2 = new QVBoxLayout;
-
-//    lt2->addWidget(_AddTable(ttSert, viewSert = new QTableView, modelSert = new QSqlRelationalTableModel(this)));
-//    lt2->addWidget(_AddTable(ttSportComp, viewSC = new QTableView, modelSC = new QSqlRelationalTableModel(this),
-//                             tr("Спортивные достижения")));
-//    lt2->addWidget(_AddTable(ttFee, viewFee = new QTableView, modelFee = new QSqlRelationalTableModel(this)));
-
-//    viewSert->setColumnHidden(Sert::taId, true);
-//    viewSert->setColumnHidden(Sert::taSport, true);
-//    viewSC->setColumnHidden(SportComp::taId, true);
-//    viewSC->setColumnHidden(SportComp::taSport, true);
-//    viewFee->setColumnHidden(Fee::taId, true);
-//    viewFee->setColumnHidden(Fee::taSport, true);
-
-//    modelSert->setRelation(3, QSqlRelation("ranks", "id", "name"));
-//    modelSert->setRelation(4, QSqlRelation("ranks", "id", "name"));
-//    modelSert->select();
-
-//    modelSC->setRelation(4, QSqlRelation("categories", "id", "name"));
-//    modelSC->select();
-
-//    modelFee->select();
-
-//    return lt2;
-//}
+inline QGroupBox *CardSport::_AddTable(TableView *aView, TableModel *aModel, const QString &aTitle)
+{
+    QGroupBox *gb = new QGroupBox(aTitle);
+    QHBoxLayout *lt = new QHBoxLayout;
+    lt->addWidget(aView);
+    aView->setModel(aModel);
+    gb->setLayout(lt);
+    return gb;
+}
 
 CardSport::CardSport(QWidget *aParent, TableModel *aTblModel, int aId):
         Card(aParent, aTblModel, ttSport, aId)
@@ -224,34 +182,79 @@ CardSport::CardSport(QWidget *aParent, TableModel *aTblModel, int aId):
 
 void CardSport::CreateWidgets()
 {
+    QHBoxLayout *ltName = new QHBoxLayout;
+    QLabel *lblName = new QLabel(Sett::GetColName(ttSport, Sport::taName));
+    edtName = new QLineEdit;
+    lblName->setBuddy(edtName);
+    ltName->addWidget(lblName);
+    ltName->addWidget(edtName);
+
     QGridLayout *lt1 = new QGridLayout;
-    AddWid(lt1, Sport::taName, edtName = new QLineEdit, 0, 0);
-    AddWid(lt1, Sport::taBirth, edtDateBirth = new QDateEdit, 0, 3);
+
+    AddWid(lt1, Sport::taBirth, edtDateBirth = new QDateEdit, 0, 0);
     edtDateBirth->setCalendarPopup(true);
+    AddWid(lt1, Sport::taRegNum, edtRegNum = new QLineEdit, 0, 3);
+    SetRegExprInt(edtRegNum);
 
     AddWid(lt1, Sport::taRank, cbRank = new QComboBox, 1, 0);
     QPushButton *btnRank = new QPushButton();
     lt1->addWidget(btnRank, 1, 2);
     connect(btnRank, SIGNAL(clicked()), this, SLOT(OpenCardRank()));
-
     AddWid(lt1, Sport::taCoach, cbCoach = new QComboBox, 1, 3);
     QPushButton *btnCoach = new QPushButton();
     lt1->addWidget(btnCoach, 1, 5);
     connect(btnCoach, SIGNAL(clicked()), this, SLOT(OpenCardCoach()));
 
-    AddWid(lt1, Sport::taRegNum, edtRegNum = new QLineEdit, 2, 0);
-    SetRegExprInt(edtRegNum);
+    AddWid(lt1, Sport::taAddr, edtAddr = new QLineEdit, 2, 0);
+    AddWid(lt1, Sport::taPhone, edtPhone = new QLineEdit, 2, 3);
 
-    AddWid(lt1, Sport::taAddr, edtAddr = new QLineEdit, 2, 3);
-    AddWid(lt1, Sport::taPhone, edtPhone = new QLineEdit, 3, 0);
-
-    AddWid(lt1, Sport::taWork, edtWorkplace = new QLineEdit, 3, 3);
-    AddWid(lt1, Sport::taJob, edtJob = new QLineEdit, 4, 0);
+    AddWid(lt1, Sport::taWork, edtWorkplace = new QLineEdit, 3, 0);
+    AddWid(lt1, Sport::taJob, edtJob = new QLineEdit, 3, 3);
 
     QVBoxLayout *lt = new QVBoxLayout;
+    lt->addLayout(ltName);
     lt->addLayout(lt1);
-    //lt->addLayout(CreateInnerTbls());
+    lt->addLayout(CreateInnerTbls());
+
     CreateBasicWidgets(lt);
+}
+
+QVBoxLayout *CardSport::CreateInnerTbls()
+{
+    QVBoxLayout *lt2 = new QVBoxLayout;
+
+    lt2->addWidget(_AddTable(viewSert = new TableView,
+                             modelSert = new TableModel(this), Sett::GetTblTitle(ttSert)));
+    lt2->addWidget(_AddTable(viewPrzWin = new TableView,
+                             modelPrzWin = new TableModel(this), tr("Спортивные достижения")));
+    lt2->addWidget(_AddTable(viewFee = new TableView,
+                             modelFee = new TableModel(this), Sett::GetTblTitle(ttFee)));
+
+    modelSert->SetQuery("SELECT se.id, se.sportsman_id, se.date, r1.name, r2.name, se.note FROM sertifications se "
+                        "JOIN ranks r2 ON se.rank_to_id = r2.id "
+                        "LEFT OUTER JOIN ranks r1 ON se.rank_from_id = r1.id "
+                        "WHERE se.sportsman_id = " + QString::number(GetId()));
+    modelSert->Select();
+
+    modelPrzWin->SetQuery("SELECT pw.id, c.name, c.date, sc.sportsman_id, pw.fights_count, pw.fights_won, pw.place, pw.region, "
+                          "pw.city, pw.note FROM prize_winners pw "
+                          "JOIN sportsmen_competitions sc ON pw.sportsman_competition_id = sc.id "
+                          "JOIN competitions c ON sc.competition_id = c.id "
+                          "WHERE sc.sportsman_id = " + QString::number(GetId()));
+    modelPrzWin->Select();
+
+    modelFee->SetQuery("SELECT id, sportsman_id, date, note FROM fee "
+                       "WHERE sportsman_id = " + QString::number(GetId()));
+    modelFee->Select();
+
+    viewSert->setColumnHidden(Sert::taId, true);
+    viewSert->setColumnHidden(Sert::taSport, true);
+    viewPrzWin->setColumnHidden(PrzWin::taId, true);
+    viewPrzWin->setColumnHidden(PrzWin::taSport, true);
+    viewFee->setColumnHidden(Fee::taId, true);
+    viewFee->setColumnHidden(Fee::taSport, true);
+
+    return lt2;
 }
 
 void CardSport::InitWidgets()
