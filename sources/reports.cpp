@@ -837,14 +837,7 @@ RepCompetitionBased::RepCompetitionBased(QWidget *aParent, BaseReport *report, c
 {
     CreateWidgets();
     InitComboBox(cbCompetition, vecId, "select id, strftime('%d.%m.%Y',date) || ' ' || name from competitions; ", 0);
-    connect(cbCompetition, SIGNAL(editTextChanged(const QString&)), this, SLOT(cbTextChanged(const QString&)));
     btnExport->setEnabled(!!cbCompetition->count());
-}
-
-
-void RepCompetitionBased::cbTextChanged(const QString& text)
-{
-    btnExport->setEnabled(cbCompetition->itemText(cbCompetition->currentIndex()).startsWith(text));
 }
 
 void RepCompetitionBased::CreateWidgets()

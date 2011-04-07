@@ -61,6 +61,7 @@ bool Sett::LoadSettings()
 
     table_settings[ttSport].title = "Спортсмены";
     table_settings[ttSport].tblName = "sportsmen";
+    table_settings[ttSport].colWidth << 40 << 200 << 90 << 50 << 50 <<  200 << 150 << 100 << 150 << 100 << 100;
     table_settings[ttSport].colName << "id" << "Ф.И.О"
             << "Дата рождения" << "Разряд" << "Рег. №"
             << "Тренер" << "Адрес" << "Телефон" << "Место работы"
@@ -68,46 +69,54 @@ bool Sett::LoadSettings()
 
     table_settings[ttCoach].title = "Тренеры";
     table_settings[ttCoach].tblName = "coaches";
+    table_settings[ttCoach].colWidth << 40 << 200 << 150 << 150 << 100;
     table_settings[ttCoach].colName << "id" << "Ф.И.О." << "Телефон"
             << "Клуб" << "Примечание";
 
     table_settings[ttClub].title = "Клубы";
     table_settings[ttClub].tblName = "clubs";
+    table_settings[ttCoach].colWidth << 40 << 200 << 150 << 100;
     table_settings[ttClub].colName << "id" << "Название" << "Адрес"
             << "Примечание";
 
     table_settings[ttSert].title = "Аттестации";
     table_settings[ttSert].tblName = "sertifications";
+    table_settings[ttSert].colWidth << 40 << 200 << 90 << 80 << 80 << 100;
     table_settings[ttSert].colName << "id" << "Спорстмен" << "Дата"
             << "Разряд с" << "Разряд на" << "Примечание";
 
     table_settings[ttFee].title = "Взносы";
     table_settings[ttFee].tblName = "fee";
+    table_settings[ttFee].colWidth << 40 << 200 << 90 << 100;
     table_settings[ttFee].colName << "id" << "Спортсмен" << "Дата"
             << "Примечание";
 
     table_settings[ttSportComp].title = "Распределения \"Спортсмен - соревнование\"";
     table_settings[ttSportComp].tblName = "sportsmen_competitions";
+    table_settings[ttSportComp].colWidth << 40 << 200 << 200 << 90 << 180 << 160 << 150 << 100;
     table_settings[ttSportComp].colName << "id" << "Спортсмен" << "Соревнование"
             << "Дата" << "Категория" << "№ жеребьёвки"
             << "Единицы" << "Примечание";
 
     table_settings[ttComp].title = "Соревнования";
     table_settings[ttComp].tblName = "competitions";
+    table_settings[ttComp].colWidth << 40 << 200 << 200 << 90 << 150 << 100;
     table_settings[ttComp].colName << "id" << "Название" << "Название в протоколе" << "Дата"
             << "Место проведения" << "Примечание";
 
     table_settings[ttCateg].title = "Категории";
     table_settings[ttCateg].tblName = "categories";
-    table_settings[ttCateg].colWidth << 40 << 200 << 200;
+    table_settings[ttCateg].colWidth << 40 << 200 << 100;
     table_settings[ttCateg].colName << "id" << "Название" << "Примечание";
 
     table_settings[ttRank].title = "Разряд";
     table_settings[ttRank].tblName = "ranks";
+    table_settings[ttRank].colWidth << 40 << 200 << 100;
     table_settings[ttRank].colName << "id" << "Название" << "Примечание";
 
     table_settings[ttPrzWin].title = "Призеры";
     table_settings[ttPrzWin].tblName = "prize_winners";
+    table_settings[ttPrzWin].colWidth << 40 << 200 << 90 << 200 << 100 << 100 << 90 << 120 << 120 << 100;
     table_settings[ttPrzWin].colName << "id" << "Соревнование" << "Дата"
             << "Спортсмен" << "Число боев" << "Число побед" << "Место"
             << "Регион" << "Город" << "Примечание";

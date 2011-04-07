@@ -178,7 +178,7 @@ public:
 class RepCompetitionBased: public Report {
     Q_OBJECT
 private slots:
-    void cbTextChanged(const QString& text);
+//    void cbTextChanged(const QString& text);
     void OpenCardCompetition();
 
 protected:
