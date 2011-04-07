@@ -759,6 +759,8 @@ void RepSport::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
     AddWidToLt(lt, Sett::GetColName(ttSport, Sport::taCoach) + ":", cbCoach = new QComboBox, 0, 0);
+    lt->addWidget(new BtnCardComp(cbCoach, &vecId, this), 0, 2);
+
     CreateBasicWidgets(lt);
 }
 
@@ -793,6 +795,11 @@ void RepSert::CreateWidgets()
 
     lbl = new QLabel(cbTbl->currentText() + ":");
     AddWidToLt(lt, lbl, cb = new QComboBox, 1, 0);
+    lt->addWidget(btnCoach = new BtnCardCoach(cb, &vecId, this), 1, 2);
+    lt->addWidget(btnClub = new BtnCardClub(cb, &vecId, this), 1, 2);
+    btnClub->setVisible(false);
+    btnCoach->setVisible(true);
+
 
     CreateBasicWidgets(lt);
 }
@@ -802,10 +809,14 @@ void RepSert::ChangeTbl(int aIndex)
     if (!aIndex)
     {
         InitComboBox(cb, vecId, "SELECT * FROM coaches", 0);
+        btnClub->setVisible(false);
+        btnCoach->setVisible(true);
     }
     else
     {
         InitComboBox(cb, vecId, "SELECT * FROM clubs", 0);
+        btnClub->setVisible(true);
+        btnCoach->setVisible(false);
     }
     lbl->setText(cbTbl->currentText() + ":");
 }
@@ -846,9 +857,7 @@ void RepCompetitionBased::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
     AddWidToLt(lt, tr("Использовать соревнование:"), cbCompetition = new QComboBox, 0, 0);
-    QPushButton *btnComp = new QPushButton();
-    lt->addWidget(btnComp, 0, 2);
-    connect(btnComp, SIGNAL(clicked()), this, SLOT(OpenCardCompetition()));
+    lt->addWidget(new BtnCardComp(cbCompetition, &vecId, this), 0, 2);
     CreateBasicWidgets(lt);
 }
 
