@@ -336,6 +336,7 @@ private slots:
 public:
     MapperCard();
 
+    bool IsExist(TblType aType, int aId);
     bool SetCard(TblType aType, int aId);
     void InsertCard(TblType aType, int aId, Card *aCard, QWidget *aParent);
 };

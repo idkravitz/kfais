@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     }
     catch(Error err)
     {
-        QMessageBox::critical(0, QObject::tr("Error"), err.msg());
+        QMessageBox::critical(Sett::GetMA(), Sett::GetErrMsgTitle(), err.msg());
         return 1;
     }
 

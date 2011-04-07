@@ -7,7 +7,7 @@ inline bool CheckCond(bool aCond, const QString &aMsg)
 {
     if (aCond)
     {
-        QMessageBox::critical(0, Sett::GetErrMsgTitle(), aMsg);
+        QMessageBox::critical(Sett::GetMA(), Sett::GetErrMsgTitle(), aMsg);
         return true;
     }
     return false;
@@ -77,7 +77,7 @@ void Card::Ok()
     }
     if (!Submit())
     {
-        QMessageBox::critical(0, Sett::GetErrMsgTitle(), Sett::GetErrMsgDef());
+        QMessageBox::critical(Sett::GetMA(), Sett::GetErrMsgTitle(), Sett::GetErrMsgDef());
         return;
     }
     if (tblModel) tblModel->Select();
@@ -979,6 +979,11 @@ bool MapperCard::SetCard(TblType aType, int aId)
         return true;
     }
     return false;
+}
+
+bool MapperCard::IsExist(TblType aType, int aId)
+{
+    return mapCard.find(KeyMapCard_(aType, aId)) != mapCard.end();
 }
 
 void MapperCard::CloseCard(QObject *aObj)

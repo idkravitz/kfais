@@ -103,6 +103,13 @@ void Table::Add()
 
 void Table::Delete()
 {
+    int delId = model->GetVal(view->currentIndex().row(), 0).toInt();
+    if (mapperCard.IsExist(type, delId))
+    {
+        QMessageBox::critical(Sett::GetMA(), Sett::GetErrMsgTitle(), tr("Удаление невозможно, т.к. карточка для этой записи открыта"));
+        return;
+    }
+
     int button = QMessageBox::question(this,
         tr("Подтверждение удаления"),
         tr("Вы действительно хотите удалить текущую запись?"),
@@ -111,8 +118,7 @@ void Table::Delete()
     if (button == QMessageBox::Yes)
     {
         int curRow = view->currentIndex().row();
-        QString delId = model->GetVal(view->currentIndex().row(), 0).toString();
-        model->DelRecord(Sett::GetTblName(type), "id = " + delId);
+        model->DelRecord(Sett::GetTblName(type), "id = " + QString::number(delId));
         view->selectRow(curRow);
     }
 }
