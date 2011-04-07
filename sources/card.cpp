@@ -197,13 +197,10 @@ void CardSport::CreateWidgets()
     SetRegExprInt(edtRegNum);
 
     AddWid(lt1, Sport::taRank, cbRank = new QComboBox, 1, 0);
-    QPushButton *btnRank = new QPushButton();
-    lt1->addWidget(btnRank, 1, 2);
-    connect(btnRank, SIGNAL(clicked()), this, SLOT(OpenCardRank()));
+    lt1->addWidget(new BtnCardRank(cbRank, &vecRankId, this), 1, 2);
+
     AddWid(lt1, Sport::taCoach, cbCoach = new QComboBox, 1, 3);
-    QPushButton *btnCoach = new QPushButton();
-    lt1->addWidget(btnCoach, 1, 5);
-    connect(btnCoach, SIGNAL(clicked()), this, SLOT(OpenCardCoach()));
+    lt1->addWidget(new BtnCardCoach(cbCoach, &vecCoachId, this), 1, 5);
 
     AddWid(lt1, Sport::taAddr, edtAddr = new QLineEdit, 2, 0);
     AddWid(lt1, Sport::taPhone, edtPhone = new QLineEdit, 2, 3);
@@ -301,22 +298,6 @@ bool CardSport::Submit()
     return true;
 }
 
-void CardSport::OpenCardRank()
-{
-    if (!IsCBValid(cbRank, false)) return;
-    int id = vecRankId[cbRank->currentIndex()];
-    if (mapperCard.SetCard(ttRank, id)) return;
-    mapperCard.InsertCard(ttRank, id, new CardRank(Sett::GetMA(), 0, id), this);
-}
-
-void CardSport::OpenCardCoach()
-{
-    if (!IsCBValid(cbCoach, false)) return;
-    int id = vecCoachId[cbCoach->currentIndex()];
-    if (mapperCard.SetCard(ttCoach, id)) return;
-    mapperCard.InsertCard(ttCoach, id, new CardCoach(Sett::GetMA(), 0, id), this);
-}
-
 /******************************* Coaches *******************************/
 
 CardCoach::CardCoach(QWidget *aParent, TableModel *aModel, int aId):
@@ -333,9 +314,7 @@ void CardCoach::CreateWidgets()
     AddWid(lt, Coach::taPhone, edtPhone = new QLineEdit, 1);
 
     AddWid(lt, Coach::taClub, cbClub = new QComboBox, 2);
-    QPushButton *btnClub = new QPushButton();
-    lt->addWidget(btnClub, 2, 2);
-    connect(btnClub, SIGNAL(clicked()), this, SLOT(OpenCardClub()));
+    lt->addWidget(new BtnCardClub(cbClub, &vecClubId, this), 2, 2);
 
     CreateBasicWidgets(lt);
 }
@@ -368,14 +347,6 @@ bool CardCoach::Submit()
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
     QSqlQuery q(CreateQuary(mapQuery));
     return true;
-}
-
-void CardCoach::OpenCardClub()
-{
-    if (!IsCBValid(cbClub, false)) return;
-    int id = vecClubId[cbClub->currentIndex()];
-    if (mapperCard.SetCard(ttClub, id)) return;
-    mapperCard.InsertCard(ttClub, id, new CardClub(Sett::GetMA(), 0, id), this);
 }
 
 /******************************* Clubs *******************************/
@@ -434,22 +405,16 @@ void CardSert::CreateWidgets()
     QGridLayout *lt = new QGridLayout;
 
     AddWid(lt, Sert::taSport, cbSport = new QComboBox, 1);
-    QPushButton *btnSport = new QPushButton();
-    lt->addWidget(btnSport, 1, 2);
-    connect(btnSport, SIGNAL(clicked()), this, SLOT(OpenCardSport()));
+    lt->addWidget(new BtnCardSport(cbSport, &vecSportId, this), 1, 2);
 
     AddWid(lt, Sert::taDate, edtDate = new QDateEdit, 2);
     edtDate->setCalendarPopup(true);
 
     AddWid(lt, Sert::taRankFrom, cbRankFrom = new QComboBox, 3);
-    QPushButton *btnRankFrom = new QPushButton();
-    lt->addWidget(btnRankFrom, 3, 2);
-    connect(btnRankFrom, SIGNAL(clicked()), this, SLOT(OpenCardRankFrom()));
+    lt->addWidget(new BtnCardRank(cbRankFrom, &vecRankFromId, this), 3, 2);
 
     AddWid(lt, Sert::taRankTo, cbRankTo = new QComboBox, 4);
-    QPushButton *btnRankTo = new QPushButton();
-    lt->addWidget(btnRankTo, 4, 2);
-    connect(btnRankTo, SIGNAL(clicked()), this, SLOT(OpenCardRankTo()));
+    lt->addWidget(new BtnCardRank(cbRankTo, &vecRankToId, this), 4, 2);
 
     CreateBasicWidgets(lt);
 }
@@ -489,30 +454,6 @@ bool CardSert::Submit()
     return true;
 }
 
-void CardSert::OpenCardSport()
-{
-    if (!IsCBValid(cbSport, false)) return;
-    int id = vecSportId[cbSport->currentIndex()];
-    if (mapperCard.SetCard(ttSport, id)) return;
-    mapperCard.InsertCard(ttSport, id, new CardSport(Sett::GetMA(), 0, id), this);
-}
-
-void CardSert::OpenCardRankFrom()
-{
-    if (!IsCBValid(cbRankFrom, false)) return;
-    int id = vecRankFromId[cbRankFrom->currentIndex()];
-    if (mapperCard.SetCard(ttRank, id)) return;
-    mapperCard.InsertCard(ttRank, id, new CardRank(Sett::GetMA(), 0, id), this);
-}
-
-void CardSert::OpenCardRankTo()
-{
-    if (!IsCBValid(cbRankTo, false)) return;
-    int id = vecRankToId[cbRankTo->currentIndex()];
-    if (mapperCard.SetCard(ttRank, id)) return;
-    mapperCard.InsertCard(ttRank, id, new CardRank(Sett::GetMA(), 0, id), this);
-}
-
 /******************************* Fee *******************************/
 
 CardFee::CardFee(QWidget *aParent, TableModel *aModel, int aId):
@@ -527,9 +468,7 @@ void CardFee::CreateWidgets()
     QGridLayout *lt = new QGridLayout;
 
     AddWid(lt, Fee::taSport, cbSport = new QComboBox, 0);
-    QPushButton *btnSport = new QPushButton();
-    lt->addWidget(btnSport, 0, 2);
-    connect(btnSport, SIGNAL(clicked()), this, SLOT(OpenCardSport()));
+    lt->addWidget(new BtnCardSport(cbSport, &vecSportId, this), 0, 2);
 
     AddWid(lt, Fee::taDate, edtDate = new QDateEdit, 1);
     edtDate->setCalendarPopup(true);
@@ -562,14 +501,6 @@ bool CardFee::Submit()
     return true;
 }
 
-void CardFee::OpenCardSport()
-{
-    if (!IsCBValid(cbSport, false)) return;
-    int id = vecSportId[cbSport->currentIndex()];
-    if (mapperCard.SetCard(ttSport, id)) return;
-    mapperCard.InsertCard(ttSport, id, new CardSport(Sett::GetMA(), 0, id), this);
-}
-
 /******************************* Sportsmen-Competiotions *******************************/
 
 CardSportComp::CardSportComp(QWidget *aParent, TableModel *aModel, int aId):
@@ -584,19 +515,13 @@ void CardSportComp::CreateWidgets()
     QGridLayout *lt = new QGridLayout;
 
     AddWid(lt, SportComp::taSport, cbSport = new QComboBox, 0);
-    QPushButton *btnSport = new QPushButton();
-    lt->addWidget(btnSport, 0, 2);
-    connect(btnSport, SIGNAL(clicked()), this, SLOT(OpenCardSport()));
+    lt->addWidget(new BtnCardSport(cbSport, &vecSportId, this), 0, 2);
 
     AddWid(lt, SportComp::taComp, cbComp = new QComboBox, 1);
-    QPushButton *btnComp = new QPushButton();
-    lt->addWidget(btnComp, 1, 2);
-    connect(btnComp, SIGNAL(clicked()), this, SLOT(OpenCardComp()));
+    lt->addWidget(new BtnCardComp(cbComp, &vecCompId, this), 1, 2);
 
     AddWid(lt, SportComp::taCateg, cbCateg = new QComboBox, 2);
-    QPushButton *btnCateg = new QPushButton();
-    lt->addWidget(btnCateg, 2, 2);
-    connect(btnCateg, SIGNAL(clicked()), this, SLOT(OpenCardCateg()));
+    lt->addWidget(new BtnCardCateg(cbCateg, &vecCategId, this), 2, 2);
 
     AddWid(lt, SportComp::taDrawNum, edtDrawNum = new QLineEdit, 3);
     SetRegExprInt(edtDrawNum, false);
@@ -650,30 +575,6 @@ bool CardSportComp::Submit()
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
     QSqlQuery q(CreateQuary(mapQuery));
     return true;
-}
-
-void CardSportComp::OpenCardSport()
-{
-    if (!IsCBValid(cbSport, false)) return;
-    int id = vecSportId[cbSport->currentIndex()];
-    if (mapperCard.SetCard(ttSport, id)) return;
-    mapperCard.InsertCard(ttSport, id, new CardSport(Sett::GetMA(), 0, id), this);
-}
-
-void CardSportComp::OpenCardComp()
-{
-    if (!IsCBValid(cbComp, false)) return;
-    int id = vecCompId[cbComp->currentIndex()];
-    if (mapperCard.SetCard(ttComp, id)) return;
-    mapperCard.InsertCard(ttComp, id, new CardComp(Sett::GetMA(), 0, id), this);
-}
-
-void CardSportComp::OpenCardCateg()
-{
-    if (!IsCBValid(cbCateg, false)) return;
-    int id = vecCategId[cbCateg->currentIndex()];
-    if (mapperCard.SetCard(ttCateg, id)) return;
-    mapperCard.InsertCard(ttCateg, id, new CardCateg(Sett::GetMA(), 0, id), this);
 }
 
 /******************************* Competiotions *******************************/
@@ -846,14 +747,10 @@ void CardPrzWin::CreateWidgets()
     QGridLayout *lt = new QGridLayout;
 
     AddWid(lt, PrzWin::taCompName, cbComp = new QComboBox, 0, 0);
-    QPushButton *btnComp = new QPushButton();
-    lt->addWidget(btnComp, 0, 2);
-    connect(btnComp, SIGNAL(clicked()), this, SLOT(OpenCardComp()));
+    lt->addWidget(new BtnCardComp(cbComp, &vecCompId, this), 0, 2);
 
     AddWid(lt, PrzWin::taSport, cbSport = new QComboBox, 1, 0);
-    QPushButton *btnSport = new QPushButton();
-    lt->addWidget(btnSport, 1, 2);
-    connect(btnSport, SIGNAL(clicked()), this, SLOT(OpenCardSport()));
+    lt->addWidget(new BtnCardSport(cbSport, &vecSportId, this), 1, 2);
 
     AddWid(lt, PrzWin::taFightsCount, edtFightsCount = new QLineEdit, 2);
     SetRegExprInt(edtFightsCount);
@@ -937,22 +834,6 @@ void CardPrzWin::UpdateCBSport(int aIndex)
                 0);
 }
 
-void CardPrzWin::OpenCardComp()
-{
-    if (!IsCBValid(cbComp, false)) return;
-    int id = vecCompId[cbComp->currentIndex()];
-    if (mapperCard.SetCard(ttComp, id)) return;
-    mapperCard.InsertCard(ttComp, id, new CardComp(Sett::GetMA(), 0, id), this);
-}
-
-void CardPrzWin::OpenCardSport()
-{
-    if (!IsCBValid(cbSport, false)) return;
-    int id = vecSportId[cbSport->currentIndex()];
-    if (mapperCard.SetCard(ttSport, id)) return;
-    mapperCard.InsertCard(ttSport, id, new CardSport(Sett::GetMA(), 0, id), this);
-}
-
 /******************************* Mapper card *******************************/
 
 MapperCard mapperCard;
@@ -996,4 +877,21 @@ void MapperCard::CloseCard(QObject *aObj)
         mapCard.erase(it);
         if (qobject_cast<QWidget *>(w)) w->setFocus();
     }
+}
+
+/******************************* Button for open card *******************************/
+
+BtnCard::BtnCard(TblType aType, QComboBox *aCB, QVector<int> *aVecId, QWidget *aParent):
+    type(aType), cb(aCB), vecId(aVecId), parent(aParent)
+{
+    setIcon(QIcon(":/resource/Open.ico"));
+    connect(this, SIGNAL(clicked()), this, SLOT(OpenCard()));
+}
+
+void BtnCard::OpenCard()
+{
+    if (!IsCBValid(cb, false)) return;
+    int id = vecId->at(cb->currentIndex());
+    if (mapperCard.SetCard(type, id)) return;
+    mapperCard.InsertCard(type, id, CreateCard(id), parent);
 }

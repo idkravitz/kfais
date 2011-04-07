@@ -80,10 +80,6 @@ private:
     bool IsValid() const;
     bool Submit();
 
-private slots:
-    void OpenCardRank();
-    void OpenCardCoach();
-
 public:
     CardSport(QWidget *aParent, TableModel *aModel, int aId);
 };
@@ -106,9 +102,6 @@ private:
 
     bool IsValid() const;
     bool Submit();
-
-private slots:
-    void OpenCardClub();
 
 public:
     CardCoach(QWidget *aParent, TableModel *aTblModel, int aId);
@@ -156,11 +149,6 @@ private:
     bool IsValid() const;
     bool Submit();
 
-private slots:
-    void OpenCardSport();
-    void OpenCardRankFrom();
-    void OpenCardRankTo();
-
 public:
     CardSert(QWidget *aParent, TableModel *aTblModel, int aId);
 };
@@ -182,9 +170,6 @@ private:
 
     bool IsValid() const;
     bool Submit();
-
-private slots:
-    void OpenCardSport();
 
 public:
     CardFee(QWidget *aParent, TableModel *aTblModel, int aId);
@@ -211,11 +196,6 @@ private:
 
     bool IsValid() const;
     bool Submit();
-
-private slots:
-    void OpenCardSport();
-    void OpenCardComp();
-    void OpenCardCateg();
 
 public:
     CardSportComp(QWidget *aParent, TableModel *aTblModel, int aId);
@@ -310,9 +290,6 @@ private:
 private slots:
     void UpdateCBSport(int aIndex);
 
-    void OpenCardComp();
-    void OpenCardSport();
-
 public:
     CardPrzWin(QWidget *aParent, TableModel *aModel, int aId);
 };
@@ -342,5 +319,98 @@ public:
 };
 
 extern MapperCard mapperCard;
+
+/******************************* Button for open card *******************************/
+
+class BtnCard: public QPushButton
+{
+    Q_OBJECT
+
+private:
+    TblType type;
+    QVector<int> *vecId;
+    QComboBox *cb;
+    QWidget *parent;
+
+private slots:
+    void OpenCard();
+
+protected:
+    BtnCard(TblType aType, QComboBox *aCB, QVector<int> *aVecId, QWidget *aParent);
+
+    virtual Card *CreateCard(int aId) = 0;
+};
+
+class BtnCardSport: public BtnCard
+{
+    Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) {return new CardSport(Sett::GetMA(), 0, aId);}
+
+public:
+    BtnCardSport(QComboBox *aCB, QVector<int> *aVecId, QWidget *aParent):
+            BtnCard(ttSport, aCB, aVecId, aParent) {}
+};
+
+class BtnCardCoach: public BtnCard
+{
+    Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) {return new CardCoach(Sett::GetMA(), 0, aId);}
+
+public:
+    BtnCardCoach(QComboBox *aCB, QVector<int> *aVecId, QWidget *aParent):
+            BtnCard(ttCoach, aCB, aVecId, aParent) {}
+};
+
+class BtnCardClub: public BtnCard
+{
+    Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) {return new CardClub(Sett::GetMA(), 0, aId);}
+
+public:
+    BtnCardClub(QComboBox *aCB, QVector<int> *aVecId, QWidget *aParent):
+            BtnCard(ttClub, aCB, aVecId, aParent) {}
+};
+
+class BtnCardComp: public BtnCard
+{
+    Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) {return new CardComp(Sett::GetMA(), 0, aId);}
+
+public:
+    BtnCardComp(QComboBox *aCB, QVector<int> *aVecId, QWidget *aParent):
+            BtnCard(ttComp, aCB, aVecId, aParent) {}
+};
+
+class BtnCardRank: public BtnCard
+{
+    Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) {return new CardRank(Sett::GetMA(), 0, aId);}
+
+public:
+    BtnCardRank(QComboBox *aCB, QVector<int> *aVecId, QWidget *aParent):
+            BtnCard(ttRank, aCB, aVecId, aParent) {}
+};
+
+class BtnCardCateg: public BtnCard
+{
+    Q_OBJECT
+
+private:
+    Card *CreateCard(int aId) {return new CardCateg(Sett::GetMA(), 0, aId);}
+
+public:
+    BtnCardCateg(QComboBox *aCB, QVector<int> *aVecId, QWidget *aParent):
+            BtnCard(ttCateg, aCB, aVecId, aParent) {}
+};
 
 #endif // CARD_H

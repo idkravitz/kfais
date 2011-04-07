@@ -21,5 +21,6 @@
         <file>resource/SportComp.ico</file>
         <file>resource/Categ.ico</file>
         <file>resource/Rank.ico</file>
+        <file>resource/Open.ico</file>
     </qresource>
 </RCC>
