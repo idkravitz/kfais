@@ -4,6 +4,7 @@
 #include "setting.h"
 #include "table.h"
 #include "reports.h"
+#include "controlPanel.h"
 
 typedef QMap<TblType, Table *> MapTbl;
 
@@ -13,6 +14,7 @@ class MainWindow: public QMainWindow
 
 private:
     MapTbl mapTbl;
+    ControlPanel *cPanel;
 
     void CreateMenu();
 
@@ -36,6 +38,8 @@ private slots:
     void OpenRepPulka();
     void OpenRepResults();
     void OpenRepTechnical();
+
+    void OpenControlPanel();
 
     void OpenAbout();
 

@@ -215,6 +215,12 @@ void CardSport::CreateWidgets()
 
     CreateBasicWidgets(lt);
 }
+inline void SetHeaders(TblType aType, TableModel *aModel)
+{
+    QVector<char*> *n = &Sett::GetVecColName(aType);
+    for (int i = 0; i < n->size(); ++i)
+        aModel->setHeaderData(i, Qt::Horizontal, QObject::tr(n->at(i)));
+}
 
 QVBoxLayout *CardSport::CreateInnerTbls()
 {
@@ -243,6 +249,10 @@ QVBoxLayout *CardSport::CreateInnerTbls()
     modelFee->SetQuery("SELECT id, sportsman_id, date, note FROM fee "
                        "WHERE sportsman_id = " + QString::number(GetId()));
     modelFee->Select();
+
+    SetHeaders(ttSert, modelSert);
+    SetHeaders(ttPrzWin, modelPrzWin);
+    SetHeaders(ttFee, modelFee);
 
     viewSert->setColumnHidden(Sert::taId, true);
     viewSert->setColumnHidden(Sert::taSport, true);

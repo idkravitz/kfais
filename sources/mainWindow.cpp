@@ -43,10 +43,18 @@ void MainWindow::CreateMenu()
     mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtResults), this, SLOT(OpenRepResults()));
     mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtTechnical), this, SLOT(OpenRepTechnical()));
 
+    QMenu *mnPanels = new QMenu(tr("Панели"));
+    QAction *actCP = mnPanels->addAction(QIcon(":/resource/Open.ico"), tr("Поиск"));//, SLOT(OpenControlPanle()));
+    connect(actCP, SIGNAL(triggered()), this, SLOT(OpenControlPanel()));
+
     mnBar->addMenu(mnFile);
     mnBar->addMenu(mnTables);
     mnBar->addMenu(mnReports);
+    mnBar->addMenu(mnPanels);
     mnBar->addMenu(mnAbout);
+
+    cPanel = new ControlPanel;
+    addToolBar(cPanel);
 }
 
 bool MainWindow::IsOpen(TblType aTT) const
@@ -201,4 +209,9 @@ void MainWindow::OpenAbout()
     QMessageBox::about(this, tr("О программе"),
             tr("<h2>KFAIS v0.9</h2>"
                "<p>Все права защищены &copy; 2011 django.vl@gmail.com</p>"));
+}
+
+void MainWindow::OpenControlPanel()
+{
+    cPanel->setVisible(!cPanel->isVisible());
 }

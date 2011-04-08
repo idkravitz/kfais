@@ -9,7 +9,8 @@ SOURCES += \
     sources/setting.cpp \
     sources/card.cpp \
     sources/reports.cpp \
-    sources/tableModelView.cpp
+    sources/tableModelView.cpp \
+    sources/controlPanel.cpp
 
 HEADERS += \
     headers/table.h \
@@ -18,7 +19,8 @@ HEADERS += \
     headers/exceptions.h \
     headers/card.h \
     headers/reports.h \
-    headers/tableModelView.h
+    headers/tableModelView.h \
+    headers/controlPanel.h
 
 RESOURCES += \
     icons.qrc
