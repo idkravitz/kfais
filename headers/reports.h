@@ -2,6 +2,7 @@
 #define REPORTS_H
 
 #include "setting.h"
+#include "card.h"
 #include <QAxObject>
 
 /********************************************************************/
@@ -163,6 +164,8 @@ private:
     QLabel *lbl;
     QComboBox *cb;
     QVector<int> vecId;
+    BtnCardCoach *btnCoach;
+    BtnCardClub *btnClub;
 
     void CreateWidgets();
 

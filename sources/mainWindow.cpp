@@ -36,12 +36,12 @@ void MainWindow::CreateMenu()
     mnTables->addAction(QIcon(":/resource/PrzWin.ico"), Sett::GetTblTitle(ttPrzWin), this, SLOT(OpenTblPrzWin()));
 
     QMenu *mnReports = new QMenu(tr("Отчеты"));
-    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtSport), this, SLOT(OpenRepSport()));
-    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtSert), this, SLOT(OpenRepSert()));
+    mnReports->addAction(QIcon(":/resource/Sport.ico"), Sett::GetRepTitle(rtSport), this, SLOT(OpenRepSport()));
+    mnReports->addAction(QIcon(":/resource/Sert.ico"), Sett::GetRepTitle(rtSert), this, SLOT(OpenRepSert()));
     mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtDraw), this, SLOT(OpenRepDraw()));
-    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtPulka), this, SLOT(OpenRepPulka()));
-    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtResults), this, SLOT(OpenRepResults()));
-    mnReports->addAction(QIcon(":/resource/Report.ico"), Sett::GetRepTitle(rtTechnical), this, SLOT(OpenRepTechnical()));
+    mnReports->addAction(QIcon(":/resource/Pulka.ico"), Sett::GetRepTitle(rtPulka), this, SLOT(OpenRepPulka()));
+    mnReports->addAction(QIcon(":/resource/Rank.ico"), Sett::GetRepTitle(rtResults), this, SLOT(OpenRepResults()));
+    mnReports->addAction(QIcon(":/resource/Tech.ico"), Sett::GetRepTitle(rtTechnical), this, SLOT(OpenRepTechnical()));
 
     QMenu *mnPanels = new QMenu(tr("Панели"));
     QAction *actCP = mnPanels->addAction(QIcon(":/resource/Open.ico"), tr("Поиск"));//, SLOT(OpenControlPanle()));
