@@ -22,5 +22,7 @@
         <file>resource/Categ.ico</file>
         <file>resource/Rank.ico</file>
         <file>resource/Open.ico</file>
+        <file>resource/Pulka.ico</file>
+        <file>resource/Tech.ico</file>
     </qresource>
 </RCC>

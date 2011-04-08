@@ -759,7 +759,7 @@ void RepSport::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
     AddWidToLt(lt, Sett::GetColName(ttSport, Sport::taCoach) + ":", cbCoach = new QComboBox, 0, 0);
-    lt->addWidget(new BtnCardComp(cbCoach, &vecId, this), 0, 2);
+    lt->addWidget(new BtnCardCoach(cbCoach, &vecId, this), 0, 2);
 
     CreateBasicWidgets(lt);
 }
