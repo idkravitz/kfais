@@ -22,7 +22,8 @@ HEADERS += \
     headers/tableModelView.h \
     headers/controlPanel.h
 
-RESOURCES += \
-    icons.qrc
+RC_FILE = kfais.rc
+
+RESOURCES += icons.qrc
 
 INCLUDEPATH += headers/

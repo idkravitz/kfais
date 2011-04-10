@@ -17,7 +17,7 @@ void Connect(const QString &dbname)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-
+    qApp->addLibraryPath("./plugins");
     QTextCodec* codec =  QTextCodec::codecForName("cp1251");
     QTextCodec::setCodecForTr(codec);
 
