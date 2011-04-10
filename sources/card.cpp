@@ -857,6 +857,7 @@ void MapperCard::InsertCard(TblType aType, int aId, Card *aCard, QWidget *aParen
 {
     mapCard.insert(KeyMapCard_(aType, aId), ValMapCard_(aCard, aParent));
     connect(aCard, SIGNAL(destroyed(QObject *)), this, SLOT(CloseCard(QObject *)));
+    connect(aParent, SIGNAL(destroyed(QObject *)), this, SLOT(SetParentNull(QObject *)));
     QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(aCard);
     sw->show();
 }
@@ -885,7 +886,16 @@ void MapperCard::CloseCard(QObject *aObj)
     {
         QWidget *w = it.value().second;
         mapCard.erase(it);
-        if (qobject_cast<QWidget *>(w)) w->setFocus();
+        if (w) w->setFocus();
+    }
+}
+
+void MapperCard::SetParentNull(QObject *aObj)
+{
+    QWidget *w = static_cast<QWidget *>(aObj);
+    for (MapCard_::iterator it = mapCard.begin(); it != mapCard.end(); ++it)
+    {
+        if (it.value().second == w) it.value().second = 0;
     }
 }
 

@@ -309,6 +309,7 @@ private:
 
 private slots:
     void CloseCard(QObject *aObj);
+    void SetParentNull(QObject *aObj);
 
 public:
     MapperCard();
