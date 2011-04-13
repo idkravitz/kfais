@@ -129,7 +129,7 @@ inline QString PackToQM(const QString &aStr, bool aIsQM)
     return aIsQM ? "'" + aStr + "'" : aStr;
 }
 
-QString Card::CreateQuary(const MapQuery &aMap)
+QString Card::CreateQuery(const MapQuery &aMap)
 {
     QString str;
     if (IsNew())
@@ -304,7 +304,7 @@ bool CardSport::Submit()
     mapQuery.insert(PairQuery("workplace", edtWorkplace->text()), true);
     mapQuery.insert(PairQuery("job", edtJob->text()), true);
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
-    QSqlQuery q(CreateQuary(mapQuery));
+    QSqlQuery q(CreateQuery(mapQuery));
     return true;
 }
 
@@ -355,7 +355,7 @@ bool CardCoach::Submit()
     mapQuery.insert(PairQuery("phone", edtPhone->text()), true);
     mapQuery.insert(PairQuery("club_id", club), false);
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
-    QSqlQuery q(CreateQuary(mapQuery));
+    QSqlQuery q(CreateQuery(mapQuery));
     return true;
 }
 
@@ -397,7 +397,7 @@ bool CardClub::Submit()
     mapQuery.insert(PairQuery("name", edtName->text()), true);
     mapQuery.insert(PairQuery("address", edtAddr->text()), true);
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
-    QSqlQuery q(CreateQuary(mapQuery));
+    QSqlQuery q(CreateQuery(mapQuery));
     return true;
 }
 
@@ -460,7 +460,7 @@ bool CardSert::Submit()
     mapQuery.insert(PairQuery("rank_from_id", rankFrom), false);
     mapQuery.insert(PairQuery("rank_to_id", QString::number(vecRankToId[cbRankTo->currentIndex()])), false);
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
-    QSqlQuery q(CreateQuary(mapQuery));
+    QSqlQuery q(CreateQuery(mapQuery));
     return true;
 }
 
@@ -507,7 +507,7 @@ bool CardFee::Submit()
     mapQuery.insert(PairQuery("sportsman_id", QString::number(vecSportId[cbSport->currentIndex()])), false);
     mapQuery.insert(PairQuery("date", edtDate->date().toString("yyyy-MM-dd")), true);
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
-    QSqlQuery q(CreateQuary(mapQuery));
+    QSqlQuery q(CreateQuery(mapQuery));
     return true;
 }
 
@@ -583,7 +583,7 @@ bool CardSportComp::Submit()
     mapQuery.insert(PairQuery("draw_number", edtDrawNum->text()), true);
     mapQuery.insert(PairQuery("units", edtUnit->text()), true);
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
-    QSqlQuery q(CreateQuary(mapQuery));
+    QSqlQuery q(CreateQuery(mapQuery));
     return true;
 }
 
@@ -636,7 +636,7 @@ bool CardComp::Submit()
     mapQuery.insert(PairQuery("date", edtDate->date().toString("yyyy-MM-dd")), true);
     mapQuery.insert(PairQuery("location", edtLoc->text()), true);
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
-    QSqlQuery q(CreateQuary(mapQuery));
+    QSqlQuery q(CreateQuery(mapQuery));
     return true;
 }
 
@@ -689,7 +689,7 @@ bool CardCateg::Submit()
     MapQuery mapQuery;
     mapQuery.insert(PairQuery("name", edtName->text()), true);
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
-    QSqlQuery q(CreateQuary(mapQuery));
+    QSqlQuery q(CreateQuery(mapQuery));
     return true;
 }
 
@@ -728,7 +728,7 @@ bool CardRank::Submit()
     MapQuery mapQuery;
     mapQuery.insert(PairQuery("name", edtName->text()), true);
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
-    QSqlQuery q(CreateQuary(mapQuery));
+    QSqlQuery q(CreateQuery(mapQuery));
     return true;
 }
 
@@ -831,7 +831,7 @@ bool CardPrzWin::Submit()
     mapQuery.insert(PairQuery("region", edtRegion->text()), true);
     mapQuery.insert(PairQuery("city", edtCity->text()), true);
     mapQuery.insert(PairQuery("note", edtNote->text()), true);
-    q.exec(CreateQuary(mapQuery));
+    q.exec(CreateQuery(mapQuery));
     return true;
 }
 

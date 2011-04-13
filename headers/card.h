@@ -41,7 +41,7 @@ protected:
     inline bool IsNew() const;
     inline void SetRegExprInt(QLineEdit* aEdt, bool aCanBeZero = true);
 
-    QString CreateQuary(const MapQuery &aMap);
+    QString CreateQuery(const MapQuery &aMap);
 
 public:
     int GetId() const;
