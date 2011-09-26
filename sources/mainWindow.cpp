@@ -43,6 +43,9 @@ void MainWindow::CreateMenu()
     mnReports->addAction(QIcon(":/resource/Rank.ico"), Sett::GetRepTitle(rtResults), this, SLOT(OpenRepResults()));
     mnReports->addAction(QIcon(":/resource/Tech.ico"), Sett::GetRepTitle(rtTechnical), this, SLOT(OpenRepTechnical()));
 
+    QMenu *mnImport = new QMenu(tr("Импорт данных"));
+    mnImport->addAction(tr("Импорт регистрационных номеров"), this, SLOT(OpenImportReqNumber()));
+
     QMenu *mnPanels = new QMenu(tr("Панели"));
     QAction *actCP = mnPanels->addAction(QIcon(":/resource/Open.ico"), tr("Поиск"));//, SLOT(OpenControlPanle()));
     connect(actCP, SIGNAL(triggered()), this, SLOT(OpenControlPanel()));
@@ -51,6 +54,7 @@ void MainWindow::CreateMenu()
     mnBar->addMenu(mnTables);
     mnBar->addMenu(mnReports);
     mnBar->addMenu(mnPanels);
+    mnBar->addMenu(mnImport);
     mnBar->addMenu(mnAbout);
 
     cPanel = new ControlPanel;
@@ -214,4 +218,10 @@ void MainWindow::OpenAbout()
 void MainWindow::OpenControlPanel()
 {
     cPanel->setVisible(!cPanel->isVisible());
+}
+
+void MainWindow::OpenImportReqNumber()
+{
+    QMdiSubWindow *sw = Sett::GetMA()->addSubWindow(new LoaderRegNum(Sett::GetMA()));
+    sw->show();
 }

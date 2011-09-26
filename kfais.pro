@@ -10,7 +10,8 @@ SOURCES += \
     sources/card.cpp \
     sources/reports.cpp \
     sources/tableModelView.cpp \
-    sources/controlPanel.cpp
+    sources/controlPanel.cpp \
+    sources/loader.cpp
 
 HEADERS += \
     headers/table.h \
@@ -20,7 +21,8 @@ HEADERS += \
     headers/card.h \
     headers/reports.h \
     headers/tableModelView.h \
-    headers/controlPanel.h
+    headers/controlPanel.h \
+    headers/loader.h
 
 RC_FILE = kfais.rc
 

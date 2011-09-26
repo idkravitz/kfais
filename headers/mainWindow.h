@@ -5,6 +5,7 @@
 #include "table.h"
 #include "reports.h"
 #include "controlPanel.h"
+#include "loader.h"
 
 typedef QMap<TblType, Table *> MapTbl;
 
@@ -40,6 +41,8 @@ private slots:
     void OpenRepTechnical();
 
     void OpenControlPanel();
+
+    void OpenImportReqNumber();
 
     void OpenAbout();
 
