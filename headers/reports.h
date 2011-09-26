@@ -160,12 +160,19 @@ class RepSert: public Report{
     Q_OBJECT
 
 private:
+    QCheckBox *chbxSel;
+    QCheckBox *chbxDate;
+
     QComboBox *cbTbl;
     QLabel *lbl;
     QComboBox *cb;
-    QVector<int> vecId;
+
     BtnCardCoach *btnCoach;
     BtnCardClub *btnClub;
+
+    QDateEdit *edtDate;
+
+    QVector<int> vecId;
 
     void CreateWidgets();
 

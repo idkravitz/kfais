@@ -786,20 +786,31 @@ RepSert::RepSert(QWidget *aParent):
 void RepSert::CreateWidgets()
 {
     QGridLayout *lt = new QGridLayout;
+    lt->addWidget(chbxSel = new QCheckBox(tr("Фильтр по тренеру или клубу"), this), 0, 0);
+    chbxSel->setChecked(true);
+    lt->addWidget(chbxDate = new QCheckBox(tr("Фильтр по времени"), this), 0, 1);
+    chbxDate->setChecked(true);
 
-    AddWidToLt(lt, tr("Выборка по:"), cbTbl = new QComboBox, 0, 0);
+    AddWidToLt(lt, tr("Выборка по:"), cbTbl = new QComboBox, 1, 0);
     QStringList lst;
     lst << Sett::GetColName(ttSport, Sport::taCoach) << Sett::GetColName(ttCoach, Coach::taClub);
     cbTbl->addItems(lst);
     connect(cbTbl, SIGNAL(currentIndexChanged(int)), this, SLOT(ChangeTbl(int)));
 
     lbl = new QLabel(cbTbl->currentText() + ":");
-    AddWidToLt(lt, lbl, cb = new QComboBox, 1, 0);
-    lt->addWidget(btnCoach = new BtnCardCoach(cb, &vecId, this), 1, 2);
-    lt->addWidget(btnClub = new BtnCardClub(cb, &vecId, this), 1, 2);
+    AddWidToLt(lt, lbl, cb = new QComboBox, 2, 0);
+    lt->addWidget(btnCoach = new BtnCardCoach(cb, &vecId, this), 2, 2);
+    lt->addWidget(btnClub = new BtnCardClub(cb, &vecId, this), 2, 2);
     btnClub->setVisible(false);
     btnCoach->setVisible(true);
 
+    AddWidToLt(lt, tr("Дата аттестации:"), edtDate = new QDateEdit(this), 3, 0);
+    edtDate->setCalendarPopup(true);
+    edtDate->setDate(QDate::currentDate());
+
+    connect(chbxSel, SIGNAL(toggled(bool)), cbTbl, SLOT(setEnabled(bool)));
+    connect(chbxSel, SIGNAL(toggled(bool)), cb, SLOT(setEnabled(bool)));
+    connect(chbxDate, SIGNAL(toggled(bool)), edtDate, SLOT(setEnabled(bool)));
 
     CreateBasicWidgets(lt);
 }
@@ -823,24 +834,40 @@ void RepSert::ChangeTbl(int aIndex)
 
 QString RepSert::GetQuery()
 {
-    if (!cbTbl->currentIndex())
+    QString str =
+        "select sp.name, sp.birthday, r1.name, c.name, sp.reg_number, r2.name, se.note "
+        " from sertifications se "
+        " left join sportsmen sp on se.sportsman_id = sp.id "
+        " left join coaches c on sp.coach_id = c.id "
+        " left join ranks r1 on se.rank_from_id = r1.id ";
+    QString prefixFilterDate = " where ";
+    if (chbxSel->isChecked())
     {
-        return  " select sp.name, sp.birthday, r1.name, c.name, sp.reg_number, r2.name, se.note "
-                " from sertifications se "
-                " left join sportsmen sp on se.sportsman_id = sp.id "
-                " left join coaches c on sp.coach_id = c.id "
-                " left join ranks r1 on se.rank_from_id = r1.id "
+        if (!cbTbl->currentIndex())
+        {
+            str +=
                 " inner join ranks r2 on se.rank_to_id = r2.id "
                 " where c.id = " + QString::number(vecId[cb->currentIndex()]);
+        }
+        else
+        {
+            str +=
+                " left join clubs cl on c.club_id = cl.id "
+                " inner join ranks r2 on se.rank_to_id = r2.id "
+                " where cl.id = " + QString::number(vecId[cb->currentIndex()]);
+        }
+        prefixFilterDate = " and ";
     }
-    return  " select sp.name, sp.birthday, r1.name, c.name, sp.reg_number, r2.name, se.note "
-            " from sertifications se "
-            " left join sportsmen sp on se.sportsman_id = sp.id "
-            " left join coaches c on sp.coach_id = c.id "
-            " left join ranks r1 on se.rank_from_id = r1.id "
-            " left join clubs cl on c.club_id = cl.id "
-            " inner join ranks r2 on se.rank_to_id = r2.id "
-            " where cl.id = " + QString::number(vecId[cb->currentIndex()]);
+    else
+    {
+        str += " inner join ranks r2 on se.rank_to_id = r2.id ";
+    }
+    if (chbxDate->isChecked())
+    {
+        str += prefixFilterDate + "se.date = '" + edtDate->date().toString("yyyy-MM-dd") + "'";
+    }
+    qDebug() << str;
+    return str;
 }
 
 /******************************* Competiiton Based *******************************/
